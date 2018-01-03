@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">HabitTracker</string>
+    <string name="action_settings">Settings</string>
+
+    <!-- Add habit values -->
+    <string name="habit_title_hint">Enter name of habit.</string>
+    <string name="habit_desc_hint">Enter a description of habit.</string>
+    <string name="add_habit_title_text">Habit Name</string>
+    <string name="add_habit_desc_text">Habit Description</string>
+    <string name="add_habit_freq_text">Frequency:</string>
+
+    <!-- Spinner values for habit frequency -->
+    <string-array name="freq_spinner_values">
+        <item>One time per week</item>
+        <item>Three times per week</item>
+        <item>Five times per week</item>
+        <item>Seven times per week</item>
+        <item>Custom...</item>
+    </string-array>
+
+</resources>
