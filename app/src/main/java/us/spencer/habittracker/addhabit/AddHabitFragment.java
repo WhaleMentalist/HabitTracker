@@ -57,7 +57,6 @@ public class AddHabitFragment extends Fragment implements AddHabitContract.View 
                 android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mFrequency.setAdapter(adapter);
-
         return root;
     }
 

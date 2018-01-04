@@ -7,15 +7,15 @@ import us.spencer.habittracker.BaseView;
  * Specify a contract (i.e interface) between the
  * presenter and view when adding a habit
  */
-public class AddHabitContract {
+public interface AddHabitContract {
 
-    public interface View extends BaseView<Presenter> {
+    interface View extends BaseView<Presenter> {
 
         boolean isActive();
     }
 
-    public interface Presenter extends BasePresenter {
+    interface Presenter extends BasePresenter {
 
-
+        void addHabit(String title, String description);
     }
 }

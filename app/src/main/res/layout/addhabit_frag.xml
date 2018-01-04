@@ -55,11 +55,13 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
+            <!-- Support older versions, we need to add margin left -->
             <Spinner
                 android:id="@+id/add_habit_freq_spinner"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
+                android:layout_marginLeft="16dp"
                 app:layout_constraintStart_toEndOf="@+id/add_habit_freq_tv" />
 
         </android.support.constraint.ConstraintLayout>
