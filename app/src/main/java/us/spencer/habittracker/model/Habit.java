@@ -18,12 +18,8 @@ import java.util.UUID;
 public class Habit {
 
     @PrimaryKey
-    @NonNull
-    @ColumnInfo(name = "habit_id")
-    private final Long mId;
-
     @ColumnInfo(name = "habit_name")
-    @Nullable
+    @NonNull
     private String mName;
 
     @ColumnInfo(name = "habit_desc")
@@ -33,19 +29,12 @@ public class Habit {
     /**
      * Constructor for creating a new habit
      *
-     * @param id   the id of the habit
      * @param name  the name of the habit
      * @param description   the description of the habit
      */
-    public Habit(@NonNull Long id, @Nullable String name, @Nullable String description) {
-        mId = id;
+    public Habit(@NonNull String name, @Nullable String description) {
         mName = name;
         mDescription = description;
-    }
-
-    @NonNull
-    public Long getId() {
-        return mId;
     }
 
     @Nullable
@@ -79,12 +68,12 @@ public class Habit {
 
         Habit habit = (Habit) o;
 
-        return mId.equals(habit.mId);
+        return mName.equals(habit.mName);
     }
 
     @Override
     public int hashCode() {
-        return mId.hashCode();
+        return mName.hashCode();
     }
 
     @Override

@@ -13,7 +13,7 @@ import java.util.concurrent.Executor;
  * is added such as networking. This will also prevent unnecessary waiting from
  * disk I/O slowness.
  */
-public class AppExecutor {
+public class AppExecutors {
 
     private static final int THREAD_COUNT = 2;
 
@@ -21,12 +21,12 @@ public class AppExecutor {
 
     private final Executor mMainThread;
 
-    private AppExecutor(DiskIOThreadExecutor diskIO, MainThreadExecutor mainThread) {
+    private AppExecutors(DiskIOThreadExecutor diskIO, MainThreadExecutor mainThread) {
         mDiskIO = diskIO;
         mMainThread = mainThread;
     }
 
-    public AppExecutor() {
+    public AppExecutors() {
         this(new DiskIOThreadExecutor(), new MainThreadExecutor());
     }
 
@@ -38,5 +38,23 @@ public class AppExecutor {
         public void execute(@NonNull Runnable runnable) {
             mainThreadHandler.post(runnable);
         }
+    }
+
+    /**
+     * Return executor that will run I/O in background
+     *
+     * @return  the {@link Executor} that is responsible for handling I/O based operations
+     */
+    public Executor diskIO() {
+        return mDiskIO;
+    }
+
+    /**
+     * Return executor that will run UI elements
+     *
+     * @return the {@link Executor} that is responsible for handling UI
+     */
+    public Executor mainThread() {
+        return mMainThread;
     }
 }

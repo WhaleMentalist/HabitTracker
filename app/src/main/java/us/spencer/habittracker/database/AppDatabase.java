@@ -19,7 +19,7 @@ public abstract class AppDatabase extends RoomDatabase {
 
     public abstract HabitDAO habitDAO();
 
-    private static final Object sLock = new Object();
+    private static final Object sLock = new Object(); /** Need access to DB to be managed fairly and without anomalies */
 
     public static AppDatabase getInstance(final Context context) {
         synchronized (sLock) {

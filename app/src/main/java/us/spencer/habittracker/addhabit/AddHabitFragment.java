@@ -3,12 +3,14 @@ package us.spencer.habittracker.addhabit;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import us.spencer.habittracker.R;
 
@@ -36,7 +38,7 @@ public class AddHabitFragment extends Fragment implements AddHabitContract.View 
     @Override
     public void onResume() {
         super.onResume();
-        // mPresenter.start();
+        mPresenter.start();
     }
 
     @Override
@@ -57,6 +59,17 @@ public class AddHabitFragment extends Fragment implements AddHabitContract.View 
                 android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mFrequency.setAdapter(adapter);
+
+        FloatingActionButton confirmInputAction = root.findViewById(R.id.confirm_input_action);
+
+        confirmInputAction.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                mPresenter.addHabit(mTitle.getText().toString(), mDescription.getText().toString());
+            }
+        });
+
         return root;
     }
 
@@ -68,5 +81,10 @@ public class AddHabitFragment extends Fragment implements AddHabitContract.View 
     @Override
     public boolean isActive() {
         return isAdded();
+    }
+
+    @Override
+    public void showToast() {
+        Toast.makeText(getActivity(), "Added habit successfully!", Toast.LENGTH_SHORT).show();
     }
 }
