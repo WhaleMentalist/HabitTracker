@@ -2,6 +2,8 @@ package us.spencer.habittracker.database.local;
 
 import android.support.annotation.NonNull;
 
+import java.util.List;
+
 import us.spencer.habittracker.database.HabitsDAO;
 import us.spencer.habittracker.database.HabitsDataSource;
 import us.spencer.habittracker.model.Habit;
@@ -59,6 +61,7 @@ public class HabitsLocalDataSource implements HabitsDataSource {
             @Override
             public void run() {
                 mHabitsDAO.insertHabit(habit);
+                final List<Habit> habits = mHabitsDAO.getHabits();
 
                 /** Need to execute UI changes on main thread */
                 mAppExecutors.mainThread().execute(new Runnable() {

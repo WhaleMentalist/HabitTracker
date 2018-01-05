@@ -7,7 +7,8 @@ import us.spencer.habittracker.model.Habit;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-public class AddHabitPresenter implements AddHabitContract.Presenter, HabitsDataSource.SaveHabitCallback {
+public class AddHabitPresenter implements AddHabitContract.Presenter,
+        HabitsDataSource.SaveHabitCallback {
 
     @NonNull
     private final HabitsDataSource mHabitsRepository;

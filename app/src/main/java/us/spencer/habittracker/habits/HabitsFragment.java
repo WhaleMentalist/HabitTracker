@@ -1,9 +1,13 @@
 package us.spencer.habittracker.habits;
 
 import android.app.Fragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -13,6 +17,7 @@ import java.util.List;
 import javax.annotation.Nonnull;
 
 import us.spencer.habittracker.R;
+import us.spencer.habittracker.addhabit.AddHabitActivity;
 import us.spencer.habittracker.model.Habit;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -32,7 +37,30 @@ public class HabitsFragment extends Fragment implements HabitsContract.View {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.habits_frag, container, false);
+        setHasOptionsMenu(true);
         return root;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_main, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int itemID = item.getItemId();
+
+        if(itemID == R.id.action_add) {
+            mPresenter.addHabit();
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void showAddHabit() {
+        Intent intent = new Intent(getActivity(), AddHabitActivity.class);
+        startActivity(intent);
     }
 
     @Override

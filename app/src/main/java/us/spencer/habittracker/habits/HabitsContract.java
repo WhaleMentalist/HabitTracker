@@ -15,10 +15,14 @@ public interface HabitsContract {
 
         void showHabits(List<Habit> habits);
 
+        void showAddHabit();
+
         boolean isActive();
     }
 
     interface Presenter extends BasePresenter {
+
+        void addHabit();
 
         void loadHabits();
     }
