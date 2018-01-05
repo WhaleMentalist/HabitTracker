@@ -2,7 +2,9 @@ package us.spencer.habittracker.database;
 
 import android.support.annotation.NonNull;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import us.spencer.habittracker.model.Habit;
@@ -21,7 +23,8 @@ public class HabitsRepository implements HabitsDataSource {
 
     private final HabitsDataSource mHabitsLocalDataSource;
 
-    private Map<String, Habit> mCachedHabit;
+    /** Useful in preventing too many I/O operations that are unnecessary */
+    private Map<String, Habit> mCachedHabits;
 
     /**
      * Private constructor to enforce singleton design pattern
@@ -48,6 +51,25 @@ public class HabitsRepository implements HabitsDataSource {
     }
 
     /**
+     * If cache is out of date or 'null' and we load from local storage.
+     * Then we need to fill it with the data we retrieved from local storage.
+     *
+     * @param habits    the habits retrieved from storage
+     */
+    private void refreshCache(@NonNull List<Habit> habits) {
+        checkNotNull(habits);
+
+        if(mCachedHabits == null) {
+            mCachedHabits = new LinkedHashMap<>();
+        }
+        mCachedHabits.clear();
+
+        for(Habit habit : habits) {
+            mCachedHabits.put(habit.getName(), habit);
+        }
+    }
+
+    /**
      * Used to force {@link #getInstance(HabitsDataSource)} to create a new instance
      * when called again
      */
@@ -60,10 +82,41 @@ public class HabitsRepository implements HabitsDataSource {
         checkNotNull(habit);
         mHabitsLocalDataSource.saveHabit(habit, callback); /** Save to DB */
 
-        if(mCachedHabit == null) {
-            mCachedHabit = new LinkedHashMap<>();
+        if(mCachedHabits == null) {
+            mCachedHabits = new LinkedHashMap<>();
         }
 
-        mCachedHabit.put(habit.getName(), habit);
+        mCachedHabits.put(habit.getName(), habit);
+    }
+
+    @Override
+    public void getHabits(@NonNull final LoadHabitsCallback callback) {
+        checkNotNull(callback);
+
+        if(mCachedHabits != null) { /** Check if data is in cache */
+            callback.onHabitsLoaded(new ArrayList<>(mCachedHabits.values()));
+            return;
+        }
+        else { /** If no data in cache, then load from local storage */
+            mHabitsLocalDataSource.getHabits(new LoadHabitsCallback() {
+
+                @Override
+                public void onHabitsLoaded(@NonNull List<Habit> habits) {
+                    refreshCache(habits);
+                    callback.onHabitsLoaded(habits);
+                }
+
+            });
+        }
+    }
+
+    public void deleteAllHabits() {
+        mHabitsLocalDataSource.deleteAllHabits();
+
+        if(mCachedHabits == null) {
+            mCachedHabits = new LinkedHashMap<>();
+        }
+
+        mCachedHabits.clear();
     }
 }

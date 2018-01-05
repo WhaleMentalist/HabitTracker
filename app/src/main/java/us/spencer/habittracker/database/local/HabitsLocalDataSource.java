@@ -56,12 +56,12 @@ public class HabitsLocalDataSource implements HabitsDataSource {
     @Override
     public void saveHabit(@NonNull final Habit habit, @NonNull final SaveHabitCallback callback) {
         checkNotNull(habit);
+        checkNotNull(callback);
         Runnable saveHabit = new Runnable() {
 
             @Override
             public void run() {
                 mHabitsDAO.insertHabit(habit);
-                final List<Habit> habits = mHabitsDAO.getHabits();
 
                 /** Need to execute UI changes on main thread */
                 mAppExecutors.mainThread().execute(new Runnable() {
@@ -75,5 +75,39 @@ public class HabitsLocalDataSource implements HabitsDataSource {
             }
         };
         mAppExecutors.diskIO().execute(saveHabit); /** Execute DB read on own thread */
+    }
+
+    @Override
+    public void getHabits(@NonNull final LoadHabitsCallback callback) {
+        checkNotNull(callback);
+        Runnable loadHabits = new Runnable() {
+
+            @Override
+            public void run() {
+                final List<Habit> habits = mHabitsDAO.getHabits();
+
+                mAppExecutors.mainThread().execute(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        callback.onHabitsLoaded(habits);
+                    }
+                });
+            }
+        };
+        mAppExecutors.diskIO().execute(loadHabits);
+    }
+
+    @Override
+    public void deleteAllHabits() {
+
+        Runnable deleteHabits = new Runnable() {
+
+            @Override
+            public void run() {
+                mHabitsDAO.deleteHabits();
+            }
+        };
+        mAppExecutors.diskIO().execute(deleteHabits);
     }
 }

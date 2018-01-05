@@ -2,6 +2,8 @@ package us.spencer.habittracker.database;
 
 import android.support.annotation.NonNull;
 
+import java.util.List;
+
 import us.spencer.habittracker.model.Habit;
 
 /**
@@ -12,8 +14,16 @@ public interface HabitsDataSource {
     interface SaveHabitCallback {
 
         void onHabitSaved();
-
     }
 
-    void saveHabit(@NonNull Habit habit, SaveHabitCallback callback);
+    interface LoadHabitsCallback {
+
+        void onHabitsLoaded(@NonNull List<Habit> habits);
+    }
+
+    void saveHabit(@NonNull Habit habit, @NonNull SaveHabitCallback callback);
+
+    void getHabits(@NonNull final LoadHabitsCallback callback);
+
+    void deleteAllHabits();
 }

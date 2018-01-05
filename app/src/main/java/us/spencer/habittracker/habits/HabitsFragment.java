@@ -3,15 +3,19 @@ package us.spencer.habittracker.habits;
 import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
+import android.support.v7.widget.CardView;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
+import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Nonnull;
@@ -22,11 +26,23 @@ import us.spencer.habittracker.model.Habit;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+/**
+ * Very useful article explaining 'RecyclerView':
+ * https://code.tutsplus.com/tutorials/getting-started-with-recyclerview-and-cardview-on-android--cms-23465
+ */
 public class HabitsFragment extends Fragment implements HabitsContract.View {
 
     private HabitsContract.Presenter mPresenter;
 
+    private HabitsAdapter mAdapter;
+
     public HabitsFragment() {}
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mPresenter.start();
+    }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -38,6 +54,14 @@ public class HabitsFragment extends Fragment implements HabitsContract.View {
                              Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.habits_frag, container, false);
         setHasOptionsMenu(true);
+
+        RecyclerView rv = root.findViewById(R.id.habits_recycler_view);
+        rv.setLayoutManager(new LinearLayoutManager(getActivity()));
+        rv.setHasFixedSize(true);
+
+        mAdapter = new HabitsAdapter(new ArrayList<Habit>());
+        rv.setAdapter(mAdapter);
+
         return root;
     }
 
@@ -57,6 +81,9 @@ public class HabitsFragment extends Fragment implements HabitsContract.View {
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * TODO: Add intent argument to signify type of action perhaps?
+     */
     @Override
     public void showAddHabit() {
         Intent intent = new Intent(getActivity(), AddHabitActivity.class);
@@ -65,7 +92,7 @@ public class HabitsFragment extends Fragment implements HabitsContract.View {
 
     @Override
     public void showHabits(List<Habit> habits) {
-
+        mAdapter.replaceData(habits);
     }
 
     @Override
@@ -76,5 +103,66 @@ public class HabitsFragment extends Fragment implements HabitsContract.View {
     @Override
     public boolean isActive() {
         return isAdded();
+    }
+
+    /**
+     * Adapter to allow recycler view to display habits in a list. Adapter
+     * allows recycler view to make efficient use of memory and lower amount of
+     * calls to find UI elements.
+     */
+    private class HabitsAdapter extends RecyclerView.Adapter<HabitsAdapter.HabitViewHolder> {
+
+        private List<Habit> mHabits;
+
+        public HabitsAdapter(List<Habit> habits) {
+            setList(habits);
+        }
+
+        public void replaceData(List<Habit> habits) {
+            setList(habits);
+            notifyDataSetChanged();
+        }
+
+        private void setList(List<Habit> habits) {
+            mHabits = checkNotNull(habits);
+        }
+
+        @Override
+        public HabitViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
+            View itemView = LayoutInflater.from(viewGroup.getContext())
+                    .inflate(R.layout.habit_item, viewGroup, false);
+            HabitViewHolder habitViewHolder = new HabitViewHolder(itemView);
+            return habitViewHolder;
+        }
+
+        @Override
+        public void onBindViewHolder(HabitViewHolder viewHolder, int i) {
+            Habit habit = mHabits.get(i);
+            viewHolder.mHabitName.setText(habit.getName());
+            viewHolder.mHabitDesc.setText(habit.getDescription());
+        }
+
+        @Override
+        public void onAttachedToRecyclerView(RecyclerView recyclerView) {
+            super.onAttachedToRecyclerView(recyclerView);
+        }
+
+        @Override
+        public int getItemCount() {
+            return mHabits.size();
+        }
+
+        public class HabitViewHolder extends RecyclerView.ViewHolder {
+
+            private TextView mHabitName;
+
+            private TextView mHabitDesc;
+
+            public HabitViewHolder(View itemView) {
+                super(itemView);
+                mHabitName = itemView.findViewById(R.id.habit_item_name_tv);
+                mHabitDesc = itemView.findViewById(R.id.habit_item_desc_tv);
+            }
+        }
     }
 }

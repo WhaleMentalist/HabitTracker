@@ -2,7 +2,10 @@ package us.spencer.habittracker.habits;
 
 import android.support.annotation.NonNull;
 
+import java.util.List;
+
 import us.spencer.habittracker.database.HabitsDataSource;
+import us.spencer.habittracker.model.Habit;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -13,6 +16,8 @@ public class HabitsPresenter implements HabitsContract.Presenter {
 
     @NonNull
     HabitsContract.View mHabitsView;
+
+    boolean isFirstLoad = true;
 
     public HabitsPresenter(@NonNull HabitsDataSource habitsRepository,
                            @NonNull HabitsContract.View habitsView) {
@@ -26,10 +31,19 @@ public class HabitsPresenter implements HabitsContract.Presenter {
     }
 
     public void loadHabits() {
+        mHabitsRepository.getHabits(new HabitsDataSource.LoadHabitsCallback() {
 
+            @Override
+            public void onHabitsLoaded(@NonNull List<Habit> habits) {
+                mHabitsView.showHabits(habits);
+            }
+        });
     }
 
     public void start() {
-
+        if(isFirstLoad) {
+            loadHabits();
+            isFirstLoad = false;
+        }
     }
 }
