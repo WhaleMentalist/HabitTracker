@@ -29,10 +29,6 @@ public class AddHabitFragment extends Fragment implements AddHabitContract.View 
 
     private Spinner mFrequency;
 
-    public static AddHabitFragment newInstance() {
-        return new AddHabitFragment();
-    }
-
     public AddHabitFragment() {}
 
     @Override
@@ -61,7 +57,6 @@ public class AddHabitFragment extends Fragment implements AddHabitContract.View 
         mFrequency.setAdapter(adapter);
 
         FloatingActionButton confirmInputAction = root.findViewById(R.id.confirm_input_action);
-
         confirmInputAction.setOnClickListener(new View.OnClickListener() {
 
             @Override

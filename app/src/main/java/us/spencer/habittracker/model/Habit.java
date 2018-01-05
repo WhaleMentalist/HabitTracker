@@ -8,9 +8,6 @@ import android.support.annotation.Nullable;
 
 import com.google.common.base.Strings;
 
-import java.util.Objects;
-import java.util.UUID;
-
 /**
  * The habit the user wants to track
  */

@@ -13,7 +13,7 @@ import us.spencer.habittracker.model.Habit;
  * Interface allows contract for database access.
  */
 @Dao
-public interface HabitDAO {
+public interface HabitsDAO {
 
     /** Select all habits from table.
      *
@@ -48,6 +48,9 @@ public interface HabitDAO {
     @Query("DELETE FROM habits WHERE habit_name = :name")
     int deleteHabitById(String name);
 
+    /**
+     * Deletes all habits from table
+     */
     @Query("DELETE FROM habits")
     void deleteHabits();
 }

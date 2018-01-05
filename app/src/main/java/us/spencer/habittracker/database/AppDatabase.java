@@ -17,7 +17,7 @@ public abstract class AppDatabase extends RoomDatabase {
 
     private static AppDatabase INSTANCE;
 
-    public abstract HabitDAO habitDAO();
+    public abstract HabitsDAO habitDAO();
 
     private static final Object sLock = new Object(); /** Need access to DB to be managed fairly and without anomalies */
 

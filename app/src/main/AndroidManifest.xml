@@ -11,7 +11,7 @@
         android:theme="@style/AppTheme">
 
         <activity
-            android:name=".MainActivity"
+            android:name=".habits.HabitsActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -22,10 +22,10 @@
         </activity>
 
         <activity android:name=".addhabit.AddHabitActivity"
-            android:parentActivityName=".MainActivity" >
+            android:parentActivityName=".habits.HabitsActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
+                android:value=".addhabit.AddHabitActivity" />
         </activity>
 
     </application>

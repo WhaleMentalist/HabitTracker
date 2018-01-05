@@ -13,7 +13,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * Implementation that allows access into database containing
  * habits. For now, we will use local storage. Later, a remote
  * may be implemented for more interesting features
- * (i.e sharing completion of habit).
+ * (i.e sharing completion of habit or habit list).
  */
 public class HabitsRepository implements HabitsDataSource {
 
