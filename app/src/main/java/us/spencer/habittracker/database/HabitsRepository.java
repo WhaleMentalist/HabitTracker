@@ -23,7 +23,8 @@ public class HabitsRepository implements HabitsDataSource {
 
     private final HabitsDataSource mHabitsLocalDataSource;
 
-    /** Useful in preventing too many I/O operations that are unnecessary */
+    /** Useful in preventing too many I/O operations that are unnecessary by keeping
+     * query results in main memory */
     private Map<String, Habit> mCachedHabits;
 
     /**

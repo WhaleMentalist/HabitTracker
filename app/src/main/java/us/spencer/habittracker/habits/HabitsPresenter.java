@@ -16,7 +16,6 @@ public class HabitsPresenter implements HabitsContract.Presenter {
 
     @NonNull
     HabitsContract.View mHabitsView;
-    
 
     public HabitsPresenter(@NonNull HabitsDataSource habitsRepository,
                            @NonNull HabitsContract.View habitsView) {

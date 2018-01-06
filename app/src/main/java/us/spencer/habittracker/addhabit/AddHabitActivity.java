@@ -25,4 +25,9 @@ public class AddHabitActivity extends AppCompatActivity {
         mAddHabitPresenter = new AddHabitPresenter(Injection.provideHabitsRepository(this),
                                                         addHabitFragment);
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
 }
