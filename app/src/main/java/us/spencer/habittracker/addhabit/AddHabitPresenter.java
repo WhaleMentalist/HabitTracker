@@ -34,14 +34,30 @@ public class AddHabitPresenter implements AddHabitContract.Presenter,
             mAddHabitView.showEmptyHabitError();
         }
         else {
-            mHabitsRepository.saveHabit(habit, this);
-            mAddHabitView.showHabitsList();
+            mHabitsRepository.saveHabitNoReplace(habit, this);
         }
 
     }
 
     @Override
-    public void onHabitSaved() {
+    public void modifyHabit(String title, String description) {
+        Habit habit = new Habit(title, description);
 
+        if(habit.isEmpty()) {
+            mAddHabitView.showEmptyHabitError();
+        }
+        else {
+            mHabitsRepository.saveHabitReplace(habit, this);
+        }
+    }
+
+    @Override
+    public void onHabitSaved() {
+        mAddHabitView.showHabitsList();
+    }
+
+    @Override
+    public void onDuplicateHabit() {
+        mAddHabitView.showDuplicateHabitMessage();
     }
 }

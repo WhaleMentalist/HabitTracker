@@ -7,8 +7,6 @@ import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import us.spencer.habittracker.addhabit.AddHabitContract;
-import us.spencer.habittracker.addhabit.AddHabitPresenter;
 import us.spencer.habittracker.database.HabitsDataSource;
 import us.spencer.habittracker.model.Habit;
 
@@ -47,7 +45,7 @@ public class AddHabitPresenterTest {
     public void saveValidHabit_callRepo() {
         mPresenter = new AddHabitPresenter(mHabitsRepository, mAddHabitsView);
         mPresenter.addHabit(validHabit.getName(), validHabit.getDescription());
-        verify(mHabitsRepository).saveHabit(validHabit, mPresenter);
+        verify(mHabitsRepository).saveHabitNoReplace(validHabit, mPresenter);
     }
 
     @Test
@@ -61,7 +59,7 @@ public class AddHabitPresenterTest {
     public void saveInvalidHabit_noCallRepo() {
         mPresenter = new AddHabitPresenter(mHabitsRepository, mAddHabitsView);
         mPresenter.addHabit(invalidHabit.getName(), invalidHabit.getDescription());
-        verify(mHabitsRepository, never()).saveHabit(invalidHabit, mPresenter);
+        verify(mHabitsRepository, never()).saveHabitNoReplace(invalidHabit, mPresenter);
     }
 
     @Test

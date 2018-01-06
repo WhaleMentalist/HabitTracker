@@ -15,11 +15,15 @@ public interface AddHabitContract {
 
         void showEmptyHabitError();
 
+        void showDuplicateHabitMessage();
+
         boolean isActive();
     }
 
     interface Presenter extends BasePresenter {
 
         void addHabit(String title, String description);
+
+        void modifyHabit(String title, String description);
     }
 }

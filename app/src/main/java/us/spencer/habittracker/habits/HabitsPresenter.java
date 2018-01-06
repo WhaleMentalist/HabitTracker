@@ -3,6 +3,7 @@ package us.spencer.habittracker.habits;
 import android.support.annotation.NonNull;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 import us.spencer.habittracker.database.HabitsDataSource;
 import us.spencer.habittracker.model.Habit;
@@ -35,6 +36,12 @@ public class HabitsPresenter implements HabitsContract.Presenter {
             public void onHabitsLoaded(@NonNull List<Habit> habits) {
                 mHabitsView.showHabits(habits);
             }
+
+            @Override
+            public void onDataNotAvailable() {
+
+            }
+
         });
     }
 

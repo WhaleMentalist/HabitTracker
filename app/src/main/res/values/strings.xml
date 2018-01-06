@@ -25,5 +25,9 @@
     <string name="habit_empty_error_mess">Habit entered is missing a value</string>
     <string name="habit_empty_error_title">Invalid Habit</string>
     <string name="habit_empty_error_ok_btn">Ok</string>
+    <string name="habit_duplicate_mess">Habit entered already exists. Do you wish to replace?</string>
+    <string name="habit_duplicate_title">Habit Duplicate</string>
+    <string name="habit_duplicate_yes_btn">Yes</string>
+    <string name="habit_duplicate_no_btn">No</string>
 
 </resources>

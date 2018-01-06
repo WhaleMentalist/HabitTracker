@@ -63,6 +63,7 @@ public class HabitsRepository implements HabitsDataSource {
         if(mCachedHabits == null) {
             mCachedHabits = new LinkedHashMap<>();
         }
+
         mCachedHabits.clear();
 
         for(Habit habit : habits) {
@@ -72,22 +73,42 @@ public class HabitsRepository implements HabitsDataSource {
 
     /**
      * Used to force {@link #getInstance(HabitsDataSource)} to create a new instance
-     * when called again
+     * when called again. NOTE: Useful for testing.
      */
     public static void destroyInstance() {
         INSTANCE = null;
     }
 
+    /**
+     * Method saves habit in the database, as well as the 'cache'
+     *
+     * @param habit the habit to save in DB
+     * @param callback  the callback that will be used to notify interested parties of result
+     */
     @Override
-    public void saveHabit(@NonNull Habit habit, @NonNull SaveHabitCallback callback) {
+    public void saveHabitNoReplace(@NonNull Habit habit, @NonNull SaveHabitCallback callback) {
         checkNotNull(habit);
-        mHabitsLocalDataSource.saveHabit(habit, callback); /** Save to DB */
+        mHabitsLocalDataSource.saveHabitNoReplace(habit, callback); /** Save to DB */
 
         if(mCachedHabits == null) {
             mCachedHabits = new LinkedHashMap<>();
         }
 
-        mCachedHabits.put(habit.getName(), habit);
+        if(!(mCachedHabits.containsKey(habit.getName()))) {
+            mCachedHabits.put(habit.getName(), habit); /** Don't want to replace unless it is absent */
+        }
+    }
+
+    @Override
+    public void saveHabitReplace(@NonNull Habit habit, @NonNull SaveHabitCallback callback) {
+        checkNotNull(habit);
+        mHabitsLocalDataSource.saveHabitReplace(habit, callback);
+
+        if(mCachedHabits == null) {
+            mCachedHabits = new LinkedHashMap<>();
+        }
+
+        mCachedHabits.put(habit.getName(), habit); /** Read documentation. This will replace as intended. */
     }
 
     @Override
@@ -103,14 +124,20 @@ public class HabitsRepository implements HabitsDataSource {
 
                 @Override
                 public void onHabitsLoaded(@NonNull List<Habit> habits) {
-                    refreshCache(habits);
+                    refreshCache(habits); /** Update cache to resulting query */
                     callback.onHabitsLoaded(habits);
+                }
+
+                @Override
+                public void onDataNotAvailable() {
+
                 }
 
             });
         }
     }
 
+    @Override
     public void deleteAllHabits() {
         mHabitsLocalDataSource.deleteAllHabits();
 
