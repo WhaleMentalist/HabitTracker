@@ -29,11 +29,19 @@ public class AddHabitPresenter implements AddHabitContract.Presenter,
     @Override
     public void addHabit(String title, String description) {
         Habit habit = new Habit(title, description);
-        mHabitsRepository.saveHabit(habit, this);
+
+        if(habit.isEmpty()) {
+            mAddHabitView.showEmptyHabitError();
+        }
+        else {
+            mHabitsRepository.saveHabit(habit, this);
+            mAddHabitView.showHabitsList();
+        }
+
     }
 
     @Override
     public void onHabitSaved() {
-        mAddHabitView.showToast();
+
     }
 }

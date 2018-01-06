@@ -3,10 +3,8 @@ package us.spencer.habittracker.habits;
 import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -27,6 +25,8 @@ import us.spencer.habittracker.model.Habit;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
+ * Displays the list of habits user is tracking.
+ *
  * Very useful article explaining 'RecyclerView':
  * https://code.tutsplus.com/tutorials/getting-started-with-recyclerview-and-cardview-on-android--cms-23465
  */
@@ -50,8 +50,7 @@ public class HabitsFragment extends Fragment implements HabitsContract.View {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.habits_frag, container, false);
         setHasOptionsMenu(true);
 
@@ -82,7 +81,9 @@ public class HabitsFragment extends Fragment implements HabitsContract.View {
     }
 
     /**
-     * TODO: Add intent argument to signify type of action perhaps?
+     * Launches activity that pertains to adding a new habit
+     *
+     * TODO: Add intent argument to signify type of action
      */
     @Override
     public void showAddHabit() {
@@ -118,11 +119,23 @@ public class HabitsFragment extends Fragment implements HabitsContract.View {
             setList(habits);
         }
 
+        /**
+         * Method will reassign list of habits to contain.
+         *
+         * @param habits    the new list to assign
+         */
         public void replaceData(List<Habit> habits) {
             setList(habits);
             notifyDataSetChanged();
         }
 
+        /**
+         * Method will assign new list of habits.
+         * It will perform a 'null' check on the passed
+         * list.
+         *
+         * @param habits    the new list to assign
+         */
         private void setList(List<Habit> habits) {
             mHabits = checkNotNull(habits);
         }
@@ -152,6 +165,11 @@ public class HabitsFragment extends Fragment implements HabitsContract.View {
             return mHabits.size();
         }
 
+        /**
+         * {@link HabitViewHolder} allows reduced calls to 'getView', which
+         * increase allowable scroll speed. Allows application to 'hold' view
+         * item in memory instead of creating a new view.
+         */
         public class HabitViewHolder extends RecyclerView.ViewHolder {
 
             private TextView mHabitName;

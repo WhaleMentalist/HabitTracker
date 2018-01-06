@@ -16,8 +16,7 @@ public class HabitsPresenter implements HabitsContract.Presenter {
 
     @NonNull
     HabitsContract.View mHabitsView;
-
-    boolean isFirstLoad = true;
+    
 
     public HabitsPresenter(@NonNull HabitsDataSource habitsRepository,
                            @NonNull HabitsContract.View habitsView) {
@@ -41,9 +40,6 @@ public class HabitsPresenter implements HabitsContract.Presenter {
     }
 
     public void start() {
-        if(isFirstLoad) {
-            loadHabits();
-            isFirstLoad = false;
-        }
+        loadHabits();
     }
 }

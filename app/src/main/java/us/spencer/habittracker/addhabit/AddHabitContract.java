@@ -11,7 +11,9 @@ public interface AddHabitContract {
 
     interface View extends BaseView<Presenter> {
 
-        void showToast();
+        void showHabitsList();
+
+        void showEmptyHabitError();
 
         boolean isActive();
     }

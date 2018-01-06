@@ -53,6 +53,12 @@ public class HabitsLocalDataSource implements HabitsDataSource {
         return INSTANCE;
     }
 
+    /**
+     * Method will save desired habit into database
+     *
+     * @param habit the habit to add
+     * @param callback  the callback that will be notified of result
+     */
     @Override
     public void saveHabit(@NonNull final Habit habit, @NonNull final SaveHabitCallback callback) {
         checkNotNull(habit);
