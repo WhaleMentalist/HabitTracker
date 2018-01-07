@@ -1,6 +1,7 @@
 package us.spencer.habittracker.database;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.VisibleForTesting;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -25,7 +26,8 @@ public class HabitsRepository implements HabitsDataSource {
 
     /** Useful in preventing too many I/O operations that are unnecessary by keeping
      * query results in main memory */
-    private Map<String, Habit> mCachedHabits;
+    @VisibleForTesting
+    Map<String, Habit> mCachedHabits;
 
     /**
      * Private constructor to enforce singleton design pattern
@@ -108,7 +110,7 @@ public class HabitsRepository implements HabitsDataSource {
             mCachedHabits = new LinkedHashMap<>();
         }
 
-        mCachedHabits.put(habit.getName(), habit); /** Read documentation. This will replace as intended. */
+        mCachedHabits.put(habit.getName(), habit); /** This will replace as intended. */
     }
 
     @Override
@@ -117,7 +119,6 @@ public class HabitsRepository implements HabitsDataSource {
 
         if(mCachedHabits != null) { /** Check if data is in cache */
             callback.onHabitsLoaded(new ArrayList<>(mCachedHabits.values()));
-            return;
         }
         else { /** If no data in cache, then load from local storage */
             mHabitsLocalDataSource.getHabits(new LoadHabitsCallback() {
