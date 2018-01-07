@@ -130,7 +130,7 @@ public class HabitsRepository implements HabitsDataSource {
 
                 @Override
                 public void onDataNotAvailable() {
-
+                    /** TODO: Figure out view layout for no data */
                 }
 
             });

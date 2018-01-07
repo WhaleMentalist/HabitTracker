@@ -4,12 +4,15 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import us.spencer.habittracker.database.HabitsDataSource;
 import us.spencer.habittracker.model.Habit;
 
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -29,10 +32,13 @@ public class AddHabitPresenterTest {
 
     private AddHabitPresenter mPresenter;
 
+    @Captor
+    private ArgumentCaptor<HabitsDataSource.SaveHabitCallback> mSaveHabitCallback;
+
     @Before
     public void setup() {
-        MockitoAnnotations.initMocks(this); /** Initialize objects with 'Mock' annotation */
-        when(mAddHabitsView.isActive()).thenReturn(true); /** Wait for active view */
+        MockitoAnnotations.initMocks(this);
+        when(mAddHabitsView.isActive()).thenReturn(true);
     }
 
     @Test
@@ -42,7 +48,7 @@ public class AddHabitPresenterTest {
     }
 
     @Test
-    public void saveValidHabit_callRepo() {
+    public void saveValidHabit_callRepoNoReplace() {
         mPresenter = new AddHabitPresenter(mHabitsRepository, mAddHabitsView);
         mPresenter.addHabit(validHabit.getName(), validHabit.getDescription());
         verify(mHabitsRepository).saveHabitNoReplace(validHabit, mPresenter);
@@ -52,6 +58,8 @@ public class AddHabitPresenterTest {
     public void saveValidHabit_callShowHabitsList() {
         mPresenter = new AddHabitPresenter(mHabitsRepository, mAddHabitsView);
         mPresenter.addHabit(validHabit.getName(), validHabit.getDescription());
+        verify(mHabitsRepository).saveHabitNoReplace(eq(validHabit), mSaveHabitCallback.capture());
+        mSaveHabitCallback.getValue().onHabitSaved();
         verify(mAddHabitsView).showHabitsList();
     }
 
@@ -67,5 +75,30 @@ public class AddHabitPresenterTest {
         mPresenter = new AddHabitPresenter(mHabitsRepository, mAddHabitsView);
         mPresenter.addHabit(invalidHabit.getName(), invalidHabit.getDescription());
         verify(mAddHabitsView).showEmptyHabitError();
+    }
+
+    @Test
+    public void saveDuplicateHabit_callShowDuplicateHabitMessage() {
+        mPresenter = new AddHabitPresenter(mHabitsRepository, mAddHabitsView);
+        mPresenter.addHabit(validHabit.getName(), validHabit.getDescription());
+        verify(mHabitsRepository).saveHabitNoReplace(eq(validHabit), mSaveHabitCallback.capture());
+        mSaveHabitCallback.getValue().onDuplicateHabit();
+        verify(mAddHabitsView).showDuplicateHabitMessage();
+    }
+
+    @Test
+    public void modifyValidHabit_callRepoReplace() {
+        mPresenter = new AddHabitPresenter(mHabitsRepository, mAddHabitsView);
+        mPresenter.modifyHabit(validHabit.getName(), validHabit.getDescription());
+        verify(mHabitsRepository).saveHabitReplace(validHabit, mPresenter);
+    }
+
+    @Test
+    public void modifyValidHabit_callShowHabitsList() {
+        mPresenter = new AddHabitPresenter(mHabitsRepository, mAddHabitsView);
+        mPresenter.modifyHabit(validHabit.getName(), validHabit.getDescription());
+        verify(mHabitsRepository).saveHabitReplace(eq(validHabit), mSaveHabitCallback.capture());
+        mSaveHabitCallback.getValue().onHabitSaved();
+        verify(mAddHabitsView).showHabitsList();
     }
 }
