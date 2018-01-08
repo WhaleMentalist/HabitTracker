@@ -96,6 +96,13 @@ public class HabitsLocalDataSource implements HabitsDataSource {
         mAppExecutors.diskIO().execute(saveHabit); /** Execute DB read on own thread */
     }
 
+    /**
+     * Method will save desired habit into database. It will
+     * replace duplicate habit
+     *
+     * @param habit the habit to add
+     * @param callback  the callback that will be notified when action performed
+     */
     @Override
     public void saveHabitReplace(@NonNull final Habit habit, @NonNull final SaveHabitCallback callback) {
         checkNotNull(habit);
@@ -119,6 +126,11 @@ public class HabitsLocalDataSource implements HabitsDataSource {
         mAppExecutors.diskIO().execute(saveHabit);
     }
 
+    /**
+     * Method will retrieve all habits from local database
+     *
+     * @param callback  notifies when retrieval action is finished or runs into error
+     */
     @Override
     public void getHabits(@NonNull final LoadHabitsCallback callback) {
         checkNotNull(callback);
@@ -146,6 +158,11 @@ public class HabitsLocalDataSource implements HabitsDataSource {
         mAppExecutors.diskIO().execute(loadHabits);
     }
 
+    /**
+     * Method will delete all the habits from the database
+     *
+     * TODO: Add callback to notify interested parties for better coordination
+     */
     @Override
     public void deleteAllHabits() {
         Runnable deleteHabits = new Runnable() {

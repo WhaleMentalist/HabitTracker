@@ -83,6 +83,7 @@ public class HabitsRepository implements HabitsDataSource {
 
     /**
      * Method saves habit in the database, as well as the 'cache'
+     * It will not replace if a duplicate is found
      *
      * @param habit the habit to save in DB
      * @param callback  the callback that will be used to notify interested parties of result
@@ -101,6 +102,13 @@ public class HabitsRepository implements HabitsDataSource {
         }
     }
 
+    /**
+     * Method saves habit in the database, as well as the 'cache'
+     * It will replace if duplicate is found
+     *
+     * @param habit the habit to save in DB
+     * @param callback  the callback that will be used to notify interested parties of result
+     */
     @Override
     public void saveHabitReplace(@NonNull Habit habit, @NonNull SaveHabitCallback callback) {
         checkNotNull(habit);
@@ -113,6 +121,14 @@ public class HabitsRepository implements HabitsDataSource {
         mCachedHabits.put(habit.getName(), habit); /** This will replace as intended. */
     }
 
+    /**
+     * Method will retrieve all habits from database or cache.
+     * Ideally, the cache will contain the information allowing
+     * for fast retrieval and less I/O operations.
+     *
+     * @param callback  the callback that will be used to notify when habits
+     *                      are retrieved
+     */
     @Override
     public void getHabits(@NonNull final LoadHabitsCallback callback) {
         checkNotNull(callback);
@@ -138,6 +154,10 @@ public class HabitsRepository implements HabitsDataSource {
         }
     }
 
+    /**
+     * Method will delete all habits from database and the
+     * cache.
+     */
     @Override
     public void deleteAllHabits() {
         mHabitsLocalDataSource.deleteAllHabits();
