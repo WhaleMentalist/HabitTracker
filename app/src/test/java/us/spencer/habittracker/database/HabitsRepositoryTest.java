@@ -16,6 +16,7 @@ import java.util.List;
 import us.spencer.habittracker.database.local.HabitsLocalDataSource;
 import us.spencer.habittracker.model.Habit;
 
+import static junit.framework.Assert.assertNull;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -59,7 +60,7 @@ public class HabitsRepositoryTest {
         MockitoAnnotations.initMocks(this);
         mHabitsRepository = HabitsRepository.getInstance(mHabitsLocalDataSource);
 
-        HABITS = Lists.newArrayList(VALID_HABIT_ONE, VALID_HABIT_TWO);
+        HABITS = Lists.newArrayList(VALID_HABIT_ONE, VALID_HABIT_TWO); /** Two items */
     }
 
     @After
@@ -92,10 +93,11 @@ public class HabitsRepositoryTest {
 
     @Test
     public void getHabitsWhenCacheEmpty_loadFromLocalStorage() {
+        assertNull(mHabitsRepository.mCachedHabits); /** Precondition: Cache is 'null' */
         mHabitsRepository.getHabits(dummyLoadHabitsCallback);
         verify(mHabitsLocalDataSource).getHabits(mCaptor.capture());
         mCaptor.getValue().onHabitsLoaded(HABITS);
-        assertThat(mHabitsRepository.mCachedHabits.size(), is(2));
+        assertThat(mHabitsRepository.mCachedHabits.size(), is(2)); /** Post-Condition: Cache is not 'null' and is filled with database data */
     }
 
     @Test
@@ -103,9 +105,12 @@ public class HabitsRepositoryTest {
         fillCache();
         mHabitsRepository.getHabits(dummyLoadHabitsCallback);
         verify(mHabitsLocalDataSource, never()).getHabits(dummyLoadHabitsCallback); /** Should not load from local storage*/
-
     }
 
+    /**
+     * Helper to fill cache with test data. Imitate that cache
+     * was filled from previous database transactions
+     */
     private void fillCache() {
         mHabitsRepository.mCachedHabits = new LinkedHashMap<>();
 

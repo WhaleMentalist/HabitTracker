@@ -3,10 +3,10 @@ package us.spencer.habittracker.habits;
 import android.support.annotation.NonNull;
 
 import java.util.List;
-import java.util.logging.Logger;
 
 import us.spencer.habittracker.database.HabitsDataSource;
 import us.spencer.habittracker.model.Habit;
+import us.spencer.habittracker.utility.EspressoCoutingIdlingResource;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -17,6 +17,7 @@ public class HabitsPresenter implements HabitsContract.Presenter {
 
     @NonNull
     HabitsContract.View mHabitsView;
+
 
     public HabitsPresenter(@NonNull HabitsDataSource habitsRepository,
                            @NonNull HabitsContract.View habitsView) {
@@ -30,16 +31,18 @@ public class HabitsPresenter implements HabitsContract.Presenter {
     }
 
     public void loadHabits() {
+        EspressoCoutingIdlingResource.getIdlingResource().increment();
         mHabitsRepository.getHabits(new HabitsDataSource.LoadHabitsCallback() {
 
             @Override
             public void onHabitsLoaded(@NonNull List<Habit> habits) {
+                EspressoCoutingIdlingResource.getIdlingResource().decrement();
                 mHabitsView.showHabits(habits);
             }
 
             @Override
             public void onDataNotAvailable() {
-
+                EspressoCoutingIdlingResource.getIdlingResource().decrement();
             }
 
         });

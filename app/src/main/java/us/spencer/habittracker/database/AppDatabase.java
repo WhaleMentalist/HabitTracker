@@ -10,7 +10,7 @@ import us.spencer.habittracker.model.Habit;
 /**
  * Singleton class that constructs instance of database.
  */
-@Database(entities = {Habit.class}, version = 1)
+@Database(entities = {Habit.class}, version = 1, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
 
     public static final String DB_NAME = "Habits.db";
