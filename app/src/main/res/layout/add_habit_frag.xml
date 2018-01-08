@@ -22,7 +22,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
-            android:hint="@string/habit_title_hint" />
+            android:hint="@string/add_habit_title_hint" />
 
         <TextView
             android:id="@+id/add_habit_desc_tv"
@@ -36,7 +36,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
-            android:hint="@string/habit_desc_hint" />
+            android:hint="@string/add_habit_desc_hint" />
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
@@ -59,6 +59,7 @@
                 android:id="@+id/add_habit_freq_spinner"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
                 app:layout_constraintStart_toEndOf="@+id/add_habit_freq_tv"

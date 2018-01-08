@@ -14,14 +14,21 @@ public interface HabitsDataSource {
     interface SaveHabitCallback {
 
         void onHabitSaved();
+
+        void onDuplicateHabit();
+
     }
 
     interface LoadHabitsCallback {
 
         void onHabitsLoaded(@NonNull List<Habit> habits);
+
+        void onDataNotAvailable();
     }
 
-    void saveHabit(@NonNull Habit habit, @NonNull SaveHabitCallback callback);
+    void saveHabitNoReplace(@NonNull final Habit habit, @NonNull SaveHabitCallback callback);
+
+    void saveHabitReplace(@NonNull final Habit habit, @NonNull SaveHabitCallback callback);
 
     void getHabits(@NonNull final LoadHabitsCallback callback);
 

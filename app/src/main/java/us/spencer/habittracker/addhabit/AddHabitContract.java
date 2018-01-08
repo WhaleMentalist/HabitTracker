@@ -11,7 +11,11 @@ public interface AddHabitContract {
 
     interface View extends BaseView<Presenter> {
 
-        void showToast();
+        void showHabitsList();
+
+        void showEmptyHabitError();
+
+        void showDuplicateHabitMessage();
 
         boolean isActive();
     }
@@ -19,5 +23,7 @@ public interface AddHabitContract {
     interface Presenter extends BasePresenter {
 
         void addHabit(String title, String description);
+
+        void modifyHabit(String title, String description);
     }
 }

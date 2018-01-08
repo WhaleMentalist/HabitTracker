@@ -27,13 +27,32 @@ public class AddHabitPresenter implements AddHabitContract.Presenter,
     public void start() {}
 
     @Override
-    public void addHabit(String title, String description) {
+    public void addHabit(final String title, final String description) {
         Habit habit = new Habit(title, description);
-        mHabitsRepository.saveHabit(habit, this);
+
+        if(habit.isEmpty()) {
+            mAddHabitView.showEmptyHabitError();
+        }
+        else {
+            mHabitsRepository.saveHabitNoReplace(habit, this);
+        }
+
+    }
+
+    @Override
+    public void modifyHabit(@NonNull final String title, @NonNull final String description) {
+        checkNotNull(title, description);
+        Habit habit = new Habit(title, description);
+        mHabitsRepository.saveHabitReplace(habit, this);
     }
 
     @Override
     public void onHabitSaved() {
-        mAddHabitView.showToast();
+        mAddHabitView.showHabitsList();
+    }
+
+    @Override
+    public void onDuplicateHabit() {
+        mAddHabitView.showDuplicateHabitMessage();
     }
 }

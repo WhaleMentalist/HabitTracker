@@ -53,30 +53,84 @@ public class HabitsLocalDataSource implements HabitsDataSource {
         return INSTANCE;
     }
 
+    /**
+     * Method will save desired habit into database. It will
+     * not replace duplicate habits
+     *
+     * @param habit the habit to add
+     * @param callback  the callback that will be notified of result
+     */
     @Override
-    public void saveHabit(@NonNull final Habit habit, @NonNull final SaveHabitCallback callback) {
+    public void saveHabitNoReplace(@NonNull final Habit habit, @NonNull final SaveHabitCallback callback) {
         checkNotNull(habit);
         checkNotNull(callback);
         Runnable saveHabit = new Runnable() {
 
             @Override
             public void run() {
-                mHabitsDAO.insertHabit(habit);
+                Habit result = mHabitsDAO.getHabitById(habit.getName());
 
-                /** Need to execute UI changes on main thread */
-                mAppExecutors.mainThread().execute(new Runnable() {
+                if(result != null) { /** Duplicate found*/
 
-                    @Override
-                    public void run() {
-                        callback.onHabitSaved();
-                    }
-                });
+                    mAppExecutors.mainThread().execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            callback.onDuplicateHabit(); /** Notify that duplicate habit was found */
+                        }
+                    });
+                }
+                else {
+                    mHabitsDAO.insertHabit(habit);
 
+                    /** Need to execute UI changes on main thread */
+                    mAppExecutors.mainThread().execute(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            callback.onHabitSaved(); /** Notify that habit was saved */
+                        }
+                    });
+                }
             }
         };
         mAppExecutors.diskIO().execute(saveHabit); /** Execute DB read on own thread */
     }
 
+    /**
+     * Method will save desired habit into database. It will
+     * replace duplicate habit
+     *
+     * @param habit the habit to add
+     * @param callback  the callback that will be notified when action performed
+     */
+    @Override
+    public void saveHabitReplace(@NonNull final Habit habit, @NonNull final SaveHabitCallback callback) {
+        checkNotNull(habit);
+        checkNotNull(callback);
+
+        Runnable saveHabit = new Runnable() {
+
+            @Override
+            public void run() {
+                mHabitsDAO.insertHabit(habit);
+
+                mAppExecutors.mainThread().execute(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        callback.onHabitSaved(); /** Notify habit was saved */
+                    }
+                });
+            }
+        };
+        mAppExecutors.diskIO().execute(saveHabit);
+    }
+
+    /**
+     * Method will retrieve all habits from local database
+     *
+     * @param callback  notifies when retrieval action is finished or runs into error
+     */
     @Override
     public void getHabits(@NonNull final LoadHabitsCallback callback) {
         checkNotNull(callback);
@@ -90,7 +144,13 @@ public class HabitsLocalDataSource implements HabitsDataSource {
 
                     @Override
                     public void run() {
-                        callback.onHabitsLoaded(habits);
+
+                        if(habits.isEmpty()) {
+                            callback.onDataNotAvailable();
+                        }
+                        else {
+                            callback.onHabitsLoaded(habits);
+                        }
                     }
                 });
             }
@@ -98,9 +158,13 @@ public class HabitsLocalDataSource implements HabitsDataSource {
         mAppExecutors.diskIO().execute(loadHabits);
     }
 
+    /**
+     * Method will delete all the habits from the database
+     *
+     * TODO: Add callback to notify interested parties for better coordination
+     */
     @Override
     public void deleteAllHabits() {
-
         Runnable deleteHabits = new Runnable() {
 
             @Override

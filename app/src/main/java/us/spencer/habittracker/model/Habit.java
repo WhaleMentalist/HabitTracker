@@ -52,8 +52,13 @@ public class Habit {
         mDescription = description;
     }
 
+    /**
+     * Check if habit contains no data
+     *
+     * @return whether habit has no useful data
+     */
     public boolean isEmpty() {
-        return Strings.isNullOrEmpty(mName) &&
+        return Strings.isNullOrEmpty(mName) ||
                 Strings.isNullOrEmpty(mDescription);
     }
 

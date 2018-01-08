@@ -1,12 +1,14 @@
 <resources>
+
+    <!-- Global values -->
     <string name="app_name">HabitTracker</string>
     <string name="action_settings">Settings</string>
     <string name="placeholder">Placeholder</string>
     <string name="action_add">Add</string>
 
     <!-- Add habit values -->
-    <string name="habit_title_hint">Enter name of habit.</string>
-    <string name="habit_desc_hint">Enter a description of habit.</string>
+    <string name="add_habit_title_hint">Enter name of habit.</string>
+    <string name="add_habit_desc_hint">Enter a description of habit.</string>
     <string name="add_habit_title_text">Habit Name</string>
     <string name="add_habit_desc_text">Habit Description</string>
     <string name="add_habit_freq_text">Frequency:</string>
@@ -20,5 +22,12 @@
     </string-array>
 
     <!-- Habits values -->
+    <string name="habit_empty_error_mess">Habit entered is missing a value</string>
+    <string name="habit_empty_error_title">Invalid Habit</string>
+    <string name="habit_empty_error_ok_btn">Ok</string>
+    <string name="habit_duplicate_mess">Habit entered already exists. Do you wish to replace?</string>
+    <string name="habit_duplicate_title">Habit Duplicate</string>
+    <string name="habit_duplicate_yes_btn">Yes</string>
+    <string name="habit_duplicate_no_btn">No</string>
 
 </resources>

@@ -17,12 +17,17 @@ public class AddHabitActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.addhabit_act);
+        setContentView(R.layout.add_habit_act);
 
         AddHabitFragment addHabitFragment =  (AddHabitFragment) getFragmentManager()
                 .findFragmentById(R.id.add_habit_frag);
 
         mAddHabitPresenter = new AddHabitPresenter(Injection.provideHabitsRepository(this),
                                                         addHabitFragment);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
 }
