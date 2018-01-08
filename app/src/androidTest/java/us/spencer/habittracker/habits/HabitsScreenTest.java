@@ -81,10 +81,11 @@ public class HabitsScreenTest {
     }
 
     /**
+     * Utility method that gestures to add a habit and fill fields with
+     * specified values
      *
-     *
-     * @param title
-     * @param desc
+     * @param title the title of habit
+     * @param desc  the description of habit
      */
     private void createHabit(final String title, final String desc) {
         onView(withId(R.id.action_add)).perform(click()); /** Gestures to add */

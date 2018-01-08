@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
 import us.spencer.habittracker.R;
+import us.spencer.habittracker.utility.EspressoCountingIdlingResource;
 import us.spencer.habittracker.utility.Injection;
 
 /**

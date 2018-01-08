@@ -1,13 +1,11 @@
 package us.spencer.habittracker.habits;
 
-import com.google.common.collect.Lists;
+import android.support.test.espresso.idling.CountingIdlingResource;
 
-import net.bytebuddy.asm.Advice;
+import com.google.common.collect.Lists;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
@@ -19,10 +17,10 @@ import us.spencer.habittracker.database.HabitsDataSource;
 import us.spencer.habittracker.model.Habit;
 
 import static junit.framework.Assert.assertTrue;
+
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(JUnit4.class)
 public class HabitsPresenterTest {
 
     private static List<Habit> HABITS;
