@@ -11,7 +11,11 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.CompoundButton;
+import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -149,8 +153,8 @@ public class HabitsFragment extends Fragment implements HabitsContract.View {
         }
 
         @Override
-        public void onBindViewHolder(HabitViewHolder viewHolder, int i) {
-            Habit habit = mHabits.get(i);
+        public void onBindViewHolder(final HabitViewHolder viewHolder, int i) {
+            final Habit habit = mHabits.get(i);
             viewHolder.mHabitName.setText(habit.getName());
             viewHolder.mHabitDesc.setText(habit.getDescription());
         }
@@ -176,10 +180,34 @@ public class HabitsFragment extends Fragment implements HabitsContract.View {
 
             private TextView mHabitDesc;
 
+            private Switch mHabitStatus;
+
             public HabitViewHolder(View itemView) {
                 super(itemView);
                 mHabitName = itemView.findViewById(R.id.habit_item_name_tv);
                 mHabitDesc = itemView.findViewById(R.id.habit_item_desc_tv);
+                mHabitStatus = itemView.findViewById(R.id.habit_status_switch);
+                mHabitStatus.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+                    @Override
+                    public void onCheckedChanged(CompoundButton compoundButton, boolean value) {
+                        final Habit habit = mHabits.get(getAdapterPosition());
+                        Toast.makeText(getActivity(),
+                                habit.getName() + (value ? " : Completed" : " : Incomplete"),
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+                itemView.setOnClickListener(new View.OnClickListener() {
+
+                    @Override
+                    public void onClick(View view) {
+                        final Habit habit = mHabits.get(getAdapterPosition());
+                        Toast.makeText(getActivity(),
+                                habit.getName() + " was selected",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
         }
     }

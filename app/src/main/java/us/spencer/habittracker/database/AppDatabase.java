@@ -13,7 +13,7 @@ import us.spencer.habittracker.model.Habit;
 @Database(entities = {Habit.class}, version = 1, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
 
-    public static final String DB_NAME = "Habits.db";
+    public static final String DB_NAME = "HabitTracker.db";
 
     private static AppDatabase INSTANCE;
 

@@ -34,6 +34,9 @@ android {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 
+    /* JODA Time for Java */
+    implementation 'joda-time:joda-time:2.9.9'
+
     /* Android Support Libraries */
     implementation 'com.android.support:cardview-v7:26.1.0'
     implementation 'com.android.support:recyclerview-v7:26.1.0'

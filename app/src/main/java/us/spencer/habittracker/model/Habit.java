@@ -34,7 +34,7 @@ public class Habit {
         mDescription = description;
     }
 
-    @Nullable
+    @NonNull
     public String getName() {
         return mName;
     }
@@ -44,7 +44,7 @@ public class Habit {
         return mDescription;
     }
 
-    public void setName(@Nullable String name) {
+    public void setName(@NonNull String name) {
         mName = name;
     }
 
