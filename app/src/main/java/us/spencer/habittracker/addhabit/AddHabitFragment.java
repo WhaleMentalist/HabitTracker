@@ -82,7 +82,6 @@ public class AddHabitFragment extends Fragment implements AddHabitContract.View 
     @Override
     public void showEmptyHabitError() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-
         builder.setMessage(R.string.empty_field_error_mess)
                 .setTitle(R.string.empty_field_error_title)
                 .setCancelable(false)
@@ -102,7 +101,6 @@ public class AddHabitFragment extends Fragment implements AddHabitContract.View 
     @Override
     public void showDuplicateHabitMessage() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-
         builder.setMessage(R.string.duplicate_mess)
                 .setTitle(R.string.duplicate_title)
                 .setCancelable(false)
@@ -116,6 +114,7 @@ public class AddHabitFragment extends Fragment implements AddHabitContract.View 
                     }
                 })
                 .setNegativeButton(R.string.duplicate_dialog_negative_btn,
+
                         new DialogInterface.OnClickListener() {
 
                     @Override

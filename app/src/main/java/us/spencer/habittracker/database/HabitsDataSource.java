@@ -16,7 +16,6 @@ public interface HabitsDataSource {
         void onHabitSaved();
 
         void onDuplicateHabit();
-
     }
 
     interface SaveRepetitionCallback {
