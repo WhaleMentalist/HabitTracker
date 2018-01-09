@@ -16,7 +16,11 @@ public interface HabitsDataSource {
         void onHabitSaved();
 
         void onDuplicateHabit();
+    }
 
+    interface SaveRepetitionCallback {
+
+        void onRepetitionSaved();
     }
 
     interface LoadHabitsCallback {
@@ -33,4 +37,5 @@ public interface HabitsDataSource {
     void getHabits(@NonNull final LoadHabitsCallback callback);
 
     void deleteAllHabits();
+
 }

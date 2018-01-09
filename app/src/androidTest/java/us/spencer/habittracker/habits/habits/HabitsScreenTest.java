@@ -113,8 +113,8 @@ public class HabitsScreenTest {
     public void addDuplicateHabitToHabitsList() throws Exception {
         createHabit(HABIT_NAME_ONE, HABIT_DESC_ONE);
         createHabit(HABIT_NAME_ONE, HABIT_DESC_TWO);
-        onView(withText(R.string.habit_duplicate_title)).check(matches(isDisplayed())); /** Way to check if dialog window opened*/
-        onView(withText(R.string.habit_duplicate_yes_btn)).perform(click()); /** Since dialog is not saved in a layout file, when need to use android default to get dialog button */
+        onView(withText(R.string.duplicate_title)).check(matches(isDisplayed())); /** Way to check if dialog window opened*/
+        onView(withText(R.string.duplicate_dialog_positive_btn)).perform(click()); /** Since dialog is not saved in a layout file, when need to use android default to get dialog button */
         onView(withTitleText(HABIT_NAME_ONE)).check(matches(isDisplayed())); /** Check if name is the same */
         onView(withTitleText(HABIT_DESC_TWO)).check(matches(isDisplayed())); /** Check if description changed */
     }
@@ -129,8 +129,8 @@ public class HabitsScreenTest {
     public void cancelAddDuplicateHabitToHabitsList() throws Exception {
         createHabit(HABIT_NAME_ONE, HABIT_DESC_ONE);
         createHabit(HABIT_NAME_ONE, HABIT_DESC_TWO);
-        onView(withText(R.string.habit_duplicate_title)).check(matches(isDisplayed())); /** Way to check if dialog window opened*/
-        onView(withText(R.string.habit_duplicate_no_btn)).perform(click()); /** Since dialog is not saved in a layout file, when need to use android default to get dialog button */
+        onView(withText(R.string.duplicate_title)).check(matches(isDisplayed())); /** Way to check if dialog window opened*/
+        onView(withText(R.string.duplicate_dialog_negative_btn)).perform(click()); /** Since dialog is not saved in a layout file, when need to use android default to get dialog button */
         Espresso.pressBack(); /** Navigate back to list */
         onView(withTitleText(HABIT_NAME_ONE)).check(matches(isDisplayed())); /** Check if name is the same */
         onView(withTitleText(HABIT_DESC_ONE)).check(matches(isDisplayed())); /** Check if description is same */

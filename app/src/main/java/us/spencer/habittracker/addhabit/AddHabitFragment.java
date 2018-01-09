@@ -82,11 +82,10 @@ public class AddHabitFragment extends Fragment implements AddHabitContract.View 
     @Override
     public void showEmptyHabitError() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-
-        builder.setMessage(R.string.habit_empty_error_mess)
-                .setTitle(R.string.habit_empty_error_title)
+        builder.setMessage(R.string.empty_field_error_mess)
+                .setTitle(R.string.empty_field_error_title)
                 .setCancelable(false)
-                .setPositiveButton(R.string.habit_empty_error_ok_btn,
+                .setPositiveButton(R.string.empty_error_dialog_positive_btn,
                         new DialogInterface.OnClickListener() {
 
             @Override
@@ -102,11 +101,10 @@ public class AddHabitFragment extends Fragment implements AddHabitContract.View 
     @Override
     public void showDuplicateHabitMessage() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-
-        builder.setMessage(R.string.habit_duplicate_mess)
-                .setTitle(R.string.habit_duplicate_title)
+        builder.setMessage(R.string.duplicate_mess)
+                .setTitle(R.string.duplicate_title)
                 .setCancelable(false)
-                .setPositiveButton(R.string.habit_duplicate_yes_btn,
+                .setPositiveButton(R.string.duplicate_dialog_positive_btn,
                         new DialogInterface.OnClickListener() {
 
                     @Override
@@ -115,7 +113,8 @@ public class AddHabitFragment extends Fragment implements AddHabitContract.View 
                         mPresenter.modifyHabit(mTitle.getText().toString(), mDescription.getText().toString());
                     }
                 })
-                .setNegativeButton(R.string.habit_duplicate_no_btn,
+                .setNegativeButton(R.string.duplicate_dialog_negative_btn,
+
                         new DialogInterface.OnClickListener() {
 
                     @Override

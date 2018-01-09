@@ -13,7 +13,7 @@
     <string name="add_habit_desc_text">Habit Description</string>
     <string name="add_habit_freq_text">Frequency:</string>
 
-    <!-- Spinner values for habit frequency TODO: Add custom option and implement -->
+    <!-- Spinner values for habit frequency -->
     <string-array name="freq_spinner_values">
         <item>One time per week</item>
         <item>Three times per week</item>
@@ -29,5 +29,15 @@
     <string name="habit_duplicate_title">Habit Duplicate</string>
     <string name="habit_duplicate_yes_btn">Yes</string>
     <string name="habit_duplicate_no_btn">No</string>
+
+        <!-- For error message dialog -->
+    <string name="empty_field_error_mess">Habit entered is missing a value</string>
+    <string name="empty_field_error_title">Invalid Habit</string>
+    <string name="empty_error_dialog_positive_btn">Ok</string>
+        <!-- For duplicate message dialog -->
+    <string name="duplicate_mess">Habit entered already exists. Do you wish to replace?</string>
+    <string name="duplicate_title">Habit Duplicate</string>
+    <string name="duplicate_dialog_positive_btn">Yes</string>
+    <string name="duplicate_dialog_negative_btn">No</string>
 
 </resources>

@@ -27,9 +27,9 @@ public class HabitsLocalDataSource implements HabitsDataSource {
      * Private constructor to enforce singleton design pattern
      *
      * @param appExecutors  the executor that will run queries on seperate thread
-     * @param habitsDAO  the data access object that helps with queries to database
+     * @param habitsDAO  the data access object that helps to access habits
      */
-    private HabitsLocalDataSource(@NonNull AppExecutors appExecutors, HabitsDAO habitsDAO) {
+    private HabitsLocalDataSource(@NonNull AppExecutors appExecutors, @NonNull HabitsDAO habitsDAO) {
         mAppExecutors = appExecutors;
         mHabitsDAO = habitsDAO;
     }
