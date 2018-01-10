@@ -22,7 +22,6 @@ public interface HabitsDataSource {
 
         void onHabitSaved();
 
-        void onDuplicateHabit();
     }
 
     interface LoadHabitsCallback {
@@ -45,13 +44,9 @@ public interface HabitsDataSource {
 
     interface Database {
 
-        void insertHabitNoReplace(@NonNull final Habit habit,
-                                  @NonNull final SaveHabitCallback saveHabitCallback,
-                                  @NonNull final SyncCacheCallback syncCacheCallback);
-
-        void insertHabitReplace(@NonNull final Habit habit,
-                                @NonNull final SaveHabitCallback saveHabitCallback,
-                                @NonNull final SyncCacheCallback syncCacheCallback);
+        void insertHabit(@NonNull final Habit habit,
+                         @NonNull final SaveHabitCallback saveHabitCallback,
+                         @NonNull final SyncCacheCallback syncCacheCallback);
 
         void queryAllHabits(@NonNull final LoadHabitsCallback callback);
 
@@ -64,11 +59,8 @@ public interface HabitsDataSource {
      * =======================================================================
      */
 
-    void saveHabitNoReplace(@NonNull final Habit habit,
+    void saveHabit(@NonNull final Habit habit,
                             @NonNull final SaveHabitCallback saveHabitCallback);
-
-    void saveHabitReplace(@NonNull final Habit habit,
-                          @NonNull final SaveHabitCallback saveHabitCallback);
 
     void retrieveAllHabits(@NonNull final LoadHabitsCallback loadHabitsCallback);
 

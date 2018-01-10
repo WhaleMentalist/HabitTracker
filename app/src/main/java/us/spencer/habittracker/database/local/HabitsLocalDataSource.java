@@ -57,60 +57,16 @@ public class HabitsLocalDataSource implements HabitsDataSource.Database {
 
     /**
      * Method will save desired habit into database. It will
-     * not replace duplicate habits
+     * not replace duplicate habits. A duplicate is dictated
+     * by the name of the habit.
      *
      * @param habit the habit to add
      * @param saveHabitCallback  the callback that will be notified of result
      */
     @Override
-    public void insertHabitNoReplace(@NonNull final Habit habit,
+    public void insertHabit(@NonNull final Habit habit,
                                      @NonNull final HabitsDataSource.SaveHabitCallback saveHabitCallback,
                                      @Nullable final HabitsDataSource.SyncCacheCallback syncCacheCallback) {
-        checkNotNull(habit);
-        checkNotNull(saveHabitCallback);
-        Runnable saveHabit = new Runnable() {
-
-            @Override
-            public void run() {
-                Habit result = mHabitsDAO.getHabitById(habit.getId());
-
-                if(result != null) {
-                    mAppExecutors.mainThread().execute(new Runnable() {
-
-                        @Override
-                        public void run() {
-                            saveHabitCallback.onDuplicateHabit();
-                        }
-                    });
-                }
-                else {
-                    long generatedId = mHabitsDAO.insertHabit(habit);
-                    syncCacheCallback.onHabitIdGenerated(generatedId, habit);
-
-                    mAppExecutors.mainThread().execute(new Runnable() {
-
-                        @Override
-                        public void run() {
-                            saveHabitCallback.onHabitSaved();
-                        }
-                    });
-                }
-            }
-        };
-        mAppExecutors.diskIO().execute(saveHabit);
-    }
-
-    /**
-     * Method will save desired habit into database. It will
-     * replace duplicate habit
-     *
-     * @param habit the habit to add
-     * @param saveHabitCallback  the callback that will be notified when action performed
-     */
-    @Override
-    public void insertHabitReplace(@NonNull final Habit habit,
-                                   @NonNull final HabitsDataSource.SaveHabitCallback saveHabitCallback,
-                                   @Nullable final HabitsDataSource.SyncCacheCallback syncCacheCallback) {
         checkNotNull(habit);
         checkNotNull(saveHabitCallback);
         Runnable saveHabit = new Runnable() {
@@ -124,9 +80,9 @@ public class HabitsLocalDataSource implements HabitsDataSource.Database {
 
                     @Override
                     public void run() {
-                        saveHabitCallback.onHabitSaved();
-                    }
-                });
+                        saveHabitCallback.onHabitSaved();}
+                    });
+
             }
         };
         mAppExecutors.diskIO().execute(saveHabit);

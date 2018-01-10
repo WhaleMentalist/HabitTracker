@@ -40,15 +40,6 @@ public interface HabitsDAO {
     long insertHabit(Habit habit);
 
     /**
-     * Delete a {@link Habit} by name
-     *
-     * @param id    the habit id
-     * @return  the number of habits deleted
-     */
-    @Query("DELETE FROM habits WHERE id = :id")
-    int deleteHabitById(long id);
-
-    /**
      * Deletes all {@link Habit} from table
      */
     @Query("DELETE FROM habits")

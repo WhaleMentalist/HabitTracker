@@ -15,8 +15,6 @@ public interface AddHabitContract {
 
         void showEmptyHabitError();
 
-        void showDuplicateHabitMessage();
-
         boolean isActive();
     }
 
@@ -24,6 +22,5 @@ public interface AddHabitContract {
 
         void addHabit(String title, String description);
 
-        void modifyHabit(String title, String description);
     }
 }

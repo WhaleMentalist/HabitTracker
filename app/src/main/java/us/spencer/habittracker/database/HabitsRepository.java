@@ -83,30 +83,16 @@ public class HabitsRepository implements HabitsDataSource, HabitsDataSource.Sync
 
     /**
      * Method saves habit in the database, as well as the 'cache'
-     * It will not replace if a duplicate is found
-     *
-     * @param habit the habit to save in DB
-     * @param saveHabitCallback  the callback that will be used to notify interested parties of result
-     */
-    @Override
-    public void saveHabitNoReplace(@NonNull final Habit habit,
-                                   @NonNull final HabitsDataSource.SaveHabitCallback saveHabitCallback) {
-        checkNotNull(habit);
-        mHabitsLocalDataSource.insertHabitNoReplace(habit, saveHabitCallback, this);
-    }
-
-    /**
-     * Method saves habit in the database, as well as the 'cache'
      * It will replace if duplicate is found
      *
      * @param habit the habit to save in DB
      * @param saveHabitCallback  the callback that will be used to notify interested parties of result
      */
     @Override
-    public void saveHabitReplace(@NonNull final Habit habit,
-                                 @NonNull final HabitsDataSource.SaveHabitCallback saveHabitCallback) {
+    public void saveHabit(@NonNull final Habit habit,
+                          @NonNull final HabitsDataSource.SaveHabitCallback saveHabitCallback) {
         checkNotNull(habit);
-        mHabitsLocalDataSource.insertHabitReplace(habit, saveHabitCallback, this);
+        mHabitsLocalDataSource.insertHabit(habit, saveHabitCallback, this);
     }
 
     /**
