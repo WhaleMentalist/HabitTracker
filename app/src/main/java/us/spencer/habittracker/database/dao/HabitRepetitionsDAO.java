@@ -14,4 +14,8 @@ public interface HabitRepetitionsDAO {
     @Query("SELECT * FROM habits")
     @Transaction
     List<HabitRepetitions> getHabitsWithRepetitions();
+
+    @Query("SELECT * FROM habits WHERE id = :habitId")
+    @Transaction
+    HabitRepetitions getHabitRepetitions(final long habitId);
 }
