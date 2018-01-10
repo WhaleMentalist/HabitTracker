@@ -61,7 +61,7 @@ public class HabitsScreenTest {
                     super.beforeActivityLaunched();
                     HabitsRepository repository =
                             Injection.provideHabitsRepository(InstrumentationRegistry.getTargetContext());
-                    repository.deleteAllHabits();
+                    repository.removeAllHabits();
                 }
             };
 

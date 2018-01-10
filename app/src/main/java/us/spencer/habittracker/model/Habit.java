@@ -14,24 +14,20 @@ import com.google.common.base.Strings;
 @Entity(tableName = "habits")
 public class Habit {
 
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "id")
+    private long mId = 0;
+
     @ColumnInfo(name = "habit_name")
     @NonNull
     private String mName;
 
     @ColumnInfo(name = "habit_desc")
-    @Nullable
+    @NonNull
     private String mDescription;
 
-    /**
-     * Constructor for creating a new habit
-     *
-     * @param name  the name of the habit
-     * @param description   the description of the habit
-     */
-    public Habit(@NonNull String name, @Nullable String description) {
-        mName = name;
-        mDescription = description;
+    public long getId() {
+        return mId;
     }
 
     @NonNull
@@ -39,9 +35,13 @@ public class Habit {
         return mName;
     }
 
-    @Nullable
+    @NonNull
     public String getDescription() {
         return mDescription;
+    }
+
+    public void setId(long id) {
+        mId = id;
     }
 
     public void setName(@NonNull String name) {
@@ -60,26 +60,5 @@ public class Habit {
     public boolean isEmpty() {
         return Strings.isNullOrEmpty(mName) ||
                 Strings.isNullOrEmpty(mDescription);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if(this == o) return true;
-
-        if(o == null || getClass() != o.getClass()) return false;
-
-        Habit habit = (Habit) o;
-
-        return mName.equals(habit.mName);
-    }
-
-    @Override
-    public int hashCode() {
-        return mName.hashCode();
-    }
-
-    @Override
-    public String toString() {
-        return "Habit Name: " + mName;
     }
 }

@@ -27,8 +27,10 @@ public class AddHabitPresenter implements AddHabitContract.Presenter,
     public void start() {}
 
     @Override
-    public void addHabit(final String title, final String description) {
-        Habit habit = new Habit(title, description);
+    public void addHabit(@NonNull final String title, @NonNull final String description) {
+        Habit habit = new Habit();
+        habit.setName(title);
+        habit.setDescription(description);
 
         if(habit.isEmpty()) {
             mAddHabitView.showEmptyHabitError();
@@ -42,7 +44,9 @@ public class AddHabitPresenter implements AddHabitContract.Presenter,
     @Override
     public void modifyHabit(@NonNull final String title, @NonNull final String description) {
         checkNotNull(title, description);
-        Habit habit = new Habit(title, description);
+        Habit habit = new Habit();
+        habit.setName(title);
+        habit.setDescription(description);
         mHabitsRepository.saveHabitReplace(habit, this);
     }
 

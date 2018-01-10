@@ -18,34 +18,34 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * may be implemented for more interesting features
  * (i.e sharing completion of habit or habit list).
  */
-public class HabitsRepository implements HabitsDataSource {
+public class HabitsRepository implements HabitsDataSource, HabitsDataSource.SyncCacheCallback {
 
     private static HabitsRepository INSTANCE  = null;
 
-    private final HabitsDataSource mHabitsLocalDataSource;
+    private final HabitsDataSource.Database mHabitsLocalDataSource;
 
     /** Useful in preventing too many I/O operations that are unnecessary by keeping
      * query results in main memory */
     @VisibleForTesting
-    Map<String, Habit> mCachedHabits;
+    Map<Long, Habit> mCachedHabits;
 
     /**
      * Private constructor to enforce singleton design pattern
      *
-     * @param habitsLocalDataSource the local data on device
+     * @param habitsLocalDataSource the local database on device
      */
-    private HabitsRepository(@NonNull HabitsDataSource habitsLocalDataSource) {
+    private HabitsRepository(@NonNull HabitsDataSource.Database habitsLocalDataSource) {
         mHabitsLocalDataSource = habitsLocalDataSource;
     }
 
     /**
      * Return single instance of class.
      *
-     * @param habitsLocalDataSource the local data on device
+     * @param habitsLocalDataSource the local database on device
      *
      * @return  the {@link HabitsRepository} instance
      */
-    public static HabitsRepository getInstance(HabitsDataSource habitsLocalDataSource) {
+    public static HabitsRepository getInstance(HabitsDataSource.Database habitsLocalDataSource) {
         if(INSTANCE == null) {
             INSTANCE = new HabitsRepository(habitsLocalDataSource);
         }
@@ -69,12 +69,12 @@ public class HabitsRepository implements HabitsDataSource {
         mCachedHabits.clear();
 
         for(Habit habit : habits) {
-            mCachedHabits.put(habit.getName(), habit);
+            mCachedHabits.put(habit.getId(), habit);
         }
     }
 
     /**
-     * Used to force {@link #getInstance(HabitsDataSource)} to create a new instance
+     * Used to force {@link #getInstance(HabitsDataSource.Database)} to create a new instance
      * when called again. NOTE: Useful for testing.
      */
     public static void destroyInstance() {
@@ -89,17 +89,10 @@ public class HabitsRepository implements HabitsDataSource {
      * @param callback  the callback that will be used to notify interested parties of result
      */
     @Override
-    public void saveHabitNoReplace(@NonNull Habit habit, @NonNull SaveHabitCallback callback) {
+    public void saveHabitNoReplace(@NonNull Habit habit,
+                                   @NonNull HabitsDataSource.SaveHabitCallback callback) {
         checkNotNull(habit);
-        mHabitsLocalDataSource.saveHabitNoReplace(habit, callback); /** Save to DB */
-
-        if(mCachedHabits == null) {
-            mCachedHabits = new LinkedHashMap<>();
-        }
-
-        if(!(mCachedHabits.containsKey(habit.getName()))) {
-            mCachedHabits.put(habit.getName(), habit); /** Don't want to replace unless it is absent */
-        }
+        mHabitsLocalDataSource.insertHabitNoReplace(habit, callback, this);
     }
 
     /**
@@ -110,15 +103,10 @@ public class HabitsRepository implements HabitsDataSource {
      * @param callback  the callback that will be used to notify interested parties of result
      */
     @Override
-    public void saveHabitReplace(@NonNull Habit habit, @NonNull SaveHabitCallback callback) {
+    public void saveHabitReplace(@NonNull Habit habit,
+                                 @NonNull HabitsDataSource.SaveHabitCallback callback) {
         checkNotNull(habit);
-        mHabitsLocalDataSource.saveHabitReplace(habit, callback);
-
-        if(mCachedHabits == null) {
-            mCachedHabits = new LinkedHashMap<>();
-        }
-
-        mCachedHabits.put(habit.getName(), habit); /** This will replace as intended. */
+        mHabitsLocalDataSource.insertHabitReplace(habit, callback, this);
     }
 
     /**
@@ -130,14 +118,14 @@ public class HabitsRepository implements HabitsDataSource {
      *                      are retrieved
      */
     @Override
-    public void getHabits(@NonNull final LoadHabitsCallback callback) {
+    public void retrieveAllHabits(@NonNull final HabitsDataSource.LoadHabitsCallback callback) {
         checkNotNull(callback);
 
         if(mCachedHabits != null) { /** Check if data is in cache */
             callback.onHabitsLoaded(new ArrayList<>(mCachedHabits.values()));
         }
         else { /** If no data in cache, then load from local storage */
-            mHabitsLocalDataSource.getHabits(new LoadHabitsCallback() {
+            mHabitsLocalDataSource.queryAllHabits(new LoadHabitsCallback() {
 
                 @Override
                 public void onHabitsLoaded(@NonNull List<Habit> habits) {
@@ -155,17 +143,24 @@ public class HabitsRepository implements HabitsDataSource {
     }
 
     /**
-     * Method will delete all habits from database and the
-     * cache.
+     * Method will delete all habits from database and the cache
      */
     @Override
-    public void deleteAllHabits() {
+    public void removeAllHabits() {
         mHabitsLocalDataSource.deleteAllHabits();
 
         if(mCachedHabits == null) {
             mCachedHabits = new LinkedHashMap<>();
         }
-
         mCachedHabits.clear();
+    }
+
+    @Override
+    public void onHabitIdGenerated(long id, @NonNull final Habit habit) {
+        if(mCachedHabits == null) {
+            mCachedHabits = new LinkedHashMap<>();
+        }
+        habit.setId(id);
+        mCachedHabits.put(id, habit);
     }
 }

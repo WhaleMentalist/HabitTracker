@@ -71,7 +71,7 @@ public class HabitsRepositoryTest {
     @Test
     public void saveValidHabitNoReplace_saveToDatabaseAndCache() {
         mHabitsRepository.saveHabitNoReplace(VALID_HABIT_ONE, dummySaveHabitCallback);
-        verify(mHabitsLocalDataSource).saveHabitNoReplace(VALID_HABIT_ONE, dummySaveHabitCallback);
+        verify(mHabitsLocalDataSource).insertHabitNoReplace(VALID_HABIT_ONE, dummySaveHabitCallback);
         assertThat(mHabitsRepository.mCachedHabits.size(), is(1));
     }
 
@@ -94,7 +94,7 @@ public class HabitsRepositoryTest {
     @Test
     public void getHabitsWhenCacheEmpty_loadFromLocalStorage() {
         assertNull(mHabitsRepository.mCachedHabits); /** Precondition: Cache is 'null' */
-        mHabitsRepository.getHabits(dummyLoadHabitsCallback);
+        mHabitsRepository.retrieveAllHabits(dummyLoadHabitsCallback);
         verify(mHabitsLocalDataSource).getHabits(mCaptor.capture());
         mCaptor.getValue().onHabitsLoaded(HABITS);
         assertThat(mHabitsRepository.mCachedHabits.size(), is(2)); /** Post-Condition: Cache is not 'null' and is filled with database data */
@@ -103,7 +103,7 @@ public class HabitsRepositoryTest {
     @Test
     public void getHabitsWhenCacheGood_loadFromCache() {
         fillCache();
-        mHabitsRepository.getHabits(dummyLoadHabitsCallback);
+        mHabitsRepository.retrieveAllHabits(dummyLoadHabitsCallback);
         verify(mHabitsLocalDataSource, never()).getHabits(dummyLoadHabitsCallback); /** Should not load from local storage*/
     }
 

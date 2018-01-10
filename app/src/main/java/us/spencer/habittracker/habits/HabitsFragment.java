@@ -3,6 +3,7 @@ package us.spencer.habittracker.habits;
 import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -11,11 +12,12 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import org.joda.time.Instant;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +27,7 @@ import javax.annotation.Nonnull;
 import us.spencer.habittracker.R;
 import us.spencer.habittracker.addhabit.AddHabitActivity;
 import us.spencer.habittracker.model.Habit;
+import us.spencer.habittracker.model.TimeStamp;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -192,6 +195,7 @@ public class HabitsFragment extends Fragment implements HabitsContract.View {
                     @Override
                     public void onCheckedChanged(CompoundButton compoundButton, boolean value) {
                         final Habit habit = mHabits.get(getAdapterPosition());
+                        // mPresenter.addRepetition(new TimeStamp(Instant.now()), habit.getId());
                         Toast.makeText(getActivity(),
                                 habit.getName() + (value ? " : Completed" : " : Incomplete"),
                                 Toast.LENGTH_SHORT).show();
@@ -202,9 +206,10 @@ public class HabitsFragment extends Fragment implements HabitsContract.View {
 
                     @Override
                     public void onClick(View view) {
+
                         final Habit habit = mHabits.get(getAdapterPosition());
                         Toast.makeText(getActivity(),
-                                habit.getName() + " was selected",
+                                habit.getId() + " : " + habit.getName() + " was selected",
                                 Toast.LENGTH_SHORT).show();
                     }
                 });

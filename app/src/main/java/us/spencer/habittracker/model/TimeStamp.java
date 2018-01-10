@@ -26,6 +26,14 @@ public class TimeStamp {
         mInstant = instant;
     }
 
+    /**
+     * Constructs a {@link TimeStamp} containing the {@link Instant}
+     * at the specified milliseconds
+     *
+     * @param millis    the time in milliseconds after January 1, 1970
+     */
+    public TimeStamp(@NonNull Long millis) {mInstant = new Instant(millis); }
+
     public Instant getInstant() {
         return mInstant;
     }

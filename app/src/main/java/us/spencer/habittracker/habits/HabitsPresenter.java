@@ -1,13 +1,13 @@
 package us.spencer.habittracker.habits;
 
 import android.support.annotation.NonNull;
-import android.support.annotation.VisibleForTesting;
-import android.support.test.espresso.idling.CountingIdlingResource;
 
 import java.util.List;
 
 import us.spencer.habittracker.database.HabitsDataSource;
 import us.spencer.habittracker.model.Habit;
+import us.spencer.habittracker.model.Repetition;
+import us.spencer.habittracker.model.TimeStamp;
 import us.spencer.habittracker.utility.EspressoCountingIdlingResource;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -32,9 +32,13 @@ public class HabitsPresenter implements HabitsContract.Presenter {
         mHabitsView.showAddHabit();
     }
 
+    public void addRepetition(TimeStamp timeStamp, long habitId) {
+        final Repetition repetition = new Repetition(timeStamp, habitId);
+    }
+
     public void loadHabits() {
         EspressoCountingIdlingResource.getIdlingResource().increment();
-        mHabitsRepository.getHabits(new HabitsDataSource.LoadHabitsCallback() {
+        mHabitsRepository.retrieveAllHabits(new HabitsDataSource.LoadHabitsCallback() {
 
             @Override
             public void onHabitsLoaded(@NonNull List<Habit> habits) {

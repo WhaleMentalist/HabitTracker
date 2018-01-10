@@ -1,4 +1,4 @@
-package us.spencer.habittracker.database;
+package us.spencer.habittracker.database.dao;
 
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Insert;
@@ -25,31 +25,31 @@ public interface HabitsDAO {
     /**
      * Select habit by id.
      *
-     * @param name    the habit name
-     * @return  the habit with name
+     * @param id    the habit id
+     * @return  the {@link Habit} with id
      */
-    @Query("SELECT * FROM habits WHERE habit_name = :name")
-    Habit getHabitById(String name);
+    @Query("SELECT * FROM habits WHERE id = :id")
+    Habit getHabitById(long id);
 
     /**
-     * Insert a habit in the database. If it exists, replace it.
+     * Insert a {@link Habit} in the database. If it exists, replace it.
      *
-     * @param habit the habit to be inserted
+     * @param habit the {@link Habit} to be inserted
      */
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertHabit(Habit habit);
+    long insertHabit(Habit habit);
 
     /**
-     * Delete a habit by name
+     * Delete a {@link Habit} by name
      *
-     * @param name    the habit name
-     * @return  the number of habits deleted.
+     * @param id    the habit id
+     * @return  the number of habits deleted
      */
-    @Query("DELETE FROM habits WHERE habit_name = :name")
-    int deleteHabitById(String name);
+    @Query("DELETE FROM habits WHERE id = :id")
+    int deleteHabitById(long id);
 
     /**
-     * Deletes all habits from table
+     * Deletes all {@link Habit} from table
      */
     @Query("DELETE FROM habits")
     void deleteHabits();
