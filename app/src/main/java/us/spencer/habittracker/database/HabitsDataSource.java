@@ -34,7 +34,7 @@ public interface HabitsDataSource {
 
     interface SyncCacheCallback {
 
-        void onHabitIdGenerated(long id, @NonNull final Habit habit);
+        void onHabitIdGenerated(final long id, @NonNull final Habit habit);
     }
 
     /**
@@ -45,15 +45,15 @@ public interface HabitsDataSource {
 
     interface Database {
 
-        void insertHabitNoReplace(@NonNull Habit habit,
-                                  @NonNull SaveHabitCallback saveHabitCallback,
-                                  @NonNull SyncCacheCallback syncCacheCallback);
+        void insertHabitNoReplace(@NonNull final Habit habit,
+                                  @NonNull final SaveHabitCallback saveHabitCallback,
+                                  @NonNull final SyncCacheCallback syncCacheCallback);
 
-        void insertHabitReplace(@NonNull Habit habit,
-                                @NonNull SaveHabitCallback saveHabitCallback,
-                                @NonNull SyncCacheCallback syncCacheCallback);
+        void insertHabitReplace(@NonNull final Habit habit,
+                                @NonNull final SaveHabitCallback saveHabitCallback,
+                                @NonNull final SyncCacheCallback syncCacheCallback);
 
-        void queryAllHabits(@NonNull LoadHabitsCallback callback);
+        void queryAllHabits(@NonNull final LoadHabitsCallback callback);
 
         void deleteAllHabits();
     }
@@ -64,13 +64,13 @@ public interface HabitsDataSource {
      * =======================================================================
      */
 
-    void saveHabitNoReplace(@NonNull Habit habit,
-                            @NonNull SaveHabitCallback saveHabitCallback);
+    void saveHabitNoReplace(@NonNull final Habit habit,
+                            @NonNull final SaveHabitCallback saveHabitCallback);
 
-    void saveHabitReplace(@NonNull Habit habit,
-                          @NonNull SaveHabitCallback saveHabitCallback);
+    void saveHabitReplace(@NonNull final Habit habit,
+                          @NonNull final SaveHabitCallback saveHabitCallback);
 
-    void retrieveAllHabits(@NonNull LoadHabitsCallback loadHabitsCallback);
+    void retrieveAllHabits(@NonNull final LoadHabitsCallback loadHabitsCallback);
 
     void removeAllHabits();
 }

@@ -89,8 +89,8 @@ public class HabitsRepository implements HabitsDataSource, HabitsDataSource.Sync
      * @param saveHabitCallback  the callback that will be used to notify interested parties of result
      */
     @Override
-    public void saveHabitNoReplace(@NonNull Habit habit,
-                                   @NonNull HabitsDataSource.SaveHabitCallback saveHabitCallback) {
+    public void saveHabitNoReplace(@NonNull final Habit habit,
+                                   @NonNull final HabitsDataSource.SaveHabitCallback saveHabitCallback) {
         checkNotNull(habit);
         mHabitsLocalDataSource.insertHabitNoReplace(habit, saveHabitCallback, this);
     }
@@ -103,8 +103,8 @@ public class HabitsRepository implements HabitsDataSource, HabitsDataSource.Sync
      * @param saveHabitCallback  the callback that will be used to notify interested parties of result
      */
     @Override
-    public void saveHabitReplace(@NonNull Habit habit,
-                                 @NonNull HabitsDataSource.SaveHabitCallback saveHabitCallback) {
+    public void saveHabitReplace(@NonNull final Habit habit,
+                                 @NonNull final HabitsDataSource.SaveHabitCallback saveHabitCallback) {
         checkNotNull(habit);
         mHabitsLocalDataSource.insertHabitReplace(habit, saveHabitCallback, this);
     }
@@ -114,13 +114,11 @@ public class HabitsRepository implements HabitsDataSource, HabitsDataSource.Sync
      * Ideally, the cache will contain the information allowing
      * for fast retrieval and less I/O operations.
      *
-     * @param loadHabitsCallback  the callback that will be used to notify when habits
-     *                      are retrieved
+     * @param loadHabitsCallback  the callback that will be used to notify when habits are retrieved
      */
     @Override
     public void retrieveAllHabits(@NonNull final HabitsDataSource.LoadHabitsCallback loadHabitsCallback) {
         checkNotNull(loadHabitsCallback);
-
         if(mCachedHabits != null) { /** Check if data is in cache */
             loadHabitsCallback.onHabitsLoaded(new ArrayList<>(mCachedHabits.values()));
         }
@@ -165,7 +163,7 @@ public class HabitsRepository implements HabitsDataSource, HabitsDataSource.Sync
      * @param habit the habit that was added to the database
      */
     @Override
-    public void onHabitIdGenerated(long id, @NonNull final Habit habit) {
+    public void onHabitIdGenerated(final long id, @NonNull final Habit habit) {
         if(mCachedHabits == null) {
             mCachedHabits = new LinkedHashMap<>();
         }
