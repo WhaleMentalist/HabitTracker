@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
@@ -51,15 +52,15 @@ public class AddHabitPresenterTest {
     public void saveValidHabit_callRepo() {
         mPresenter = new AddHabitPresenter(mHabitsRepository, mAddHabitsView);
         mPresenter.addHabit(validHabit.getName(), validHabit.getDescription());
-        verify(mHabitsRepository).saveHabit(validHabit, mPresenter);
+        verify(mHabitsRepository).insertHabit(validHabit, mPresenter);
     }
 
     @Test
     public void saveValidHabit_callShowHabitsList() {
         mPresenter = new AddHabitPresenter(mHabitsRepository, mAddHabitsView);
         mPresenter.addHabit(validHabit.getName(), validHabit.getDescription());
-        verify(mHabitsRepository).saveHabit(eq(validHabit), mSaveHabitCallback.capture());
-        mSaveHabitCallback.getValue().onHabitSaved();
+        verify(mHabitsRepository).insertHabit(eq(validHabit), eq(mPresenter));
+        mPresenter.onHabitSaved();
         verify(mAddHabitsView).showHabitsList();
     }
 
@@ -67,7 +68,7 @@ public class AddHabitPresenterTest {
     public void saveInvalidHabit_noCallRepo() {
         mPresenter = new AddHabitPresenter(mHabitsRepository, mAddHabitsView);
         mPresenter.addHabit(invalidHabit.getName(), invalidHabit.getDescription());
-        verify(mHabitsRepository, never()).saveHabit(invalidHabit, mPresenter);
+        verify(mHabitsRepository, never()).insertHabit(invalidHabit, mPresenter);
     }
 
     @Test

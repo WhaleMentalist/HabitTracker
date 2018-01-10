@@ -34,7 +34,7 @@ public class AddHabitPresenter implements AddHabitContract.Presenter,
             mAddHabitView.showEmptyHabitError();
         }
         else {
-            mHabitsRepository.saveHabit(habit, this);
+            mHabitsRepository.insertHabit(habit, this);
         }
 
     }

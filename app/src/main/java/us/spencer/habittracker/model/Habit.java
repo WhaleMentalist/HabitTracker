@@ -66,10 +66,12 @@ public class Habit {
     }
 
     /**
-     * Check if habit contains no data
+     * Check if habit contains 'blank' or 'null'
+     * entries.
      *
-     * @return whether habit has no useful data
+     * @return whether habit has no missing field
      */
+    @Ignore
     public boolean isEmpty() {
         return Strings.isNullOrEmpty(mName) ||
                 Strings.isNullOrEmpty(mDescription);

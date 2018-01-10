@@ -38,7 +38,7 @@ public class HabitsPresenter implements HabitsContract.Presenter {
 
     public void loadHabits() {
         EspressoCountingIdlingResource.getIdlingResource().increment();
-        mHabitsRepository.retrieveAllHabits(new HabitsDataSource.LoadHabitsCallback() {
+        mHabitsRepository.queryAllHabits(new HabitsDataSource.LoadHabitsCallback() {
 
             @Override
             public void onHabitsLoaded(@NonNull List<Habit> habits) {

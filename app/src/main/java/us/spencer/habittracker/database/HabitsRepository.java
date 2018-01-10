@@ -18,7 +18,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * may be implemented for more interesting features
  * (i.e sharing completion of habit or habit list).
  */
-public class HabitsRepository implements HabitsDataSource, HabitsDataSource.SyncCacheCallback {
+public class HabitsRepository implements HabitsDataSource,
+                                            HabitsDataSource.SyncCacheCallback {
 
     private static HabitsRepository INSTANCE  = null;
 
@@ -89,8 +90,8 @@ public class HabitsRepository implements HabitsDataSource, HabitsDataSource.Sync
      * @param saveHabitCallback  the callback that will be used to notify interested parties of result
      */
     @Override
-    public void saveHabit(@NonNull final Habit habit,
-                          @NonNull final HabitsDataSource.SaveHabitCallback saveHabitCallback) {
+    public void insertHabit(@NonNull final Habit habit,
+                            @NonNull final HabitsDataSource.SaveHabitCallback saveHabitCallback) {
         checkNotNull(habit);
         mHabitsLocalDataSource.insertHabit(habit, saveHabitCallback, this);
     }
@@ -103,23 +104,23 @@ public class HabitsRepository implements HabitsDataSource, HabitsDataSource.Sync
      * @param loadHabitsCallback  the callback that will be used to notify when habits are retrieved
      */
     @Override
-    public void retrieveAllHabits(@NonNull final HabitsDataSource.LoadHabitsCallback loadHabitsCallback) {
+    public void queryAllHabits(@NonNull final HabitsDataSource.LoadHabitsCallback loadHabitsCallback) {
         checkNotNull(loadHabitsCallback);
-        if(mCachedHabits != null) { /** Check if data is in cache */
+        if(mCachedHabits != null) {
             loadHabitsCallback.onHabitsLoaded(new ArrayList<>(mCachedHabits.values()));
         }
-        else { /** If no data in cache, then load from local storage */
-            mHabitsLocalDataSource.queryAllHabits(new LoadHabitsCallback() {
+        else {
+            mHabitsLocalDataSource.queryAllHabits(new HabitsDataSource.LoadHabitsCallback() {
 
                 @Override
                 public void onHabitsLoaded(@NonNull List<Habit> habits) {
-                    refreshCache(habits); /** Update cache to resulting query */
+                    refreshCache(habits);
                     loadHabitsCallback.onHabitsLoaded(habits);
                 }
 
                 @Override
                 public void onDataNotAvailable() {
-                    /** TODO: Figure out view layout for no data */
+                    /* TODO: Figure out view layout for no data */
                 }
             });
         }
@@ -129,7 +130,7 @@ public class HabitsRepository implements HabitsDataSource, HabitsDataSource.Sync
      * Method will delete all habits from database and the cache
      */
     @Override
-    public void removeAllHabits() {
+    public void deleteAllHabits() {
         mHabitsLocalDataSource.deleteAllHabits();
         if(mCachedHabits == null) {
             mCachedHabits = new LinkedHashMap<>();

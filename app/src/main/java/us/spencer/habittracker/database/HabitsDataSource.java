@@ -59,10 +59,10 @@ public interface HabitsDataSource {
      * =======================================================================
      */
 
-    void saveHabit(@NonNull final Habit habit,
-                            @NonNull final SaveHabitCallback saveHabitCallback);
+    void insertHabit(@NonNull final Habit habit,
+                     @NonNull final SaveHabitCallback saveHabitCallback);
 
-    void retrieveAllHabits(@NonNull final LoadHabitsCallback loadHabitsCallback);
+    void queryAllHabits(@NonNull final LoadHabitsCallback loadHabitsCallback);
 
-    void removeAllHabits();
+    void deleteAllHabits();
 }

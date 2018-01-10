@@ -65,8 +65,8 @@ public class HabitsLocalDataSource implements HabitsDataSource.Database {
      */
     @Override
     public void insertHabit(@NonNull final Habit habit,
-                                     @NonNull final HabitsDataSource.SaveHabitCallback saveHabitCallback,
-                                     @Nullable final HabitsDataSource.SyncCacheCallback syncCacheCallback) {
+                            @NonNull final HabitsDataSource.SaveHabitCallback saveHabitCallback,
+                            @Nullable final HabitsDataSource.SyncCacheCallback syncCacheCallback) {
         checkNotNull(habit);
         checkNotNull(saveHabitCallback);
         Runnable saveHabit = new Runnable() {

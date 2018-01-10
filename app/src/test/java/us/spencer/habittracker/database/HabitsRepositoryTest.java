@@ -82,7 +82,7 @@ public class HabitsRepositoryTest {
     @Test
     public void saveValidHabit_saveToDatabaseAndCache() {
         assertNull(mHabitsRepository.mCachedHabits);
-        mHabitsRepository.saveHabit(VALID_HABIT_ONE, dummySaveHabitCallback);
+        mHabitsRepository.insertHabit(VALID_HABIT_ONE, dummySaveHabitCallback);
         verify(mHabitsLocalDataSource).insertHabit(eq(VALID_HABIT_ONE),
                                                     eq(dummySaveHabitCallback),
                                                     mSyncCacheCallbackCaptor.capture());
@@ -94,7 +94,7 @@ public class HabitsRepositoryTest {
     @Test
     public void getHabitsWhenCacheEmpty_loadFromLocalStorage() {
         assertNull(mHabitsRepository.mCachedHabits); /** Precondition: Cache is 'null' */
-        mHabitsRepository.retrieveAllHabits(dummyLoadHabitsCallback);
+        mHabitsRepository.queryAllHabits(dummyLoadHabitsCallback);
         verify(mHabitsLocalDataSource).queryAllHabits(mLoadHabitsCallbackCaptor.capture());
         mLoadHabitsCallbackCaptor.getValue().onHabitsLoaded(DB_HABITS);
         assertThat(mHabitsRepository.mCachedHabits.size(), is(2)); /** Post-Condition: Cache is not 'null' and is filled with database data */
@@ -103,7 +103,7 @@ public class HabitsRepositoryTest {
     @Test
     public void getHabitsWhenCacheGood_loadFromCache() {
         fillCache();
-        mHabitsRepository.retrieveAllHabits(dummyLoadHabitsCallback);
+        mHabitsRepository.queryAllHabits(dummyLoadHabitsCallback);
         verify(mHabitsLocalDataSource, never()).queryAllHabits(dummyLoadHabitsCallback); /** Should not load from local storage*/
     }
 
