@@ -28,9 +28,7 @@ public class AddHabitPresenter implements AddHabitContract.Presenter,
 
     @Override
     public void addHabit(@NonNull final String title, @NonNull final String description) {
-        Habit habit = new Habit();
-        habit.setName(title);
-        habit.setDescription(description);
+        Habit habit = new Habit(title, description);
 
         if(habit.isEmpty()) {
             mAddHabitView.showEmptyHabitError();
