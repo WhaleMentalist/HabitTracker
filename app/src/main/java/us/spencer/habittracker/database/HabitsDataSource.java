@@ -51,6 +51,9 @@ public interface HabitsDataSource {
         void queryAllHabits(@NonNull final LoadHabitsCallback callback);
 
         void deleteAllHabits();
+
+        void insertRepetition(final long habitId,
+                              @NonNull final Repetition repetition);
     }
 
     /**
@@ -65,4 +68,7 @@ public interface HabitsDataSource {
     void queryAllHabits(@NonNull final LoadHabitsCallback loadHabitsCallback);
 
     void deleteAllHabits();
+
+    void insertRepetition(final long habitId,
+                          @NonNull final Repetition repetition);
 }

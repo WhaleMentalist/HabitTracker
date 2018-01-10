@@ -27,6 +27,7 @@ import javax.annotation.Nonnull;
 import us.spencer.habittracker.R;
 import us.spencer.habittracker.addhabit.AddHabitActivity;
 import us.spencer.habittracker.model.Habit;
+import us.spencer.habittracker.model.Repetition;
 import us.spencer.habittracker.model.TimeStamp;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -195,10 +196,11 @@ public class HabitsFragment extends Fragment implements HabitsContract.View {
                     @Override
                     public void onCheckedChanged(CompoundButton compoundButton, boolean value) {
                         final Habit habit = mHabits.get(getAdapterPosition());
+                        // Repetition repetition = new Repetition(new TimeStamp(Instant.now()),
+                        //         habit.getId());
+                        mPresenter.addRepetition(habit.getId(), new TimeStamp(Instant.now()));
                         // mPresenter.addRepetition(new TimeStamp(Instant.now()), habit.getId());
-                        Toast.makeText(getActivity(),
-                                habit.getName() + (value ? " : Completed" : " : Incomplete"),
-                                Toast.LENGTH_SHORT).show();
+
                     }
                 });
 
@@ -209,7 +211,7 @@ public class HabitsFragment extends Fragment implements HabitsContract.View {
 
                         final Habit habit = mHabits.get(getAdapterPosition());
                         Toast.makeText(getActivity(),
-                                habit.getId() + " : " + habit.getName() + " was selected",
+                                habit.getId() + " : " + habit.getName() + " was clicked",
                                 Toast.LENGTH_SHORT).show();
                     }
                 });

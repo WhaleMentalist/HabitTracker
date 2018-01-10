@@ -4,6 +4,7 @@ import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.OnConflictStrategy;
 import android.arch.persistence.room.Query;
+import android.support.annotation.NonNull;
 
 import java.util.List;
 
@@ -18,5 +19,5 @@ public interface RepetitionsDAO {
      * @param repetition the {@link Repetition} to be inserted
      */
     @Insert(onConflict =  OnConflictStrategy.REPLACE)
-    void insertRepetition(Repetition repetition);
+    void insertRepetition(@NonNull final Repetition repetition);
 }

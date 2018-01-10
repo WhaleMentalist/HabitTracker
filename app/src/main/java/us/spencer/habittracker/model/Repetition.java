@@ -6,6 +6,8 @@ import android.arch.persistence.room.ForeignKey;
 import android.arch.persistence.room.Index;
 import android.support.annotation.NonNull;
 
+import java.sql.Time;
+
 @Entity(tableName = "repetitions", primaryKeys = {"time_stamp", "habit_id"},
         foreignKeys = @ForeignKey(entity = Habit.class,
                 parentColumns = "id",
@@ -15,11 +17,11 @@ public class Repetition {
 
     @ColumnInfo(name = "time_stamp")
     @NonNull
-    private final TimeStamp mTimeStamp;
+    private TimeStamp mTimeStamp;
 
     @ColumnInfo(name = "habit_id")
     @NonNull
-    private final long mHabitId;
+    private long mHabitId;
 
     /**
      * Constructor for entity
@@ -40,5 +42,13 @@ public class Repetition {
     @NonNull
     public long getHabitId() {
         return mHabitId;
+    }
+
+    public void setTimeStamp(@NonNull final TimeStamp timeStamp) {
+        mTimeStamp = timeStamp;
+    }
+
+    public void setHabitId(final long habitId) {
+        mHabitId = habitId;
     }
 }

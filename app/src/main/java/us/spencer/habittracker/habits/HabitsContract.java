@@ -1,5 +1,7 @@
 package us.spencer.habittracker.habits;
 
+import android.support.annotation.NonNull;
+
 import java.sql.Time;
 import java.util.List;
 
@@ -26,7 +28,7 @@ public interface HabitsContract {
 
         void addHabit();
 
-        void addRepetition(TimeStamp timeStamp, long habitId);
+        void addRepetition(final long habitId, @NonNull final TimeStamp timeStamp);
 
         void loadHabits();
     }

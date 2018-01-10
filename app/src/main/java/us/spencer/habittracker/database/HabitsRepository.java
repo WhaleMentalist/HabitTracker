@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import us.spencer.habittracker.model.Habit;
+import us.spencer.habittracker.model.Repetition;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -18,8 +19,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * may be implemented for more interesting features
  * (i.e sharing completion of habit or habit list).
  */
-public class HabitsRepository implements HabitsDataSource,
-                                            HabitsDataSource.SyncCacheCallback {
+public class HabitsRepository implements HabitsDataSource, HabitsDataSource.SyncCacheCallback {
 
     private static HabitsRepository INSTANCE  = null;
 
@@ -136,6 +136,11 @@ public class HabitsRepository implements HabitsDataSource,
             mCachedHabits = new LinkedHashMap<>();
         }
         mCachedHabits.clear();
+    }
+
+    @Override
+    public void insertRepetition(final long habitId, @NonNull final Repetition repetition) {
+        mHabitsLocalDataSource.insertRepetition(habitId, repetition);
     }
 
     /**

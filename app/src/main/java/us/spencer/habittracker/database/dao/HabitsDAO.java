@@ -4,6 +4,7 @@ import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.OnConflictStrategy;
 import android.arch.persistence.room.Query;
+import android.support.annotation.NonNull;
 
 import java.util.List;
 
@@ -29,7 +30,7 @@ public interface HabitsDAO {
      * @return  the {@link Habit} with id
      */
     @Query("SELECT * FROM habits WHERE id = :id")
-    Habit getHabitById(long id);
+    Habit getHabitById(final long id);
 
     /**
      * Insert a {@link Habit} in the database. If it exists, replace it.
@@ -37,7 +38,7 @@ public interface HabitsDAO {
      * @param habit the {@link Habit} to be inserted
      */
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    long insertHabit(Habit habit);
+    long insertHabit(@NonNull final Habit habit);
 
     /**
      * Deletes all {@link Habit} from table

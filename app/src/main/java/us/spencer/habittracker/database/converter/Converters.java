@@ -13,6 +13,6 @@ public class Converters {
 
     @TypeConverter
     public static Long timeStampToMillis(TimeStamp timeStamp) {
-        return timeStamp == null ? null : timeStamp.getInstant().getMillis();
+        return timeStamp == null ? null : timeStamp.getDateTime().getMillis();
     }
 }

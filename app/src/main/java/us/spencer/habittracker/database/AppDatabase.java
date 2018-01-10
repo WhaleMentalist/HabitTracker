@@ -7,6 +7,7 @@ import android.arch.persistence.room.TypeConverters;
 import android.content.Context;
 
 import us.spencer.habittracker.database.converter.Converters;
+import us.spencer.habittracker.database.dao.HabitRepetitionsDAO;
 import us.spencer.habittracker.database.dao.HabitsDAO;
 import us.spencer.habittracker.database.dao.RepetitionsDAO;
 import us.spencer.habittracker.model.Habit;
@@ -27,6 +28,8 @@ public abstract class AppDatabase extends RoomDatabase {
     public abstract HabitsDAO habitDAO();
 
     public abstract RepetitionsDAO repetitionsDAO();
+
+    public abstract HabitRepetitionsDAO habitRepetitionsDAO();
 
     private static final Object sLock = new Object(); /** Need access to DB to be managed fairly and without anomalies */
 

@@ -5,9 +5,13 @@ import android.support.annotation.Nullable;
 
 import java.util.List;
 
+import us.spencer.habittracker.database.dao.HabitRepetitionsDAO;
 import us.spencer.habittracker.database.dao.HabitsDAO;
 import us.spencer.habittracker.database.HabitsDataSource;
+import us.spencer.habittracker.database.dao.RepetitionsDAO;
 import us.spencer.habittracker.model.Habit;
+import us.spencer.habittracker.model.HabitRepetitions;
+import us.spencer.habittracker.model.Repetition;
 import us.spencer.habittracker.utility.AppExecutors;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -22,6 +26,10 @@ public class HabitsLocalDataSource implements HabitsDataSource.Database {
 
     private HabitsDAO mHabitsDAO;
 
+    private RepetitionsDAO mRepetitionsDAO;
+
+    private HabitRepetitionsDAO mHabitRepetitionsDAO;
+
     private AppExecutors mAppExecutors;
 
     /**
@@ -29,11 +37,16 @@ public class HabitsLocalDataSource implements HabitsDataSource.Database {
      *
      * @param appExecutors  the executor that will run queries on seperate thread
      * @param habitsDAO  the data access object that helps with access to habits
+     * @param repetitionsDAO the data access object that helps with access to repetitions
      */
     private HabitsLocalDataSource(@NonNull AppExecutors appExecutors,
-                                  @NonNull HabitsDAO habitsDAO) {
+                                  @NonNull HabitsDAO habitsDAO,
+                                  @NonNull RepetitionsDAO repetitionsDAO,
+                                  @NonNull HabitRepetitionsDAO habitRepetitionsDAO) {
         mAppExecutors = appExecutors;
         mHabitsDAO = habitsDAO;
+        mRepetitionsDAO = repetitionsDAO;
+        mHabitRepetitionsDAO = habitRepetitionsDAO;
     }
 
     /**
@@ -41,14 +54,22 @@ public class HabitsLocalDataSource implements HabitsDataSource.Database {
      *
      * @param appExecutors  the executor that will run I/O in background thread
      * @param habitsDAO  the data access object that helps with access to habits
+     * @param repetitionsDAO the data access object that helps with access to repetitions
+     * @param habitRepetitionsDAO the data access object that helps to join the habits and
+     *                            repetitions table
      * @return  an instance of {@link HabitsLocalDataSource}
      */
     public static HabitsLocalDataSource getInstance(@NonNull AppExecutors appExecutors,
-                                                    @NonNull HabitsDAO habitsDAO) {
+                                                    @NonNull HabitsDAO habitsDAO,
+                                                    @NonNull RepetitionsDAO repetitionsDAO,
+                                                    @NonNull HabitRepetitionsDAO habitRepetitionsDAO) {
         if(INSTANCE == null) {
             synchronized (HabitsLocalDataSource.class) {
                 if(INSTANCE == null) {
-                    INSTANCE = new HabitsLocalDataSource(appExecutors, habitsDAO);
+                    INSTANCE = new HabitsLocalDataSource(appExecutors,
+                            habitsDAO,
+                            repetitionsDAO,
+                            habitRepetitionsDAO);
                 }
             }
         }
@@ -69,7 +90,7 @@ public class HabitsLocalDataSource implements HabitsDataSource.Database {
                             @Nullable final HabitsDataSource.SyncCacheCallback syncCacheCallback) {
         checkNotNull(habit);
         checkNotNull(saveHabitCallback);
-        Runnable saveHabit = new Runnable() {
+        Runnable insertHabit = new Runnable() {
 
             @Override
             public void run() {
@@ -85,7 +106,7 @@ public class HabitsLocalDataSource implements HabitsDataSource.Database {
 
             }
         };
-        mAppExecutors.diskIO().execute(saveHabit);
+        mAppExecutors.diskIO().execute(insertHabit);
     }
 
     @Override
@@ -97,7 +118,6 @@ public class HabitsLocalDataSource implements HabitsDataSource.Database {
             public void run() {
                 final List<Habit> habits = mHabitsDAO.getHabits();
                 if(habits.isEmpty()) {
-
                     mAppExecutors.mainThread().execute(new Runnable() {
                         @Override
                         public void run() {
@@ -127,5 +147,17 @@ public class HabitsLocalDataSource implements HabitsDataSource.Database {
             }
         };
         mAppExecutors.diskIO().execute(deleteAllHabits);
+    }
+
+    @Override
+    public void insertRepetition(final long habitId, @NonNull final Repetition repetition) {
+        checkNotNull(repetition);
+        Runnable insertRepetition = new Runnable() {
+            @Override
+            public void run() {
+                mRepetitionsDAO.insertRepetition(repetition);
+            }
+        };
+        mAppExecutors.diskIO().execute(insertRepetition);
     }
 }

@@ -32,8 +32,9 @@ public class HabitsPresenter implements HabitsContract.Presenter {
         mHabitsView.showAddHabit();
     }
 
-    public void addRepetition(TimeStamp timeStamp, long habitId) {
+    public void addRepetition(final long habitId, @NonNull final TimeStamp timeStamp) {
         final Repetition repetition = new Repetition(timeStamp, habitId);
+        mHabitsRepository.insertRepetition(habitId, repetition);
     }
 
     public void loadHabits() {
