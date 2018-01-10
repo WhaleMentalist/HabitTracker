@@ -46,12 +46,12 @@ public interface HabitsDataSource {
     interface Database {
 
         void insertHabitNoReplace(@NonNull Habit habit,
-                                  @NonNull SaveHabitCallback callback,
-                                  @NonNull SyncCacheCallback cacheCallback);
+                                  @NonNull SaveHabitCallback saveHabitCallback,
+                                  @NonNull SyncCacheCallback syncCacheCallback);
 
         void insertHabitReplace(@NonNull Habit habit,
-                                @NonNull SaveHabitCallback callback,
-                                @NonNull SyncCacheCallback cacheCallback);
+                                @NonNull SaveHabitCallback saveHabitCallback,
+                                @NonNull SyncCacheCallback syncCacheCallback);
 
         void queryAllHabits(@NonNull LoadHabitsCallback callback);
 
@@ -65,12 +65,12 @@ public interface HabitsDataSource {
      */
 
     void saveHabitNoReplace(@NonNull Habit habit,
-                            @NonNull SaveHabitCallback callback);
+                            @NonNull SaveHabitCallback saveHabitCallback);
 
     void saveHabitReplace(@NonNull Habit habit,
-                          @NonNull SaveHabitCallback callback);
+                          @NonNull SaveHabitCallback saveHabitCallback);
 
-    void retrieveAllHabits(@NonNull LoadHabitsCallback callback);
+    void retrieveAllHabits(@NonNull LoadHabitsCallback loadHabitsCallback);
 
     void removeAllHabits();
 }

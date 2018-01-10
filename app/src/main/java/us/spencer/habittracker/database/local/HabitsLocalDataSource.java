@@ -1,6 +1,7 @@
 package us.spencer.habittracker.database.local;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import java.util.List;
 
@@ -59,14 +60,14 @@ public class HabitsLocalDataSource implements HabitsDataSource.Database {
      * not replace duplicate habits
      *
      * @param habit the habit to add
-     * @param callback  the callback that will be notified of result
+     * @param saveHabitCallback  the callback that will be notified of result
      */
     @Override
     public void insertHabitNoReplace(@NonNull final Habit habit,
-                                     @NonNull final HabitsDataSource.SaveHabitCallback callback,
-                                     @NonNull final HabitsDataSource.SyncCacheCallback cacheCallback) {
-        checkNotNull(callback);
-        checkNotNull(cacheCallback);
+                                     @NonNull final HabitsDataSource.SaveHabitCallback saveHabitCallback,
+                                     @Nullable final HabitsDataSource.SyncCacheCallback syncCacheCallback) {
+        checkNotNull(habit);
+        checkNotNull(saveHabitCallback);
         Runnable saveHabit = new Runnable() {
 
             @Override
@@ -74,23 +75,23 @@ public class HabitsLocalDataSource implements HabitsDataSource.Database {
                 Habit result = mHabitsDAO.getHabitById(habit.getId());
 
                 if(result != null) {
-
                     mAppExecutors.mainThread().execute(new Runnable() {
+
                         @Override
                         public void run() {
-                            callback.onDuplicateHabit();
+                            saveHabitCallback.onDuplicateHabit();
                         }
                     });
                 }
                 else {
                     long generatedId = mHabitsDAO.insertHabit(habit);
-                    cacheCallback.onHabitIdGenerated(generatedId, habit);
+                    syncCacheCallback.onHabitIdGenerated(generatedId, habit);
 
                     mAppExecutors.mainThread().execute(new Runnable() {
 
                         @Override
                         public void run() {
-                            callback.onHabitSaved();
+                            saveHabitCallback.onHabitSaved();
                         }
                     });
                 }
@@ -104,27 +105,26 @@ public class HabitsLocalDataSource implements HabitsDataSource.Database {
      * replace duplicate habit
      *
      * @param habit the habit to add
-     * @param callback  the callback that will be notified when action performed
+     * @param saveHabitCallback  the callback that will be notified when action performed
      */
     @Override
     public void insertHabitReplace(@NonNull final Habit habit,
-                                   @NonNull final HabitsDataSource.SaveHabitCallback callback,
-                                   @NonNull final HabitsDataSource.SyncCacheCallback cacheCallback) {
+                                   @NonNull final HabitsDataSource.SaveHabitCallback saveHabitCallback,
+                                   @Nullable final HabitsDataSource.SyncCacheCallback syncCacheCallback) {
         checkNotNull(habit);
-        checkNotNull(callback);
-
+        checkNotNull(saveHabitCallback);
         Runnable saveHabit = new Runnable() {
 
             @Override
             public void run() {
                 long generatedId = mHabitsDAO.insertHabit(habit);
-                cacheCallback.onHabitIdGenerated(generatedId, habit);
+                syncCacheCallback.onHabitIdGenerated(generatedId, habit);
 
                 mAppExecutors.mainThread().execute(new Runnable() {
 
                     @Override
                     public void run() {
-                        callback.onHabitSaved();
+                        saveHabitCallback.onHabitSaved();
                     }
                 });
             }
@@ -135,13 +135,11 @@ public class HabitsLocalDataSource implements HabitsDataSource.Database {
     @Override
     public void queryAllHabits(@NonNull final HabitsDataSource.LoadHabitsCallback callback) {
         checkNotNull(callback);
-
         Runnable queryAllHabits = new Runnable() {
 
             @Override
             public void run() {
                 final List<Habit> habits = mHabitsDAO.getHabits();
-
                 if(habits.isEmpty()) {
 
                     mAppExecutors.mainThread().execute(new Runnable() {

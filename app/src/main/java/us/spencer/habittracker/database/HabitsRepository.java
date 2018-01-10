@@ -86,13 +86,13 @@ public class HabitsRepository implements HabitsDataSource, HabitsDataSource.Sync
      * It will not replace if a duplicate is found
      *
      * @param habit the habit to save in DB
-     * @param callback  the callback that will be used to notify interested parties of result
+     * @param saveHabitCallback  the callback that will be used to notify interested parties of result
      */
     @Override
     public void saveHabitNoReplace(@NonNull Habit habit,
-                                   @NonNull HabitsDataSource.SaveHabitCallback callback) {
+                                   @NonNull HabitsDataSource.SaveHabitCallback saveHabitCallback) {
         checkNotNull(habit);
-        mHabitsLocalDataSource.insertHabitNoReplace(habit, callback, this);
+        mHabitsLocalDataSource.insertHabitNoReplace(habit, saveHabitCallback, this);
     }
 
     /**
@@ -100,13 +100,13 @@ public class HabitsRepository implements HabitsDataSource, HabitsDataSource.Sync
      * It will replace if duplicate is found
      *
      * @param habit the habit to save in DB
-     * @param callback  the callback that will be used to notify interested parties of result
+     * @param saveHabitCallback  the callback that will be used to notify interested parties of result
      */
     @Override
     public void saveHabitReplace(@NonNull Habit habit,
-                                 @NonNull HabitsDataSource.SaveHabitCallback callback) {
+                                 @NonNull HabitsDataSource.SaveHabitCallback saveHabitCallback) {
         checkNotNull(habit);
-        mHabitsLocalDataSource.insertHabitReplace(habit, callback, this);
+        mHabitsLocalDataSource.insertHabitReplace(habit, saveHabitCallback, this);
     }
 
     /**
@@ -114,15 +114,15 @@ public class HabitsRepository implements HabitsDataSource, HabitsDataSource.Sync
      * Ideally, the cache will contain the information allowing
      * for fast retrieval and less I/O operations.
      *
-     * @param callback  the callback that will be used to notify when habits
+     * @param loadHabitsCallback  the callback that will be used to notify when habits
      *                      are retrieved
      */
     @Override
-    public void retrieveAllHabits(@NonNull final HabitsDataSource.LoadHabitsCallback callback) {
-        checkNotNull(callback);
+    public void retrieveAllHabits(@NonNull final HabitsDataSource.LoadHabitsCallback loadHabitsCallback) {
+        checkNotNull(loadHabitsCallback);
 
         if(mCachedHabits != null) { /** Check if data is in cache */
-            callback.onHabitsLoaded(new ArrayList<>(mCachedHabits.values()));
+            loadHabitsCallback.onHabitsLoaded(new ArrayList<>(mCachedHabits.values()));
         }
         else { /** If no data in cache, then load from local storage */
             mHabitsLocalDataSource.queryAllHabits(new LoadHabitsCallback() {
@@ -130,14 +130,13 @@ public class HabitsRepository implements HabitsDataSource, HabitsDataSource.Sync
                 @Override
                 public void onHabitsLoaded(@NonNull List<Habit> habits) {
                     refreshCache(habits); /** Update cache to resulting query */
-                    callback.onHabitsLoaded(habits);
+                    loadHabitsCallback.onHabitsLoaded(habits);
                 }
 
                 @Override
                 public void onDataNotAvailable() {
                     /** TODO: Figure out view layout for no data */
                 }
-
             });
         }
     }
@@ -148,13 +147,23 @@ public class HabitsRepository implements HabitsDataSource, HabitsDataSource.Sync
     @Override
     public void removeAllHabits() {
         mHabitsLocalDataSource.deleteAllHabits();
-
         if(mCachedHabits == null) {
             mCachedHabits = new LinkedHashMap<>();
         }
         mCachedHabits.clear();
     }
 
+    /**
+     * Method is callback for when the database generates an ID
+     * for the habit. It will then use the ID to add the habit to
+     * the cache with the correct information. NOTE: This was
+     * necessary because the database generates the ID and we
+     * can't know it until it finally adds the habit and reports
+     * the ID
+     *
+     * @param id    the id of the habit that was added
+     * @param habit the habit that was added to the database
+     */
     @Override
     public void onHabitIdGenerated(long id, @NonNull final Habit habit) {
         if(mCachedHabits == null) {

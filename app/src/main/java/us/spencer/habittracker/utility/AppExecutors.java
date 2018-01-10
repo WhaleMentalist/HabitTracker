@@ -5,7 +5,6 @@ import android.os.Looper;
 import android.support.annotation.NonNull;
 
 import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorService;
 
 /**
  * Modified from source code on 'googlesamples/android-architecture'. It will allow
@@ -16,6 +15,7 @@ import java.util.concurrent.ExecutorService;
  */
 public class AppExecutors {
 
+    /** Eventually plan to add a network, so another thread is necessary */
     private static final int THREAD_COUNT = 2;
 
     private final Executor mDiskIO;
