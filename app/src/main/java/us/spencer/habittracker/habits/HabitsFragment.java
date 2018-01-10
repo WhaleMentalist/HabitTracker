@@ -123,7 +123,7 @@ public class HabitsFragment extends Fragment implements HabitsContract.View {
 
         private List<Habit> mHabits;
 
-        public HabitsAdapter(List<Habit> habits) {
+        private HabitsAdapter(List<Habit> habits) {
             setList(habits);
         }
 
@@ -132,7 +132,7 @@ public class HabitsFragment extends Fragment implements HabitsContract.View {
          *
          * @param habits    the new list to assign
          */
-        public void replaceData(List<Habit> habits) {
+        private void replaceData(List<Habit> habits) {
             setList(habits);
             notifyDataSetChanged();
         }
@@ -152,8 +152,7 @@ public class HabitsFragment extends Fragment implements HabitsContract.View {
         public HabitViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
             View itemView = LayoutInflater.from(viewGroup.getContext())
                     .inflate(R.layout.habit_item, viewGroup, false);
-            HabitViewHolder habitViewHolder = new HabitViewHolder(itemView);
-            return habitViewHolder;
+            return new HabitViewHolder(itemView);
         }
 
         @Override
@@ -176,9 +175,9 @@ public class HabitsFragment extends Fragment implements HabitsContract.View {
         /**
          * {@link HabitViewHolder} allows reduced calls to 'getView', which
          * increase allowable scroll speed. Allows application to 'hold' view
-         * item in memory instead of creating a new view.
+         * item in memory instead of creating a new view, which is costly.
          */
-        public class HabitViewHolder extends RecyclerView.ViewHolder {
+        protected class HabitViewHolder extends RecyclerView.ViewHolder {
 
             private TextView mHabitName;
 
@@ -186,7 +185,7 @@ public class HabitsFragment extends Fragment implements HabitsContract.View {
 
             private Switch mHabitStatus;
 
-            public HabitViewHolder(View itemView) {
+            private HabitViewHolder(View itemView) {
                 super(itemView);
                 mHabitName = itemView.findViewById(R.id.habit_item_name_tv);
                 mHabitDesc = itemView.findViewById(R.id.habit_item_desc_tv);
@@ -196,11 +195,13 @@ public class HabitsFragment extends Fragment implements HabitsContract.View {
                     @Override
                     public void onCheckedChanged(CompoundButton compoundButton, boolean value) {
                         final Habit habit = mHabits.get(getAdapterPosition());
-                        // Repetition repetition = new Repetition(new TimeStamp(Instant.now()),
-                        //         habit.getId());
-                        mPresenter.addRepetition(habit.getId(), new TimeStamp(Instant.now()));
-                        // mPresenter.addRepetition(new TimeStamp(Instant.now()), habit.getId());
 
+                        if(value) {
+                            mPresenter.addRepetition(habit.getId(), new TimeStamp(Instant.now()));
+                        }
+                        else {
+                            mPresenter.deleteRepetition(habit.getId(), new TimeStamp(Instant.now()));
+                        }
                     }
                 });
 
@@ -208,7 +209,6 @@ public class HabitsFragment extends Fragment implements HabitsContract.View {
 
                     @Override
                     public void onClick(View view) {
-
                         final Habit habit = mHabits.get(getAdapterPosition());
                         Toast.makeText(getActivity(),
                                 habit.getId() + " : " + habit.getName() + " was clicked",

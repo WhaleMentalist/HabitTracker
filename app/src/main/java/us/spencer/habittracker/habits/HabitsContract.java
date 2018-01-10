@@ -8,6 +8,7 @@ import java.util.List;
 import us.spencer.habittracker.BasePresenter;
 import us.spencer.habittracker.BaseView;
 import us.spencer.habittracker.model.Habit;
+import us.spencer.habittracker.model.Repetition;
 import us.spencer.habittracker.model.TimeStamp;
 
 /**
@@ -29,6 +30,8 @@ public interface HabitsContract {
         void addHabit();
 
         void addRepetition(final long habitId, @NonNull final TimeStamp timeStamp);
+
+        void deleteRepetition(final long habitId, @NonNull final TimeStamp timeStamp);
 
         void loadHabits();
     }

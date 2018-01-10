@@ -2,6 +2,7 @@ package us.spencer.habittracker.habits;
 
 import android.support.annotation.NonNull;
 
+import java.sql.Time;
 import java.util.List;
 
 import us.spencer.habittracker.database.HabitsDataSource;
@@ -53,6 +54,12 @@ public class HabitsPresenter implements HabitsContract.Presenter {
             }
 
         });
+    }
+
+    @Override
+    public void deleteRepetition(final long habitId, @NonNull final TimeStamp timeStamp) {
+        final Repetition repetition = new Repetition(timeStamp, habitId);
+        mHabitsRepository.deleteRepetition(habitId, repetition);
     }
 
     public void start() {

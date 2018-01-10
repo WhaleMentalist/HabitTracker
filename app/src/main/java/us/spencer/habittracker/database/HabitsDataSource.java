@@ -54,6 +54,9 @@ public interface HabitsDataSource {
 
         void insertRepetition(final long habitId,
                               @NonNull final Repetition repetition);
+
+        void deleteRepetition(final long habitId,
+                              @NonNull final Repetition repetition);
     }
 
     /**
@@ -70,5 +73,8 @@ public interface HabitsDataSource {
     void deleteAllHabits();
 
     void insertRepetition(final long habitId,
+                          @NonNull final Repetition repetition);
+
+    void deleteRepetition(final long habitId,
                           @NonNull final Repetition repetition);
 }

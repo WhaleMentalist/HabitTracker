@@ -25,10 +25,11 @@ public class HabitsRepository implements HabitsDataSource, HabitsDataSource.Sync
 
     private final HabitsDataSource.Database mHabitsLocalDataSource;
 
-    /** Useful in preventing too many I/O operations that are unnecessary by keeping
-     * query results in main memory */
     @VisibleForTesting
     Map<Long, Habit> mCachedHabits;
+
+    @VisibleForTesting
+    Map<Long, Repetition> mCachedRepitions;
 
     /**
      * Private constructor to enforce singleton design pattern
@@ -138,9 +139,35 @@ public class HabitsRepository implements HabitsDataSource, HabitsDataSource.Sync
         mCachedHabits.clear();
     }
 
+    /**
+     * Method inserts a repetition into database. The repetition
+     * has a key to the habit that was completed.
+     *
+     * @param habitId   the id of habit that had repetition occur
+     * @param repetition    the repetition with timestamp inside
+     */
     @Override
     public void insertRepetition(final long habitId, @NonNull final Repetition repetition) {
         mHabitsLocalDataSource.insertRepetition(habitId, repetition);
+        if(mCachedRepitions == null) {
+            mCachedRepitions = new LinkedHashMap<>();
+        }
+        mCachedRepitions.put(habitId, repetition);
+    }
+
+    /**
+     * Method deletes repetition to associated habit.
+     *
+     * @param habitId   the id of habit
+     * @param repetition    the repetition that will be removed
+     */
+    @Override
+    public void deleteRepetition(final long habitId, @NonNull final Repetition repetition) {
+        mHabitsLocalDataSource.deleteRepetition(habitId, repetition);
+        if(mCachedRepitions == null) {
+            mCachedRepitions = new LinkedHashMap<>();
+        }
+        mCachedRepitions.remove(habitId);
     }
 
     /**
