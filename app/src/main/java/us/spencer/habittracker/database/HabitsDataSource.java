@@ -5,37 +5,77 @@ import android.support.annotation.NonNull;
 import java.util.List;
 
 import us.spencer.habittracker.model.Habit;
+import us.spencer.habittracker.model.HabitRepetitions;
+import us.spencer.habittracker.model.Repetition;
 
 /**
  * Entry point for accessing habit data.
  */
 public interface HabitsDataSource {
 
+    /**
+     * =======================================================================
+     * CALLBACKS
+     * =======================================================================
+     */
+
     interface SaveHabitCallback {
 
         void onHabitSaved();
 
-        void onDuplicateHabit();
-    }
-
-    interface SaveRepetitionCallback {
-
-        void onRepetitionSaved();
     }
 
     interface LoadHabitsCallback {
 
-        void onHabitsLoaded(@NonNull List<Habit> habits);
+        void onHabitsLoaded(@NonNull List<HabitRepetitions> habits);
 
         void onDataNotAvailable();
     }
 
-    void saveHabitNoReplace(@NonNull final Habit habit, @NonNull SaveHabitCallback callback);
+    interface SyncCacheCallback {
 
-    void saveHabitReplace(@NonNull final Habit habit, @NonNull SaveHabitCallback callback);
+        void onHabitIdGenerated(final long id, @NonNull final Habit habit);
+    }
 
-    void getHabits(@NonNull final LoadHabitsCallback callback);
+    /**
+     * =======================================================================
+     * DATABASE
+     * =======================================================================
+     */
+
+    interface Database {
+
+        void insertHabit(@NonNull final Habit habit,
+                         @NonNull final SaveHabitCallback saveHabitCallback,
+                         @NonNull final SyncCacheCallback syncCacheCallback);
+
+        void queryAllHabits(@NonNull final LoadHabitsCallback callback);
+
+        void deleteAllHabits();
+
+        void insertRepetition(final long habitId,
+                              @NonNull final Repetition repetition);
+
+        void deleteRepetition(final long habitId,
+                              @NonNull final Repetition repetition);
+    }
+
+    /**
+     * =======================================================================
+     * REPOSITORY (i.e the general interface for getting data)
+     * =======================================================================
+     */
+
+    void insertHabit(@NonNull final Habit habit,
+                     @NonNull final SaveHabitCallback saveHabitCallback);
+
+    void queryAllHabits(@NonNull final LoadHabitsCallback loadHabitsCallback);
 
     void deleteAllHabits();
 
+    void insertRepetition(final long habitId,
+                          @NonNull final Repetition repetition);
+
+    void deleteRepetition(final long habitId,
+                          @NonNull final Repetition repetition);
 }

@@ -15,6 +15,7 @@ import java.util.concurrent.Executor;
  */
 public class AppExecutors {
 
+    /** Eventually plan to add a network, so another thread is necessary */
     private static final int THREAD_COUNT = 2;
 
     private final Executor mDiskIO;

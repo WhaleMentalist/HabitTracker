@@ -1,13 +1,15 @@
 package us.spencer.habittracker.habits;
 
 import android.support.annotation.NonNull;
-import android.support.annotation.VisibleForTesting;
-import android.support.test.espresso.idling.CountingIdlingResource;
 
+import java.sql.Time;
 import java.util.List;
 
 import us.spencer.habittracker.database.HabitsDataSource;
 import us.spencer.habittracker.model.Habit;
+import us.spencer.habittracker.model.HabitRepetitions;
+import us.spencer.habittracker.model.Repetition;
+import us.spencer.habittracker.model.TimeStamp;
 import us.spencer.habittracker.utility.EspressoCountingIdlingResource;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -32,12 +34,17 @@ public class HabitsPresenter implements HabitsContract.Presenter {
         mHabitsView.showAddHabit();
     }
 
+    public void addRepetition(final long habitId, @NonNull final TimeStamp timeStamp) {
+        final Repetition repetition = new Repetition(timeStamp, habitId);
+        mHabitsRepository.insertRepetition(habitId, repetition);
+    }
+
     public void loadHabits() {
         EspressoCountingIdlingResource.getIdlingResource().increment();
-        mHabitsRepository.getHabits(new HabitsDataSource.LoadHabitsCallback() {
+        mHabitsRepository.queryAllHabits(new HabitsDataSource.LoadHabitsCallback() {
 
             @Override
-            public void onHabitsLoaded(@NonNull List<Habit> habits) {
+            public void onHabitsLoaded(@NonNull List<HabitRepetitions> habits) {
                 EspressoCountingIdlingResource.getIdlingResource().decrement();
                 mHabitsView.showHabits(habits);
             }
@@ -48,6 +55,12 @@ public class HabitsPresenter implements HabitsContract.Presenter {
             }
 
         });
+    }
+
+    @Override
+    public void deleteRepetition(final long habitId, @NonNull final TimeStamp timeStamp) {
+        final Repetition repetition = new Repetition(timeStamp, habitId);
+        mHabitsRepository.deleteRepetition(habitId, repetition);
     }
 
     public void start() {

@@ -18,6 +18,6 @@ public class Injection {
         checkNotNull(context);
         AppDatabase database = AppDatabase.getInstance(context);
         return HabitsRepository.getInstance(HabitsLocalDataSource.getInstance(new AppExecutors(),
-                database.habitDAO()));
+                database.habitDAO(), database.repetitionsDAO(), database.habitRepetitionsDAO()));
     }
 }

@@ -27,23 +27,16 @@ public class AddHabitPresenter implements AddHabitContract.Presenter,
     public void start() {}
 
     @Override
-    public void addHabit(final String title, final String description) {
+    public void addHabit(@NonNull final String title, @NonNull final String description) {
         Habit habit = new Habit(title, description);
 
         if(habit.isEmpty()) {
             mAddHabitView.showEmptyHabitError();
         }
         else {
-            mHabitsRepository.saveHabitNoReplace(habit, this);
+            mHabitsRepository.insertHabit(habit, this);
         }
 
-    }
-
-    @Override
-    public void modifyHabit(@NonNull final String title, @NonNull final String description) {
-        checkNotNull(title, description);
-        Habit habit = new Habit(title, description);
-        mHabitsRepository.saveHabitReplace(habit, this);
     }
 
     @Override
@@ -51,8 +44,4 @@ public class AddHabitPresenter implements AddHabitContract.Presenter,
         mAddHabitView.showHabitsList();
     }
 
-    @Override
-    public void onDuplicateHabit() {
-        mAddHabitView.showDuplicateHabitMessage();
-    }
 }

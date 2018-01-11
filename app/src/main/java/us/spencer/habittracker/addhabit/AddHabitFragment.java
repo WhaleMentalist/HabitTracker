@@ -99,35 +99,6 @@ public class AddHabitFragment extends Fragment implements AddHabitContract.View 
     }
 
     @Override
-    public void showDuplicateHabitMessage() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setMessage(R.string.duplicate_mess)
-                .setTitle(R.string.duplicate_title)
-                .setCancelable(false)
-                .setPositiveButton(R.string.duplicate_dialog_positive_btn,
-                        new DialogInterface.OnClickListener() {
-
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        /** Presenter request replacement of habit */
-                        mPresenter.modifyHabit(mTitle.getText().toString(), mDescription.getText().toString());
-                    }
-                })
-                .setNegativeButton(R.string.duplicate_dialog_negative_btn,
-
-                        new DialogInterface.OnClickListener() {
-
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        /** ? */
-                    }
-                });
-
-        AlertDialog alertDialog = builder.create();
-        alertDialog.show();
-    }
-
-    @Override
     public boolean isActive() {
         return isAdded();
     }

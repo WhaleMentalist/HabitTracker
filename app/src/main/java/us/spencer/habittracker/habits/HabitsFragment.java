@@ -3,6 +3,7 @@ package us.spencer.habittracker.habits;
 import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -11,12 +12,14 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.joda.time.Instant;
+
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,6 +28,9 @@ import javax.annotation.Nonnull;
 import us.spencer.habittracker.R;
 import us.spencer.habittracker.addhabit.AddHabitActivity;
 import us.spencer.habittracker.model.Habit;
+import us.spencer.habittracker.model.HabitRepetitions;
+import us.spencer.habittracker.model.Repetition;
+import us.spencer.habittracker.model.TimeStamp;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -62,7 +68,7 @@ public class HabitsFragment extends Fragment implements HabitsContract.View {
         rv.setLayoutManager(new LinearLayoutManager(getActivity()));
         rv.setHasFixedSize(true);
 
-        mAdapter = new HabitsAdapter(new ArrayList<Habit>());
+        mAdapter = new HabitsAdapter(new ArrayList<HabitRepetitions>());
         rv.setAdapter(mAdapter);
 
         return root;
@@ -96,7 +102,7 @@ public class HabitsFragment extends Fragment implements HabitsContract.View {
     }
 
     @Override
-    public void showHabits(List<Habit> habits) {
+    public void showHabits(List<HabitRepetitions> habits) {
         mAdapter.replaceData(habits);
     }
 
@@ -117,9 +123,9 @@ public class HabitsFragment extends Fragment implements HabitsContract.View {
      */
     private class HabitsAdapter extends RecyclerView.Adapter<HabitsAdapter.HabitViewHolder> {
 
-        private List<Habit> mHabits;
+        private List<HabitRepetitions> mHabits;
 
-        public HabitsAdapter(List<Habit> habits) {
+        private HabitsAdapter(List<HabitRepetitions> habits) {
             setList(habits);
         }
 
@@ -128,7 +134,7 @@ public class HabitsFragment extends Fragment implements HabitsContract.View {
          *
          * @param habits    the new list to assign
          */
-        public void replaceData(List<Habit> habits) {
+        private void replaceData(List<HabitRepetitions> habits) {
             setList(habits);
             notifyDataSetChanged();
         }
@@ -140,7 +146,7 @@ public class HabitsFragment extends Fragment implements HabitsContract.View {
          *
          * @param habits    the new list to assign
          */
-        private void setList(List<Habit> habits) {
+        private void setList(List<HabitRepetitions> habits) {
             mHabits = checkNotNull(habits);
         }
 
@@ -148,15 +154,16 @@ public class HabitsFragment extends Fragment implements HabitsContract.View {
         public HabitViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
             View itemView = LayoutInflater.from(viewGroup.getContext())
                     .inflate(R.layout.habit_item, viewGroup, false);
-            HabitViewHolder habitViewHolder = new HabitViewHolder(itemView);
-            return habitViewHolder;
+            return new HabitViewHolder(itemView);
         }
 
         @Override
         public void onBindViewHolder(final HabitViewHolder viewHolder, int i) {
-            final Habit habit = mHabits.get(i);
-            viewHolder.mHabitName.setText(habit.getName());
-            viewHolder.mHabitDesc.setText(habit.getDescription());
+            final HabitRepetitions habit = mHabits.get(i);
+            viewHolder.mHabitName.setText(habit.getHabit().getName());
+            viewHolder.mHabitDesc.setText(habit.getHabit().getDescription());
+            viewHolder.mHabitStatus.setChecked(habit.getRepetitions()
+                    .contains(new Repetition(TimeStamp.getToday(), habit.getHabit().getId())));
         }
 
         @Override
@@ -172,9 +179,9 @@ public class HabitsFragment extends Fragment implements HabitsContract.View {
         /**
          * {@link HabitViewHolder} allows reduced calls to 'getView', which
          * increase allowable scroll speed. Allows application to 'hold' view
-         * item in memory instead of creating a new view.
+         * item in memory instead of creating a new view, which is costly.
          */
-        public class HabitViewHolder extends RecyclerView.ViewHolder {
+        protected class HabitViewHolder extends RecyclerView.ViewHolder {
 
             private TextView mHabitName;
 
@@ -182,19 +189,23 @@ public class HabitsFragment extends Fragment implements HabitsContract.View {
 
             private Switch mHabitStatus;
 
-            public HabitViewHolder(View itemView) {
+            private HabitViewHolder(View itemView) {
                 super(itemView);
                 mHabitName = itemView.findViewById(R.id.habit_item_name_tv);
                 mHabitDesc = itemView.findViewById(R.id.habit_item_desc_tv);
                 mHabitStatus = itemView.findViewById(R.id.habit_status_switch);
+
                 mHabitStatus.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 
                     @Override
                     public void onCheckedChanged(CompoundButton compoundButton, boolean value) {
-                        final Habit habit = mHabits.get(getAdapterPosition());
-                        Toast.makeText(getActivity(),
-                                habit.getName() + (value ? " : Completed" : " : Incomplete"),
-                                Toast.LENGTH_SHORT).show();
+                        final Habit habit = mHabits.get(getAdapterPosition()).getHabit();
+                        if(value) {
+                            mPresenter.addRepetition(habit.getId(), new TimeStamp(Instant.now()));
+                        }
+                        else {
+                            mPresenter.deleteRepetition(habit.getId(), new TimeStamp(Instant.now()));
+                        }
                     }
                 });
 
@@ -202,9 +213,9 @@ public class HabitsFragment extends Fragment implements HabitsContract.View {
 
                     @Override
                     public void onClick(View view) {
-                        final Habit habit = mHabits.get(getAdapterPosition());
+                        final Habit habit = mHabits.get(getAdapterPosition()).getHabit();
                         Toast.makeText(getActivity(),
-                                habit.getName() + " was selected",
+                                habit.getId() + " : " + habit.getName() + " was clicked",
                                 Toast.LENGTH_SHORT).show();
                     }
                 });
