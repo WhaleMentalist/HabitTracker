@@ -6,8 +6,6 @@ import org.joda.time.DateTime;
 import org.joda.time.Instant;
 import org.joda.time.LocalDateTime;
 
-import java.sql.Time;
-
 /**
  * Class represents an instant in time in which a
  * particular event occurred. It is focused on the
@@ -83,6 +81,6 @@ public class TimeStamp {
 
     @Override
     public int hashCode() {
-        return Long.valueOf(mDateTime.getMillis()).hashCode()
+        return Long.valueOf(mDateTime.getMillis()).hashCode();
     }
 }

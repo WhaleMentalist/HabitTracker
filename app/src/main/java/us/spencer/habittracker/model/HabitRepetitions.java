@@ -1,9 +1,11 @@
 package us.spencer.habittracker.model;
 
 import android.arch.persistence.room.Embedded;
+import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.Relation;
 import android.support.annotation.NonNull;
 
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -19,6 +21,14 @@ public class HabitRepetitions {
 
     @Relation(parentColumn = "id", entityColumn = "habit_id")
     private Set<Repetition> mRepetitions;
+
+    public HabitRepetitions() { }
+
+    @Ignore
+    public HabitRepetitions(@NonNull final Habit habit) {
+        mHabit = habit;
+        mRepetitions = new HashSet<>();
+    }
 
     @NonNull
     public Habit getHabit() {

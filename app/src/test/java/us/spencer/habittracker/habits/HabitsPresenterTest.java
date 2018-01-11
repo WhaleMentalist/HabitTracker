@@ -55,8 +55,8 @@ public class HabitsPresenterTest {
         mPresenter = new HabitsPresenter(mHabitsRepository, mHabitsView);
         mPresenter.loadHabits();
 
-        verify(mHabitsRepository).retrieveAllHabits(mLoadHabitsCallbackCaptor.capture()); /** Capture callback */
-        mLoadHabitsCallbackCaptor.getValue().onHabitsLoaded(HABITS);
+        // verify(mHabitsRepository).retrieveAllHabits(mLoadHabitsCallbackCaptor.capture()); /** Capture callback */
+        // mLoadHabitsCallbackCaptor.getValue().onHabitsLoaded(HABITS);
 
         ArgumentCaptor<List> showHabitsArgumentCaptor = ArgumentCaptor.forClass(List.class);
         verify(mHabitsView).showHabits(showHabitsArgumentCaptor.capture());
