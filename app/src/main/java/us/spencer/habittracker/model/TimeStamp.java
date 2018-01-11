@@ -6,6 +6,8 @@ import org.joda.time.DateTime;
 import org.joda.time.Instant;
 import org.joda.time.LocalDateTime;
 
+import java.sql.Time;
+
 /**
  * Class represents an instant in time in which a
  * particular event occurred. It is focused on the
@@ -59,5 +61,28 @@ public class TimeStamp {
 
     public DateTime getDateTime() {
         return mDateTime;
+    }
+
+    public static TimeStamp getToday() {
+        return new TimeStamp(Instant.now());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        boolean flag = false;
+        if(this == o) {
+            flag = true;
+        }
+
+        TimeStamp timeStamp = (TimeStamp) o;
+        if(mDateTime.getMillis() == timeStamp.mDateTime.getMillis()) {
+            flag = true;
+        }
+        return flag;
+    }
+
+    @Override
+    public int hashCode() {
+        return Long.valueOf(mDateTime.getMillis()).hashCode()
     }
 }

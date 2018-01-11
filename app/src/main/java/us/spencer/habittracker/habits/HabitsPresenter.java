@@ -7,6 +7,7 @@ import java.util.List;
 
 import us.spencer.habittracker.database.HabitsDataSource;
 import us.spencer.habittracker.model.Habit;
+import us.spencer.habittracker.model.HabitRepetitions;
 import us.spencer.habittracker.model.Repetition;
 import us.spencer.habittracker.model.TimeStamp;
 import us.spencer.habittracker.utility.EspressoCountingIdlingResource;
@@ -43,7 +44,7 @@ public class HabitsPresenter implements HabitsContract.Presenter {
         mHabitsRepository.queryAllHabits(new HabitsDataSource.LoadHabitsCallback() {
 
             @Override
-            public void onHabitsLoaded(@NonNull List<Habit> habits) {
+            public void onHabitsLoaded(@NonNull List<HabitRepetitions> habits) {
                 EspressoCountingIdlingResource.getIdlingResource().decrement();
                 mHabitsView.showHabits(habits);
             }

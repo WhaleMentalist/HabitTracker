@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import java.util.List;
 
 import us.spencer.habittracker.model.Habit;
+import us.spencer.habittracker.model.HabitRepetitions;
 import us.spencer.habittracker.model.Repetition;
 
 /**
@@ -26,7 +27,7 @@ public interface HabitsDataSource {
 
     interface LoadHabitsCallback {
 
-        void onHabitsLoaded(@NonNull List<Habit> habits);
+        void onHabitsLoaded(@NonNull List<HabitRepetitions> habits);
 
         void onDataNotAvailable();
     }

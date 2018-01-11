@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import java.util.List;
+import java.util.Set;
 
 import us.spencer.habittracker.database.dao.HabitRepetitionsDAO;
 import us.spencer.habittracker.database.dao.HabitsDAO;
@@ -116,7 +117,7 @@ public class HabitsLocalDataSource implements HabitsDataSource.Database {
 
             @Override
             public void run() {
-                final List<Habit> habits = mHabitsDAO.getHabits();
+                final List<HabitRepetitions> habits = mHabitRepetitionsDAO.getHabitsWithRepetitions();
                 if(habits.isEmpty()) {
                     mAppExecutors.mainThread().execute(new Runnable() {
                         @Override

@@ -29,4 +29,5 @@ public interface RepetitionsDAO {
      */
     @Delete
     void deleteRepetition(final Repetition repetition);
+
 }

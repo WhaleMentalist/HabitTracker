@@ -4,7 +4,7 @@ import android.arch.persistence.room.Embedded;
 import android.arch.persistence.room.Relation;
 import android.support.annotation.NonNull;
 
-import java.util.List;
+import java.util.Set;
 
 /**
  * Basically this can be thought of as a natural join between the 'habits' and 'repetitions'
@@ -18,7 +18,7 @@ public class HabitRepetitions {
     private Habit mHabit;
 
     @Relation(parentColumn = "id", entityColumn = "habit_id")
-    private List<Repetition> mRepetitions;
+    private Set<Repetition> mRepetitions;
 
     @NonNull
     public Habit getHabit() {
@@ -26,7 +26,7 @@ public class HabitRepetitions {
     }
 
     @NonNull
-    public List<Repetition> getRepetitions() {
+    public Set<Repetition> getRepetitions() {
         return mRepetitions;
     }
 
@@ -34,7 +34,7 @@ public class HabitRepetitions {
         mHabit = habit;
     }
 
-    public void setRepetitions(@NonNull final List<Repetition> repetitions) {
+    public void setRepetitions(@NonNull final Set<Repetition> repetitions) {
         mRepetitions = repetitions;
     }
 }

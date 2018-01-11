@@ -4,11 +4,13 @@ import android.support.annotation.NonNull;
 import android.support.annotation.VisibleForTesting;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import us.spencer.habittracker.model.Habit;
+import us.spencer.habittracker.model.HabitRepetitions;
 import us.spencer.habittracker.model.Repetition;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -26,10 +28,7 @@ public class HabitsRepository implements HabitsDataSource, HabitsDataSource.Sync
     private final HabitsDataSource.Database mHabitsLocalDataSource;
 
     @VisibleForTesting
-    Map<Long, Habit> mCachedHabits;
-
-    @VisibleForTesting
-    Map<Long, Repetition> mCachedRepitions;
+    Map<Long, HabitRepetitions> mCachedHabits;
 
     /**
      * Private constructor to enforce singleton design pattern
@@ -61,7 +60,7 @@ public class HabitsRepository implements HabitsDataSource, HabitsDataSource.Sync
      *
      * @param habits    the habits retrieved from storage
      */
-    private void refreshCache(@NonNull List<Habit> habits) {
+    private void refreshCache(@NonNull List<HabitRepetitions> habits) {
         checkNotNull(habits);
 
         if(mCachedHabits == null) {
@@ -70,8 +69,8 @@ public class HabitsRepository implements HabitsDataSource, HabitsDataSource.Sync
 
         mCachedHabits.clear();
 
-        for(Habit habit : habits) {
-            mCachedHabits.put(habit.getId(), habit);
+        for(HabitRepetitions habit : habits) {
+            mCachedHabits.put(habit.getHabit().getId(), habit);
         }
     }
 
@@ -114,7 +113,7 @@ public class HabitsRepository implements HabitsDataSource, HabitsDataSource.Sync
             mHabitsLocalDataSource.queryAllHabits(new HabitsDataSource.LoadHabitsCallback() {
 
                 @Override
-                public void onHabitsLoaded(@NonNull List<Habit> habits) {
+                public void onHabitsLoaded(@NonNull List<HabitRepetitions> habits) {
                     refreshCache(habits);
                     loadHabitsCallback.onHabitsLoaded(habits);
                 }
@@ -149,10 +148,10 @@ public class HabitsRepository implements HabitsDataSource, HabitsDataSource.Sync
     @Override
     public void insertRepetition(final long habitId, @NonNull final Repetition repetition) {
         mHabitsLocalDataSource.insertRepetition(habitId, repetition);
-        if(mCachedRepitions == null) {
-            mCachedRepitions = new LinkedHashMap<>();
+        if(mCachedHabits == null) {
+            mCachedHabits = new LinkedHashMap<>();
         }
-        mCachedRepitions.put(habitId, repetition);
+        mCachedHabits.get(habitId).getRepetitions().add(repetition);
     }
 
     /**
@@ -164,10 +163,10 @@ public class HabitsRepository implements HabitsDataSource, HabitsDataSource.Sync
     @Override
     public void deleteRepetition(final long habitId, @NonNull final Repetition repetition) {
         mHabitsLocalDataSource.deleteRepetition(habitId, repetition);
-        if(mCachedRepitions == null) {
-            mCachedRepitions = new LinkedHashMap<>();
+        if(mCachedHabits == null) {
+            mCachedHabits = new LinkedHashMap<>();
         }
-        mCachedRepitions.remove(habitId);
+        mCachedHabits.get(habitId).getRepetitions().remove(repetition);
     }
 
     /**
@@ -176,7 +175,7 @@ public class HabitsRepository implements HabitsDataSource, HabitsDataSource.Sync
      * the cache with the correct information. NOTE: This was
      * necessary because the database generates the ID and we
      * can't know it until it finally adds the habit and reports
-     * the ID
+     * the ID. It should not contain any repetitions on addition
      *
      * @param id    the id of the habit that was added
      * @param habit the habit that was added to the database
@@ -187,6 +186,9 @@ public class HabitsRepository implements HabitsDataSource, HabitsDataSource.Sync
             mCachedHabits = new LinkedHashMap<>();
         }
         habit.setId(id);
-        mCachedHabits.put(id, habit);
+        HabitRepetitions habitRepetitions = new HabitRepetitions();
+        habitRepetitions.setHabit(habit);
+        habitRepetitions.setRepetitions(new HashSet<Repetition>());
+        mCachedHabits.put(id, habitRepetitions);
     }
 }

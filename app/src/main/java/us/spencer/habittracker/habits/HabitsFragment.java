@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import org.joda.time.Instant;
 
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,6 +28,7 @@ import javax.annotation.Nonnull;
 import us.spencer.habittracker.R;
 import us.spencer.habittracker.addhabit.AddHabitActivity;
 import us.spencer.habittracker.model.Habit;
+import us.spencer.habittracker.model.HabitRepetitions;
 import us.spencer.habittracker.model.Repetition;
 import us.spencer.habittracker.model.TimeStamp;
 
@@ -66,7 +68,7 @@ public class HabitsFragment extends Fragment implements HabitsContract.View {
         rv.setLayoutManager(new LinearLayoutManager(getActivity()));
         rv.setHasFixedSize(true);
 
-        mAdapter = new HabitsAdapter(new ArrayList<Habit>());
+        mAdapter = new HabitsAdapter(new ArrayList<HabitRepetitions>());
         rv.setAdapter(mAdapter);
 
         return root;
@@ -100,7 +102,7 @@ public class HabitsFragment extends Fragment implements HabitsContract.View {
     }
 
     @Override
-    public void showHabits(List<Habit> habits) {
+    public void showHabits(List<HabitRepetitions> habits) {
         mAdapter.replaceData(habits);
     }
 
@@ -121,9 +123,9 @@ public class HabitsFragment extends Fragment implements HabitsContract.View {
      */
     private class HabitsAdapter extends RecyclerView.Adapter<HabitsAdapter.HabitViewHolder> {
 
-        private List<Habit> mHabits;
+        private List<HabitRepetitions> mHabits;
 
-        private HabitsAdapter(List<Habit> habits) {
+        private HabitsAdapter(List<HabitRepetitions> habits) {
             setList(habits);
         }
 
@@ -132,7 +134,7 @@ public class HabitsFragment extends Fragment implements HabitsContract.View {
          *
          * @param habits    the new list to assign
          */
-        private void replaceData(List<Habit> habits) {
+        private void replaceData(List<HabitRepetitions> habits) {
             setList(habits);
             notifyDataSetChanged();
         }
@@ -144,7 +146,7 @@ public class HabitsFragment extends Fragment implements HabitsContract.View {
          *
          * @param habits    the new list to assign
          */
-        private void setList(List<Habit> habits) {
+        private void setList(List<HabitRepetitions> habits) {
             mHabits = checkNotNull(habits);
         }
 
@@ -157,9 +159,11 @@ public class HabitsFragment extends Fragment implements HabitsContract.View {
 
         @Override
         public void onBindViewHolder(final HabitViewHolder viewHolder, int i) {
-            final Habit habit = mHabits.get(i);
-            viewHolder.mHabitName.setText(habit.getName());
-            viewHolder.mHabitDesc.setText(habit.getDescription());
+            final HabitRepetitions habit = mHabits.get(i);
+            viewHolder.mHabitName.setText(habit.getHabit().getName());
+            viewHolder.mHabitDesc.setText(habit.getHabit().getDescription());
+            viewHolder.mHabitStatus.setChecked(habit.getRepetitions()
+                    .contains(new Repetition(TimeStamp.getToday(), habit.getHabit().getId())));
         }
 
         @Override
@@ -190,12 +194,12 @@ public class HabitsFragment extends Fragment implements HabitsContract.View {
                 mHabitName = itemView.findViewById(R.id.habit_item_name_tv);
                 mHabitDesc = itemView.findViewById(R.id.habit_item_desc_tv);
                 mHabitStatus = itemView.findViewById(R.id.habit_status_switch);
+
                 mHabitStatus.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 
                     @Override
                     public void onCheckedChanged(CompoundButton compoundButton, boolean value) {
-                        final Habit habit = mHabits.get(getAdapterPosition());
-
+                        final Habit habit = mHabits.get(getAdapterPosition()).getHabit();
                         if(value) {
                             mPresenter.addRepetition(habit.getId(), new TimeStamp(Instant.now()));
                         }
@@ -209,7 +213,7 @@ public class HabitsFragment extends Fragment implements HabitsContract.View {
 
                     @Override
                     public void onClick(View view) {
-                        final Habit habit = mHabits.get(getAdapterPosition());
+                        final Habit habit = mHabits.get(getAdapterPosition()).getHabit();
                         Toast.makeText(getActivity(),
                                 habit.getId() + " : " + habit.getName() + " was clicked",
                                 Toast.LENGTH_SHORT).show();

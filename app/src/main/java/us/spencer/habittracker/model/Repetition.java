@@ -51,4 +51,24 @@ public class Repetition {
     public void setHabitId(final long habitId) {
         mHabitId = habitId;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        boolean result = false;
+        if(this == o) {
+            result = true;
+        }
+
+        Repetition repetition = (Repetition) o;
+        if(mTimeStamp.equals(repetition.mTimeStamp) &&
+                mHabitId == repetition.mHabitId) {
+            result = true;
+        }
+        return result;
+    }
+
+    @Override
+    public int hashCode() {
+        return mTimeStamp.hashCode() + Long.valueOf(mHabitId).hashCode();
+    }
 }
