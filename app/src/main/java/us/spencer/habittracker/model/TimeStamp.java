@@ -2,9 +2,11 @@ package us.spencer.habittracker.model;
 
 import android.support.annotation.NonNull;
 
+import org.joda.time.Chronology;
 import org.joda.time.DateTime;
 import org.joda.time.Instant;
 import org.joda.time.LocalDateTime;
+import org.joda.time.chrono.ISOChronology;
 
 /**
  * Class represents an instant in time in which a
@@ -14,6 +16,8 @@ import org.joda.time.LocalDateTime;
  * afternoon.
  */
 public class TimeStamp {
+
+    private static final Chronology ISO_CHRONOLOGY = ISOChronology.getInstance();
 
     /**
      * Represents 3 in the afternoon
@@ -41,7 +45,7 @@ public class TimeStamp {
      * @param instant   the time the event occurred
      */
     public TimeStamp(@NonNull Instant instant) {
-        mDateTime = new DateTime(instant)
+        mDateTime = new DateTime(instant, ISO_CHRONOLOGY)
                         .withTime(FIXED_HOUR, FIXED_MINUTES, FIXED_SECONDS, FIXED_MILLI);
     }
 
@@ -53,7 +57,7 @@ public class TimeStamp {
      * @param millis    the time in milliseconds after January 1, 1970
      */
     public TimeStamp(@NonNull Long millis) {
-        mDateTime = new DateTime(millis)
+        mDateTime = new DateTime(millis, ISO_CHRONOLOGY)
                         .withTime(FIXED_HOUR, FIXED_MINUTES, FIXED_SECONDS, FIXED_MILLI);
     }
 
