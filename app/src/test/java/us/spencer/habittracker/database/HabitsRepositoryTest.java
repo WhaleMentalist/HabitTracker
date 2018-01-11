@@ -2,6 +2,7 @@ package us.spencer.habittracker.database;
 
 import com.google.common.collect.Lists;
 
+import org.joda.time.Instant;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -10,7 +11,9 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.internal.matchers.Null;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -20,6 +23,7 @@ import us.spencer.habittracker.database.local.HabitsLocalDataSource;
 import us.spencer.habittracker.model.Habit;
 import us.spencer.habittracker.model.HabitRepetitions;
 import us.spencer.habittracker.model.Repetition;
+import us.spencer.habittracker.model.TimeStamp;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -83,6 +87,7 @@ public class HabitsRepositoryTest {
                 mSyncCacheCallbackCaptor.capture());
         mSyncCacheCallbackCaptor.getValue().onHabitIdGenerated(HABIT_ONE_ID, HABIT_ONE);
         assertThat(mHabitsRepository.mCachedHabits.size(), is(1));
+        assertThat(mHabitsRepository.mCachedHabits.containsKey(HABIT_ONE_ID), is(true));
     }
 
     @Test(expected = NullPointerException.class)
@@ -106,7 +111,27 @@ public class HabitsRepositoryTest {
     public void queryAllHabitsWhenCacheInSync_loadFromCache() {
         fillCache();
         assertThat(mHabitsRepository.mCachedHabits.size(), is(MOCK_LOCAL_STORAGE.size()));
+        mHabitsRepository.queryAllHabits(mLoadHabitsCallback);
         verify(mHabitsLocalDataSource, never()).queryAllHabits(eq(mLoadHabitsCallback));
+        verify(mLoadHabitsCallback).onHabitsLoaded(
+                new ArrayList<>(mHabitsRepository.mCachedHabits.values()));
+    }
+
+    @Test
+    public void deleteAllHabits_deleteFromLocalStorageAndCache() {
+        fillCache();
+        assertThat(mHabitsRepository.mCachedHabits.size(), is(MOCK_LOCAL_STORAGE.size()));
+        mHabitsRepository.deleteAllHabits();
+        verify(mHabitsLocalDataSource).deleteAllHabits();
+    }
+
+    @Test
+    public void deleteAllHabitsCacheNull_deleteFromLocalStorageAndInitializeCacheEmpty() {
+        assertThat(mHabitsRepository.mCachedHabits, nullValue());
+        mHabitsRepository.deleteAllHabits();
+        verify(mHabitsLocalDataSource).deleteAllHabits();
+        assertThat(mHabitsRepository.mCachedHabits, notNullValue());
+        assertThat(mHabitsRepository.mCachedHabits.size(), is(0));
     }
 
     /**

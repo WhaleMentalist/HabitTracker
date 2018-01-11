@@ -3,6 +3,7 @@ package us.spencer.habittracker.database;
 import android.support.annotation.NonNull;
 import android.support.annotation.VisibleForTesting;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -120,7 +121,7 @@ public class HabitsRepository implements HabitsDataSource, HabitsDataSource.Sync
 
                 @Override
                 public void onDataNotAvailable() {
-                    /* TODO: Figure out view layout for no data */
+                    loadHabitsCallback.onDataNotAvailable();
                 }
             });
         }

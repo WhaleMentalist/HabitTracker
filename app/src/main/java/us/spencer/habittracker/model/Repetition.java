@@ -6,10 +6,10 @@ import android.arch.persistence.room.ForeignKey;
 import android.arch.persistence.room.Index;
 import android.support.annotation.NonNull;
 
-import java.sql.Time;
+import static android.arch.persistence.room.ForeignKey.CASCADE;
 
 @Entity(tableName = "repetitions", primaryKeys = {"time_stamp", "habit_id"},
-        foreignKeys = @ForeignKey(entity = Habit.class,
+        foreignKeys = @ForeignKey(onDelete = CASCADE, entity = Habit.class,
                 parentColumns = "id",
                 childColumns = "habit_id"),
         indices = {@Index("habit_id")})
