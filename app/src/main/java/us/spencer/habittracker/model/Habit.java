@@ -1,5 +1,6 @@
 package us.spencer.habittracker.model;
 
+import android.animation.ObjectAnimator;
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
@@ -75,5 +76,19 @@ public class Habit {
     public boolean isEmpty() {
         return Strings.isNullOrEmpty(mName) ||
                 Strings.isNullOrEmpty(mDescription);
+    }
+
+    @Ignore
+    public boolean equals(Object o) {
+        boolean result = false;
+        if(this == o) {
+            result = true;
+        }
+
+        Habit habit = (Habit) o;
+        if(mName.equals(habit.mName) && mDescription.equals(habit.mDescription)) {
+            result = true;
+        }
+        return result;
     }
 }
