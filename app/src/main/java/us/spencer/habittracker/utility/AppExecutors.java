@@ -19,7 +19,7 @@ public class AppExecutors {
     /** Eventually plan to add a network, so another thread is necessary */
     private static final int THREAD_COUNT = 2;
 
-    private final Executor mDiskIO;
+    private final ExecutorService mDiskIO;
 
     private final Executor mMainThread;
 
@@ -47,7 +47,7 @@ public class AppExecutors {
      *
      * @return  the {@link Executor} that is responsible for handling I/O based operations
      */
-    public Executor diskIO() {
+    public ExecutorService diskIO() {
         return mDiskIO;
     }
 

@@ -9,6 +9,9 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import us.spencer.habittracker.model.Habit;
 import us.spencer.habittracker.model.HabitRepetitions;
@@ -22,7 +25,11 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * may be implemented for more interesting features
  * (i.e sharing completion of habit or habit list).
  */
-public class HabitsRepository implements HabitsDataSource, HabitsDataSource.SyncCacheCallback {
+public class HabitsRepository implements HabitsDataSource {
+
+    private static final Logger LOGGER = Logger.getLogger("HabitsRepository");
+
+    private static final int SQL_INSERTION_FAIL = -1;
 
     private static HabitsRepository INSTANCE  = null;
 
@@ -94,7 +101,28 @@ public class HabitsRepository implements HabitsDataSource, HabitsDataSource.Sync
     public void insertHabit(@NonNull final Habit habit,
                             @NonNull final HabitsDataSource.SaveHabitCallback saveHabitCallback) {
         checkNotNull(habit);
-        mHabitsLocalDataSource.insertHabit(habit, saveHabitCallback, this);
+        try {
+            long generatedId =
+                    mHabitsLocalDataSource.insertHabit(habit, saveHabitCallback);
+
+            if(mCachedHabits == null) {
+                mCachedHabits = new LinkedHashMap<>();
+            }
+
+            if(generatedId != SQL_INSERTION_FAIL) {
+                habit.setId(generatedId);
+                HabitRepetitions habitRepetitions = new HabitRepetitions();
+                habitRepetitions.setHabit(habit);
+                habitRepetitions.setRepetitions(new HashSet<Repetition>());
+                mCachedHabits.put(generatedId, habitRepetitions);
+            }
+        }
+        catch(InterruptedException e) {
+            LOGGER.log(Level.WARNING, e.getMessage());
+        }
+        catch (ExecutionException e) {
+            LOGGER.log(Level.WARNING, e.getMessage());
+        }
     }
 
     /**
@@ -168,28 +196,5 @@ public class HabitsRepository implements HabitsDataSource, HabitsDataSource.Sync
             mCachedHabits = new LinkedHashMap<>();
         }
         mCachedHabits.get(habitId).getRepetitions().remove(repetition);
-    }
-
-    /**
-     * Method is callback for when the database generates an ID
-     * for the habit. It will then use the ID to add the habit to
-     * the cache with the correct information. NOTE: This was
-     * necessary because the database generates the ID and we
-     * can't know it until it finally adds the habit and reports
-     * the ID. It should not contain any repetitions on addition
-     *
-     * @param id    the id of the habit that was added
-     * @param habit the habit that was added to the database
-     */
-    @Override
-    public void onHabitIdGenerated(final long id, @NonNull final Habit habit) {
-        if(mCachedHabits == null) {
-            mCachedHabits = new LinkedHashMap<>();
-        }
-        habit.setId(id);
-        HabitRepetitions habitRepetitions = new HabitRepetitions();
-        habitRepetitions.setHabit(habit);
-        habitRepetitions.setRepetitions(new HashSet<Repetition>());
-        mCachedHabits.put(id, habitRepetitions);
     }
 }

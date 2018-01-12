@@ -3,6 +3,7 @@ package us.spencer.habittracker.database;
 import android.support.annotation.NonNull;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import us.spencer.habittracker.model.Habit;
 import us.spencer.habittracker.model.HabitRepetitions;
@@ -32,11 +33,6 @@ public interface HabitsDataSource {
         void onDataNotAvailable();
     }
 
-    interface SyncCacheCallback {
-
-        void onHabitIdGenerated(final long id, @NonNull final Habit habit);
-    }
-
     /**
      * =======================================================================
      * DATABASE
@@ -45,9 +41,9 @@ public interface HabitsDataSource {
 
     interface Database {
 
-        void insertHabit(@NonNull final Habit habit,
-                         @NonNull final SaveHabitCallback saveHabitCallback,
-                         @NonNull final SyncCacheCallback syncCacheCallback);
+        long insertHabit(@NonNull final Habit habit,
+                         @NonNull final SaveHabitCallback saveHabitCallback)
+                throws InterruptedException, ExecutionException;
 
         void queryAllHabits(@NonNull final LoadHabitsCallback callback);
 
