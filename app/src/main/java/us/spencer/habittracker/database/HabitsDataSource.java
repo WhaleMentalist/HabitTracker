@@ -35,35 +35,13 @@ public interface HabitsDataSource {
 
     /**
      * =======================================================================
-     * DATABASE
+     * REPOSITORY / DATABASE (i.e the general interface for getting data)
      * =======================================================================
      */
 
-    interface Database {
-
-        long insertHabit(@NonNull final Habit habit,
-                         @NonNull final SaveHabitCallback saveHabitCallback)
-                throws InterruptedException, ExecutionException;
-
-        void queryAllHabits(@NonNull final LoadHabitsCallback callback);
-
-        void deleteAllHabits();
-
-        void insertRepetition(final long habitId,
-                              @NonNull final Repetition repetition);
-
-        void deleteRepetition(final long habitId,
-                              @NonNull final Repetition repetition);
-    }
-
-    /**
-     * =======================================================================
-     * REPOSITORY (i.e the general interface for getting data)
-     * =======================================================================
-     */
-
-    void insertHabit(@NonNull final Habit habit,
-                     @NonNull final SaveHabitCallback saveHabitCallback);
+    long insertHabit(@NonNull final Habit habit,
+                     @NonNull final SaveHabitCallback saveHabitCallback)
+            throws InterruptedException, ExecutionException;;
 
     void queryAllHabits(@NonNull final LoadHabitsCallback loadHabitsCallback);
 

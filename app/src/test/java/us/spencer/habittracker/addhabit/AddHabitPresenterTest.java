@@ -10,6 +10,8 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.util.concurrent.ExecutionException;
+
 import us.spencer.habittracker.database.HabitsDataSource;
 import us.spencer.habittracker.model.Habit;
 
@@ -49,14 +51,14 @@ public class AddHabitPresenterTest {
     }
 
     @Test
-    public void saveValidHabit_callRepo() {
+    public void saveValidHabit_callRepo() throws InterruptedException, ExecutionException {
         mPresenter = new AddHabitPresenter(mHabitsRepository, mAddHabitsView);
         mPresenter.addHabit(validHabit.getName(), validHabit.getDescription());
         verify(mHabitsRepository).insertHabit(validHabit, mPresenter);
     }
 
     @Test
-    public void saveValidHabit_callShowHabitsList() {
+    public void saveValidHabit_callShowHabitsList() throws InterruptedException, ExecutionException {
         mPresenter = new AddHabitPresenter(mHabitsRepository, mAddHabitsView);
         mPresenter.addHabit(validHabit.getName(), validHabit.getDescription());
         verify(mHabitsRepository).insertHabit(eq(validHabit), eq(mPresenter));
@@ -65,7 +67,7 @@ public class AddHabitPresenterTest {
     }
 
     @Test
-    public void saveInvalidHabit_noCallRepo() {
+    public void saveInvalidHabit_noCallRepo() throws InterruptedException, ExecutionException {
         mPresenter = new AddHabitPresenter(mHabitsRepository, mAddHabitsView);
         mPresenter.addHabit(invalidHabit.getName(), invalidHabit.getDescription());
         verify(mHabitsRepository, never()).insertHabit(invalidHabit, mPresenter);

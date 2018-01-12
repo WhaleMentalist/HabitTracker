@@ -2,6 +2,8 @@ package us.spencer.habittracker.addhabit;
 
 import android.support.annotation.NonNull;
 
+import java.util.concurrent.ExecutionException;
+
 import us.spencer.habittracker.database.HabitsDataSource;
 import us.spencer.habittracker.model.Habit;
 
@@ -34,9 +36,16 @@ public class AddHabitPresenter implements AddHabitContract.Presenter,
             mAddHabitView.showEmptyHabitError();
         }
         else {
-            mHabitsRepository.insertHabit(habit, this);
+            try {
+                mHabitsRepository.insertHabit(habit, this);
+            }
+            catch(InterruptedException e) {
+                /* TODO: Handle error */
+            }
+            catch (ExecutionException e) {
+                /* TODO: Handle error */
+            }
         }
-
     }
 
     @Override

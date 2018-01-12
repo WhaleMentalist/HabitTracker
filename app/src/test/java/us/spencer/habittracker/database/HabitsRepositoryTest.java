@@ -2,15 +2,17 @@ package us.spencer.habittracker.database;
 
 import com.google.common.collect.Lists;
 
+import org.joda.time.Instant;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.internal.matchers.Null;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -20,6 +22,8 @@ import java.util.concurrent.ExecutionException;
 import us.spencer.habittracker.database.local.HabitsLocalDataSource;
 import us.spencer.habittracker.model.Habit;
 import us.spencer.habittracker.model.HabitRepetitions;
+import us.spencer.habittracker.model.Repetition;
+import us.spencer.habittracker.model.TimeStamp;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -28,29 +32,34 @@ import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doCallRealMethod;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-
+@RunWith(JUnit4.class)
 public class HabitsRepositoryTest {
 
     private static final long HABIT_ONE_ID = 1;
 
     private static final long HABIT_TWO_ID = 2;
 
+    private static final long HABIT_FAIL_ID = -1;
+
     private static final Habit HABIT_ONE = new Habit("NAME_ONE", "DESC_ONE");
 
     private static final Habit HABIT_HABIT_ONE_WITH_ID = new Habit(HABIT_ONE_ID, "NAME_ONE",
                                                                     "DESC_ONE");
 
-    private static final Habit HABIT_TWO = new Habit("NAME_TWO", "DESC_TWO");
-
     private static final Habit HABIT_TWO_WITH_ID = new Habit(HABIT_TWO_ID, "NAME_TWO",
                                                                     "DESC_TWO");
 
-    private static final Habit HABIT_NULL = null;
+    private static final Repetition REPETITION_ONE = new Repetition
+            (new TimeStamp(Long.valueOf(1000L)), HABIT_ONE_ID);
+
+    private static final HabitsDataSource.LoadHabitsCallback LOAD_HABIT_CALLBACK_NULL = null;
 
     private static final List<HabitRepetitions> MOCK_LOCAL_STORAGE = Lists.newArrayList(
             new HabitRepetitions(HABIT_HABIT_ONE_WITH_ID),
@@ -103,57 +112,54 @@ public class HabitsRepositoryTest {
                                                                         ExecutionException {
         assertThat(mHabitsRepository.mCachedHabits, nullValue());
         when(mHabitsLocalDataSource.
-                insertHabit(HABIT_ONE, mSaveHabitCallback)).thenReturn(HABIT_ONE_ID); /** Return id, successful insertion*/
+                insertHabit(HABIT_ONE, mSaveHabitCallback)).thenReturn(HABIT_ONE_ID); /* Return id, successful insertion*/
         mHabitsRepository.insertHabit(HABIT_ONE, mSaveHabitCallback);
         assertThat(mHabitsRepository.mCachedHabits.size(), is(1));
         assertThat(mHabitsRepository.mCachedHabits.containsKey(HABIT_ONE_ID), is(true));
     }
 
-    @Test(expected = NullPointerException.class)
-    public void insertNullHabit_throwNullPointerException() throws InterruptedException,
-                                                                    ExecutionException {
-        mHabitsRepository.insertHabit(HABIT_NULL, mSaveHabitCallback);
-    }
-
-    @Test(expected = NullPointerException.class)
-    public void insertNullHabit_noCallToDataBase() throws InterruptedException,
-            ExecutionException {
-        mHabitsRepository.insertHabit(HABIT_NULL, mSaveHabitCallback);
-        verify(mHabitsLocalDataSource, never()).insertHabit(eq(HABIT_NULL), eq(mSaveHabitCallback));
-    }
-
-    @Test(expected = NullPointerException.class)
-    public void insertNullHabit_cacheRemainsInSameStateNull() {
+    @Test
+    public void insertNewHabitWhenCacheNull_failToInsertInDatabaseInitializeCache() throws InterruptedException,
+                                                                        ExecutionException {
         assertThat(mHabitsRepository.mCachedHabits, nullValue());
-        mHabitsRepository.insertHabit(HABIT_NULL, mSaveHabitCallback);
-        assertThat(mHabitsRepository.mCachedHabits, nullValue());
+        when(mHabitsLocalDataSource.
+                insertHabit(HABIT_ONE, mSaveHabitCallback)).thenReturn(HABIT_FAIL_ID); /* Return id, failure to insert */
+        mHabitsRepository.insertHabit(HABIT_ONE, mSaveHabitCallback);
+        assertThat(mHabitsRepository.mCachedHabits, notNullValue());
     }
 
-    @Test(expected = NullPointerException.class)
-    public void insertNullHabit_cacheRemainsSameStateNotNull() {
-        fillCache();
-        assertThat(mHabitsRepository.mCachedHabits, notNullValue());
-        assertThat(mHabitsRepository.mCachedHabits.size(), is(MOCK_LOCAL_STORAGE.size()));
-        mHabitsRepository.insertHabit(HABIT_NULL, mSaveHabitCallback);
-        assertThat(mHabitsRepository.mCachedHabits, notNullValue());
-        assertThat(mHabitsRepository.mCachedHabits.size(), is(MOCK_LOCAL_STORAGE.size()));
+    @Test
+    public void insertNewHabitWhenCacheNull_failToInsertInDatabaseNoSyncCache() throws InterruptedException,
+                                                                        ExecutionException {
+        when(mHabitsLocalDataSource.
+                insertHabit(HABIT_ONE, mSaveHabitCallback)).thenReturn(HABIT_FAIL_ID); /* Return id, failure to insert */
+        mHabitsRepository.insertHabit(HABIT_ONE, mSaveHabitCallback);
+        assertThat(mHabitsRepository.mCachedHabits.size(), is(0));
     }
 
-    @Test(expected = InterruptedException.class)
+    @Test(expected = FakeInterruptedException.class)
     public void insertHabit_databaseThrowInterruptedException() throws InterruptedException,
                                                                         ExecutionException {
         doThrow(new FakeInterruptedException("FAKE INTERRUPTED EXCEPTION"))
-                .when(mHabitsLocalDataSource).insertHabit(HABIT_ONE, mSaveHabitCallback);
+                    .when(mHabitsLocalDataSource).insertHabit(HABIT_ONE, mSaveHabitCallback);
         mHabitsRepository.insertHabit(HABIT_ONE, mSaveHabitCallback);
         assertThat(mHabitsRepository.mCachedHabits, nullValue());
     }
 
-    @Test(expected = ExecutionException.class)
+    @Test(expected = FakeExecutionException.class)
     public void insertHabit_databaseThrowExecutionException() throws InterruptedException,
                                                                         ExecutionException {
         doThrow(new FakeExecutionException("FAKE EXECUTION EXCEPTION"))
                 .when(mHabitsLocalDataSource).insertHabit(HABIT_ONE, mSaveHabitCallback);
         mHabitsRepository.insertHabit(HABIT_ONE, mSaveHabitCallback);
+        assertThat(mHabitsRepository.mCachedHabits, nullValue());
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void queryAllHabitsCallbackNull_throwNullPointerException() throws InterruptedException,
+                                                                        ExecutionException {
+        mHabitsRepository.queryAllHabits(LOAD_HABIT_CALLBACK_NULL);
+        verify(mHabitsLocalDataSource, never()).queryAllHabits(eq(LOAD_HABIT_CALLBACK_NULL));
         assertThat(mHabitsRepository.mCachedHabits, nullValue());
     }
 
@@ -184,11 +190,21 @@ public class HabitsRepositoryTest {
     }
 
     @Test
+    public void queryAllHabits_onDataNotAvailableOnEmptyDatabase() {
+        assertThat(mHabitsRepository.mCachedHabits, nullValue());
+        mHabitsRepository.queryAllHabits(mLoadHabitsCallback);
+        verify(mHabitsLocalDataSource).queryAllHabits(mLoadHabitsCallbackCaptor.capture());
+        mLoadHabitsCallbackCaptor.getValue().onDataNotAvailable();
+        verify(mLoadHabitsCallback).onDataNotAvailable();
+    }
+
+    @Test
     public void deleteAllHabits_deleteFromLocalStorageAndCache() {
         fillCache();
         assertThat(mHabitsRepository.mCachedHabits.size(), is(MOCK_LOCAL_STORAGE.size()));
         mHabitsRepository.deleteAllHabits();
         verify(mHabitsLocalDataSource).deleteAllHabits();
+        assertThat(mHabitsRepository.mCachedHabits.size(), is(0));
     }
 
     @Test
@@ -198,6 +214,34 @@ public class HabitsRepositoryTest {
         verify(mHabitsLocalDataSource).deleteAllHabits();
         assertThat(mHabitsRepository.mCachedHabits, notNullValue());
         assertThat(mHabitsRepository.mCachedHabits.size(), is(0));
+    }
+
+    @Test
+    public void insertRepetition_callInsertOnDatabaseCorrectly() {
+        mHabitsRepository.insertRepetition(HABIT_ONE_ID, REPETITION_ONE);
+        verify(mHabitsLocalDataSource).insertRepetition(eq(HABIT_ONE_ID), eq(REPETITION_ONE));
+    }
+
+    @Test
+    public void insertRepetition_initializeCache() {
+        assertThat(mHabitsRepository.mCachedHabits, nullValue());
+        mHabitsRepository.insertRepetition(HABIT_ONE_ID, REPETITION_ONE);
+        assertThat(mHabitsRepository.mCachedHabits, notNullValue());
+    }
+
+    @Test
+    public void insertRepetition_callInsertOnRepetitionToNonexistentHabit() {
+        assertThat(mHabitsRepository.mCachedHabits, nullValue());
+        mHabitsRepository.insertRepetition(HABIT_ONE_ID, REPETITION_ONE);
+        assertThat(mHabitsRepository.mCachedHabits.size(), is(0));
+    }
+
+    @Test
+    public void insertRepetition_callInsertOnRepetitionToExistentHabit() {
+        fillCache();
+        mHabitsRepository.insertRepetition(HABIT_ONE_ID, REPETITION_ONE);
+        assertThat(mHabitsRepository.mCachedHabits.get(HABIT_ONE_ID).getRepetitions().size(),
+                is(1));
     }
 
     /**
@@ -213,20 +257,32 @@ public class HabitsRepositoryTest {
         }
     }
 
+    /**
+     * Mock class to test exceptions that can occur.
+     * Some exception classes are package protected, which
+     * necessitates the use of fake classes that extend the
+     * actual.
+     */
     private class FakeExecutionException extends ExecutionException {
 
         private String mMessage = null;
 
-        public FakeExecutionException(String message) {mMessage = message;}
+        private FakeExecutionException(String message) {mMessage = message;}
 
         public String getMessage() {return mMessage;}
     }
 
+    /**
+     * Mock class to test exceptions that can occur.
+     * Some exception classes are package protected, which
+     * necessitates the use of fake classes that extend the
+     * actual.
+     */
     private class FakeInterruptedException extends InterruptedException {
 
         private String mMessage = null;
 
-        public FakeInterruptedException(String message) {mMessage = message;}
+        private FakeInterruptedException(String message) {mMessage = message;}
 
         public String getMessage() {return mMessage;}
     }

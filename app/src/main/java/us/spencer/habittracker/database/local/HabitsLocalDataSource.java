@@ -1,12 +1,10 @@
 package us.spencer.habittracker.database.local;
 
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 
 import us.spencer.habittracker.database.dao.HabitRepetitionsDAO;
 import us.spencer.habittracker.database.dao.HabitsDAO;
@@ -23,7 +21,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * Concrete implementation of data source as a database.
  * This will be a singleton design pattern.
  */
-public class HabitsLocalDataSource implements HabitsDataSource.Database {
+public class HabitsLocalDataSource implements HabitsDataSource {
 
     private static volatile HabitsLocalDataSource INSTANCE;
 
