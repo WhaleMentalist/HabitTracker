@@ -2,11 +2,9 @@ package us.spencer.habittracker.habits;
 
 import android.support.annotation.NonNull;
 
-import java.sql.Time;
 import java.util.List;
 
 import us.spencer.habittracker.database.HabitsDataSource;
-import us.spencer.habittracker.model.Habit;
 import us.spencer.habittracker.model.HabitRepetitions;
 import us.spencer.habittracker.model.Repetition;
 import us.spencer.habittracker.model.TimeStamp;

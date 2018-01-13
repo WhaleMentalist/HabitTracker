@@ -4,9 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="us.spencer.habittracker.addhabit.AddHabitActivity">
+    tools:context="us.spencer.habittracker.addhabit.view.AddHabitActivity">
 
-    <fragment android:name="us.spencer.habittracker.addhabit.AddHabitFragment"
+    <fragment android:name="us.spencer.habittracker.addhabit.view.AddHabitFragment"
         android:id="@+id/add_habit_frag"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />

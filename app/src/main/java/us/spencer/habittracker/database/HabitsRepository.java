@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.VisibleForTesting;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -28,11 +29,14 @@ public class HabitsRepository implements HabitsDataSource {
 
     private static final Logger LOGGER = Logger.getLogger(HabitsRepository.class.getName());
 
-    private static final int SQL_INSERTION_FAIL = -1;
+    public static final long SQL_INSERTION_FAIL = -1;
 
     private static HabitsRepository INSTANCE  = null;
 
     private final HabitsDataSource mHabitsLocalDataSource;
+
+    @VisibleForTesting
+    boolean isCacheSync = false;
 
     @VisibleForTesting
     Map<Long, HabitRepetitions> mCachedHabits;
@@ -44,6 +48,7 @@ public class HabitsRepository implements HabitsDataSource {
      */
     private HabitsRepository(@NonNull HabitsDataSource habitsLocalDataSource) {
         mHabitsLocalDataSource = habitsLocalDataSource;
+        mCachedHabits = new HashMap<>();
     }
 
     /**
@@ -71,17 +76,11 @@ public class HabitsRepository implements HabitsDataSource {
     private void refreshCache(@NonNull List<HabitRepetitions> habits) {
         LOGGER.log(Level.FINE, "Refreshing cache");
         checkNotNull(habits);
-
-        if(mCachedHabits == null) {
-            LOGGER.log(Level.FINE, "Initializing cache");
-            mCachedHabits = new LinkedHashMap<>();
-        }
-
-        LOGGER.log(Level.FINE, "Clearing cache to refresh");
         mCachedHabits.clear();
         for(HabitRepetitions habit : habits) {
             mCachedHabits.put(habit.getHabit().getId(), habit);
         }
+        isCacheSync = true;
     }
 
     /**
@@ -102,7 +101,8 @@ public class HabitsRepository implements HabitsDataSource {
      * @throws InterruptedException execution of database transaction was interrupted
      * @throws ExecutionException   the execution of the database transaction failed
      *
-     * @return  the generated id of the habit from the database
+     * @return  the generated id of the habit from the database, it delimits a failed operation
+     *          if -1 is returned
      */
     @Override
     public long insertHabit(@NonNull final Habit habit,
@@ -111,12 +111,6 @@ public class HabitsRepository implements HabitsDataSource {
                                                                                 ExecutionException {
         checkNotNull(habit);
         long generatedId = mHabitsLocalDataSource.insertHabit(habit, saveHabitCallback);
-
-        if(mCachedHabits == null) {
-            LOGGER.log(Level.FINE, "Initializing cache");
-            mCachedHabits = new LinkedHashMap<>();
-        }
-
         if(generatedId != SQL_INSERTION_FAIL) {
             LOGGER.log(Level.FINE, "Adding habit to cache with id: {0}", generatedId);
             habit.setId(generatedId);
@@ -125,7 +119,6 @@ public class HabitsRepository implements HabitsDataSource {
             habitRepetitions.setRepetitions(new HashSet<Repetition>());
             mCachedHabits.put(generatedId, habitRepetitions);
         }
-
         return generatedId;
     }
 
@@ -139,7 +132,7 @@ public class HabitsRepository implements HabitsDataSource {
     @Override
     public void queryAllHabits(@NonNull final HabitsDataSource.LoadHabitsCallback loadHabitsCallback) {
         checkNotNull(loadHabitsCallback);
-        if(mCachedHabits != null) {
+        if(isCacheSync) {
             LOGGER.log(Level.FINE, "Accessing cache for habits");
             loadHabitsCallback.onHabitsLoaded(new ArrayList<>(mCachedHabits.values()));
         }
@@ -169,10 +162,6 @@ public class HabitsRepository implements HabitsDataSource {
     @Override
     public void deleteAllHabits() {
         mHabitsLocalDataSource.deleteAllHabits();
-        if(mCachedHabits == null) {
-            LOGGER.log(Level.FINE, "Initializing cache");
-            mCachedHabits = new LinkedHashMap<>();
-        }
         LOGGER.log(Level.FINE, "Deleting all habits from cache");
         mCachedHabits.clear();
     }
@@ -188,10 +177,6 @@ public class HabitsRepository implements HabitsDataSource {
     public void insertRepetition(final long habitId, @NonNull final Repetition repetition) {
         LOGGER.log(Level.FINE, "Inserting repetition");
         mHabitsLocalDataSource.insertRepetition(habitId, repetition);
-        if(mCachedHabits == null) {
-            mCachedHabits = new LinkedHashMap<>();
-        }
-
         HabitRepetitions habitRepetitions = mCachedHabits.get(habitId);
         if(habitRepetitions != null) {
             habitRepetitions.getRepetitions().add(repetition);
@@ -208,9 +193,6 @@ public class HabitsRepository implements HabitsDataSource {
     public void deleteRepetition(final long habitId, @NonNull final Repetition repetition) {
         LOGGER.log(Level.FINE, "Deleting repetition");
         mHabitsLocalDataSource.deleteRepetition(habitId, repetition);
-        if(mCachedHabits == null) {
-            mCachedHabits = new LinkedHashMap<>();
-        }
         HabitRepetitions habitRepetitions = mCachedHabits.get(habitId);
         if(habitRepetitions != null) {
             habitRepetitions.getRepetitions().remove(repetition);

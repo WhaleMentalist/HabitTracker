@@ -62,7 +62,7 @@ public class Habit {
         mName = name;
     }
 
-    public void setDescription(@Nullable String description) {
+    public void setDescription(@NonNull String description) {
         mDescription = description;
     }
 
@@ -86,7 +86,9 @@ public class Habit {
         }
 
         Habit habit = (Habit) o;
-        if(mName.equals(habit.mName) && mDescription.equals(habit.mDescription)) {
+        if(mId == habit.mId &&
+                mName.equals(habit.mName) &&
+                mDescription.equals(habit.mDescription)) {
             result = true;
         }
         return result;

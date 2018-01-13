@@ -26,7 +26,9 @@ public class AddHabitPresenter implements AddHabitContract.Presenter,
     }
 
     @Override
-    public void start() {}
+    public void start() {
+        /* Does nothing as of now */
+    }
 
     @Override
     public void addHabit(@NonNull final String title, @NonNull final String description) {
@@ -40,10 +42,10 @@ public class AddHabitPresenter implements AddHabitContract.Presenter,
                 mHabitsRepository.insertHabit(habit, this);
             }
             catch(InterruptedException e) {
-                /* TODO: Handle error */
+                mAddHabitView.showAddHabitError();
             }
             catch (ExecutionException e) {
-                /* TODO: Handle error */
+                mAddHabitView.showAddHabitError();
             }
         }
     }

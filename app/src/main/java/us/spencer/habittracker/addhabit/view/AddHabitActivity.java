@@ -1,10 +1,11 @@
-package us.spencer.habittracker.addhabit;
+package us.spencer.habittracker.addhabit.view;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
 import us.spencer.habittracker.R;
+import us.spencer.habittracker.addhabit.AddHabitPresenter;
 import us.spencer.habittracker.utility.Injection;
 
 /**

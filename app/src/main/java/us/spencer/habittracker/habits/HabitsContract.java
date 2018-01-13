@@ -23,6 +23,8 @@ public interface HabitsContract {
 
         void showAddHabit();
 
+        void showEmptyHabits();
+
         boolean isActive();
     }
 

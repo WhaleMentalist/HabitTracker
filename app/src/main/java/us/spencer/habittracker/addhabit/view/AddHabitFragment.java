@@ -1,4 +1,4 @@
-package us.spencer.habittracker.addhabit;
+package us.spencer.habittracker.addhabit.view;
 
 import android.app.AlertDialog;
 import android.app.Fragment;
@@ -14,6 +14,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import us.spencer.habittracker.R;
+import us.spencer.habittracker.addhabit.AddHabitContract;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -96,6 +97,11 @@ public class AddHabitFragment extends Fragment implements AddHabitContract.View 
 
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
+    }
+
+    @Override
+    public void showAddHabitError() {
+
     }
 
     @Override
