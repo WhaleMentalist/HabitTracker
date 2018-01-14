@@ -4,6 +4,8 @@ import com.google.common.collect.Lists;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
@@ -22,6 +24,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+@RunWith(JUnit4.class)
 public class HabitsPresenterTest {
 
     private static final long HABIT_ID = 1;
@@ -32,6 +35,9 @@ public class HabitsPresenterTest {
             new HabitRepetitions(new Habit("NAME_ONE", "DESC_ONE")),
             new HabitRepetitions(new Habit("NAME_TWO", "DESC_TWO"))
     );
+
+    private static final HabitRepetitions HABIT_REPETITIONS = new HabitRepetitions(
+            new Habit(HABIT_ID, "NAME_ONE", "DESC_ONE"));
 
     @Mock
     private HabitsRepository mHabitsRepository;
@@ -48,13 +54,6 @@ public class HabitsPresenterTest {
     public void setup() {
         MockitoAnnotations.initMocks(this);
         when(mHabitsView.isActive()).thenReturn(true);
-    }
-
-    @Test
-    public void onStart_callLoadHabits() {
-        mHabitsPresenter = new HabitsPresenter(mHabitsRepository, mHabitsView);
-        mHabitsPresenter.start();
-        verify(mHabitsPresenter).loadHabits();
     }
 
     @Test
@@ -97,4 +96,12 @@ public class HabitsPresenterTest {
         Repetition repetition = new Repetition(TIME_STAMP, HABIT_ID);
         verify(mHabitsRepository).deleteRepetition(eq(HABIT_ID), eq(repetition));
     }
+
+    @Test
+    public void loadHabit_callsShowHabitDetails() {
+        mHabitsPresenter = new HabitsPresenter(mHabitsRepository, mHabitsView);
+        mHabitsPresenter.loadHabitDetails(HABIT_ID);
+        verify(mHabitsView).showHabitDetails(HABIT_ID);
+    }
+
 }

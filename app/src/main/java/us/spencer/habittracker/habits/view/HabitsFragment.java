@@ -3,6 +3,7 @@ package us.spencer.habittracker.habits.view;
 import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -14,7 +15,6 @@ import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.joda.time.Instant;
 
@@ -25,6 +25,7 @@ import javax.annotation.Nonnull;
 
 import us.spencer.habittracker.R;
 import us.spencer.habittracker.addhabit.view.AddHabitActivity;
+import us.spencer.habittracker.habitdetails.view.HabitDetailsActivity;
 import us.spencer.habittracker.habits.HabitsContract;
 import us.spencer.habittracker.model.Habit;
 import us.spencer.habittracker.model.HabitRepetitions;
@@ -41,8 +42,10 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public class HabitsFragment extends Fragment implements HabitsContract.View {
 
+    @NonNull
     private HabitsContract.Presenter mPresenter;
 
+    @NonNull
     private HabitsAdapter mAdapter;
 
     public HabitsFragment() {}
@@ -103,6 +106,14 @@ public class HabitsFragment extends Fragment implements HabitsContract.View {
     @Override
     public void showEmptyHabits() {
         /* TODO: Implement view to show empty habits */
+    }
+
+    @Override
+    public void showHabitDetails(final long habitId) {
+        /* TODO: Implement view to show habit details */
+        Intent intent = new Intent(getActivity(), HabitDetailsActivity.class);
+        intent.putExtra("HABIT_ID", habitId);
+        startActivity(intent);
     }
 
     @Override
@@ -205,10 +216,12 @@ public class HabitsFragment extends Fragment implements HabitsContract.View {
                     public void onCheckedChanged(CompoundButton compoundButton, boolean value) {
                         final Habit habit = mHabits.get(getAdapterPosition()).getHabit();
                         if(value) {
-                            mPresenter.addRepetition(habit.getId(), new TimeStamp(Instant.now()));
+                            mPresenter.addRepetition(habit.getId(),
+                                    new TimeStamp(Instant.now()));
                         }
                         else {
-                            mPresenter.deleteRepetition(habit.getId(), new TimeStamp(Instant.now()));
+                            mPresenter.deleteRepetition(habit.getId(),
+                                    new TimeStamp(Instant.now()));
                         }
                     }
                 });
@@ -217,10 +230,9 @@ public class HabitsFragment extends Fragment implements HabitsContract.View {
 
                     @Override
                     public void onClick(View view) {
-                        final Habit habit = mHabits.get(getAdapterPosition()).getHabit();
-                        Toast.makeText(getActivity(),
-                                habit.getId() + " : " + habit.getName() + " was clicked",
-                                Toast.LENGTH_SHORT).show();
+                        mPresenter
+                                .loadHabitDetails(mHabits.get(getAdapterPosition())
+                                        .getHabit().getId());
                     }
                 });
             }

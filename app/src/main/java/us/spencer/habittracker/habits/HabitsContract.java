@@ -25,6 +25,8 @@ public interface HabitsContract {
 
         void showEmptyHabits();
 
+        void showHabitDetails(final long habitId);
+
         boolean isActive();
     }
 
@@ -35,6 +37,8 @@ public interface HabitsContract {
         void addRepetition(final long habitId, @NonNull final TimeStamp timeStamp);
 
         void deleteRepetition(final long habitId, @NonNull final TimeStamp timeStamp);
+
+        void loadHabitDetails(final long habitId);
 
         void loadHabits();
     }

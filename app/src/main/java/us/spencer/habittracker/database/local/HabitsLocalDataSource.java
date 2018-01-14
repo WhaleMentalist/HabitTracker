@@ -172,4 +172,9 @@ public class HabitsLocalDataSource implements HabitsDataSource {
         };
         mAppExecutors.diskIO().execute(deleteRepetition);
     }
+
+    @Override
+    public HabitRepetitions getHabitById(long habitID) {
+        return null;
+    }
 }

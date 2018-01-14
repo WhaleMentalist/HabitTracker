@@ -6,7 +6,6 @@ import android.support.annotation.VisibleForTesting;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
@@ -197,5 +196,10 @@ public class HabitsRepository implements HabitsDataSource {
         if(habitRepetitions != null) {
             habitRepetitions.getRepetitions().remove(repetition);
         }
+    }
+
+    @Override
+    public HabitRepetitions getHabitById(long habitID) {
+        return mCachedHabits.get(habitID);
     }
 }

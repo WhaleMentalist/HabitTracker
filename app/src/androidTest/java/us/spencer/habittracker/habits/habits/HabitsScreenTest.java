@@ -34,7 +34,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static com.google.common.base.Preconditions.checkArgument;
 import static org.hamcrest.core.AllOf.allOf;
 
-/** TODO: Change custom {@link Matcher} to match a whole item in the recycler view, rather than just containing a single piece of text*/
+/* TODO: Change custom {@link Matcher} to match a whole item in the recycler view, rather than just containing a single piece of text*/
 @RunWith(AndroidJUnit4.class)
 @LargeTest
 public class HabitsScreenTest {

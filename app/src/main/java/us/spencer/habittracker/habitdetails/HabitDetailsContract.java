@@ -14,10 +14,12 @@ public interface HabitDetailsContract {
         void showHabitsList();
 
         boolean isActive();
+
+
     }
 
     interface Presenter extends BasePresenter {
 
-
+        void loadHabit(final long habitId);
     }
 }

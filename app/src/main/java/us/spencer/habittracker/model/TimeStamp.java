@@ -8,6 +8,10 @@ import org.joda.time.Instant;
 import org.joda.time.LocalDateTime;
 import org.joda.time.chrono.ISOChronology;
 
+import java.sql.Time;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Class represents an instant in time in which a
  * particular event occurred. It is focused on the
@@ -61,6 +65,18 @@ public class TimeStamp {
                         .withTime(FIXED_HOUR, FIXED_MINUTES, FIXED_SECONDS, FIXED_MILLI);
     }
 
+    /**
+     * Constructs {@link TimeStamp} with a {@link DateTime}.
+     * It will make sure that given {@link DateTime} is adjusted
+     * to the fixed time frame for easier comparisons.
+     *
+     * @param dateTime  a {@link DateTime} that will be assigned
+     */
+    public TimeStamp(@NonNull DateTime dateTime) {
+        mDateTime = new DateTime(dateTime, ISO_CHRONOLOGY)
+                .withTime(FIXED_HOUR, FIXED_MINUTES, FIXED_SECONDS, FIXED_MILLI);
+    }
+
     public DateTime getDateTime() {
         return mDateTime;
     }
@@ -86,5 +102,16 @@ public class TimeStamp {
     @Override
     public int hashCode() {
         return Long.valueOf(mDateTime.getMillis()).hashCode();
+    }
+
+    public static List<TimeStamp> generateDateTimes(DateTime start, DateTime end) {
+        List<TimeStamp> dates = new ArrayList<>();
+        DateTime currDate = start;
+
+        while(!currDate.isAfter(end)) {
+            dates.add(new TimeStamp(currDate));
+            currDate = currDate.plusDays(1);
+        }
+        return dates;
     }
 }

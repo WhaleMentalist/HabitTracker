@@ -2,10 +2,13 @@ package us.spencer.habittracker.database;
 
 import com.google.common.collect.Lists;
 
+import org.joda.time.chrono.JulianChronology;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
@@ -24,6 +27,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+@RunWith(JUnit4.class)
 public class HabitsRepositoryTest {
 
     private static final long HABIT_ONE_ID = 1;

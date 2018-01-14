@@ -28,15 +28,23 @@ public class HabitsPresenter implements HabitsContract.Presenter {
         mHabitsView.setPresenter(this);
     }
 
+    @Override
     public void addHabit() {
         mHabitsView.showAddHabit();
     }
 
+    @Override
     public void addRepetition(final long habitId, @NonNull final TimeStamp timeStamp) {
         final Repetition repetition = new Repetition(timeStamp, habitId);
         mHabitsRepository.insertRepetition(habitId, repetition);
     }
 
+    @Override
+    public void loadHabitDetails(final long habit) {
+        mHabitsView.showHabitDetails(habit);
+    }
+
+    @Override
     public void loadHabits() {
         EspressoCountingIdlingResource.getIdlingResource().increment();
         mHabitsRepository.queryAllHabits(new HabitsDataSource.LoadHabitsCallback() {
@@ -61,6 +69,7 @@ public class HabitsPresenter implements HabitsContract.Presenter {
         mHabitsRepository.deleteRepetition(habitId, repetition);
     }
 
+    @Override
     public void start() {
         loadHabits();
     }

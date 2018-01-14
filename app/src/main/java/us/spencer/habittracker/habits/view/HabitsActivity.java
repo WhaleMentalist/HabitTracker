@@ -1,6 +1,7 @@
 package us.spencer.habittracker.habits.view;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
@@ -13,6 +14,7 @@ import us.spencer.habittracker.utility.Injection;
  */
 public class HabitsActivity extends AppCompatActivity {
 
+    @NonNull
     private HabitsPresenter mPresenter;
 
     @Override

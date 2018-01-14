@@ -52,4 +52,6 @@ public interface HabitsDataSource {
 
     void deleteRepetition(final long habitId,
                           @NonNull final Repetition repetition);
+
+    HabitRepetitions getHabitById(final long habitID);
 }
