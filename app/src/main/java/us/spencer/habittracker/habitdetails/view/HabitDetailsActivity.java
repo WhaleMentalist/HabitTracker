@@ -15,7 +15,6 @@ import us.spencer.habittracker.database.HabitsDataSource;
 import us.spencer.habittracker.model.TimeStamp;
 import us.spencer.habittracker.utility.Injection;
 
-
 public class HabitDetailsActivity extends AppCompatActivity {
 
     private View lastCenter;
@@ -42,8 +41,7 @@ public class HabitDetailsActivity extends AppCompatActivity {
         final HabitCalendarAdapter adapter = new HabitCalendarAdapter(dataSource
                 .getHabitById(getIntent()
                         .getLongExtra("HABIT_ID", -1)));
-        recyclerView
-                .setAdapter(adapter);
+        recyclerView.setAdapter(adapter);
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
 
             @Override

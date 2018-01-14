@@ -29,14 +29,11 @@ public class HabitCalendarAdapter extends RecyclerView.Adapter<HabitCalendarAdap
 
     private List<TimeStamp> mCalendarDays;
 
-    private SparseBooleanArray mSelected;
-
     private HabitRepetitions mHabitRepetitions;
 
     public HabitCalendarAdapter(@NonNull HabitRepetitions habitRepetitions) {
         mCalendarDays = TimeStamp.generateDateTimes(DateTime.now()
                 .minusYears(DEFAULT_YEARS_BACK), DateTime.now());
-        mSelected = new SparseBooleanArray();
         mHabitRepetitions = habitRepetitions;
     }
 
