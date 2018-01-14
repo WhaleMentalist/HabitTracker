@@ -24,11 +24,11 @@ public class HabitDetailsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.habit_details_act);
+        setContentView(R.layout.activity_habit_details);
 
-        monthTextView = findViewById(R.id.month_tv);
+        monthTextView = findViewById(R.id.month_txt);
         HabitsDataSource dataSource = Injection.provideHabitsRepository(this);
-        RecyclerView recyclerView = findViewById(R.id.habit_calendar_view);
+        RecyclerView recyclerView = findViewById(R.id.habit_calendar_rv);
 
         final RecyclerView.LayoutManager layoutManager = new GridLayoutManager(this,
                 7,
@@ -59,7 +59,7 @@ public class HabitDetailsActivity extends AppCompatActivity {
 
                 if(lastCenter != null) {
                     lastCenter.findViewById(R.id.calendar_day_tv)
-                            .setBackgroundResource(R.color.colorAccent);
+                            .setBackgroundResource(R.color.magenta);
                     monthTextView.setText(timeStamp.getDateTime()
                             .toString(DateTimeFormat.forPattern("MMM")));
                 }

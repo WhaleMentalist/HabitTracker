@@ -10,6 +10,6 @@
         android:id="@+id/habits_frag"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:layout="@layout/habits_frag" />
+        tools:layout="@layout/fragment_habits_list" />
 
 </LinearLayout>

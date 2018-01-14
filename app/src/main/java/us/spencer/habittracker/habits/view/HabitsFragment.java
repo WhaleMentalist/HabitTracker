@@ -63,7 +63,7 @@ public class HabitsFragment extends Fragment implements HabitsContract.View {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.habits_frag, container, false);
+        View root = inflater.inflate(R.layout.fragment_habits_list, container, false);
         setHasOptionsMenu(true);
 
         RecyclerView rv = root.findViewById(R.id.habits_recycler_view);
@@ -168,7 +168,7 @@ public class HabitsFragment extends Fragment implements HabitsContract.View {
         @Override
         public HabitViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
             View itemView = LayoutInflater.from(viewGroup.getContext())
-                    .inflate(R.layout.habit_item, viewGroup, false);
+                    .inflate(R.layout.item_habit, viewGroup, false);
             return new HabitViewHolder(itemView);
         }
 

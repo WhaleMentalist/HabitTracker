@@ -2,8 +2,6 @@ package us.spencer.habittracker.habitdetails.view;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +11,6 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
-import java.sql.Time;
 import java.util.List;
 
 import us.spencer.habittracker.R;
@@ -40,7 +37,7 @@ public class HabitCalendarAdapter extends RecyclerView.Adapter<HabitCalendarAdap
     @Override
     public HabitCalendarViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         View itemView = LayoutInflater.from(viewGroup.getContext())
-                .inflate(R.layout.habit_calendar_item, viewGroup, false);
+                .inflate(R.layout.item_habit_calendar, viewGroup, false);
         return new HabitCalendarViewHolder(itemView);
     }
 
@@ -53,7 +50,7 @@ public class HabitCalendarAdapter extends RecyclerView.Adapter<HabitCalendarAdap
         viewHolder.mCalendarDayTextView.setText(DATE_TIME_FORMATTER.print(timeStamp.getDateTime()));
 
         if(isComplete) {
-            viewHolder.mCalendarDayTextView.setBackgroundResource(R.color.colorAccent);
+            viewHolder.mCalendarDayTextView.setBackgroundResource(R.color.magenta);
         }
         else {
             viewHolder.mCalendarDayTextView.setBackgroundResource(R.color.light_gray);

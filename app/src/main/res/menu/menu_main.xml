@@ -6,7 +6,7 @@
     <item
         android:id="@+id/action_add"
         android:icon="@drawable/ic_add_white"
-        android:title="@string/action_add"
+        android:title="@string/global_action_add"
         app:showAsAction="always" />
 
 </menu>

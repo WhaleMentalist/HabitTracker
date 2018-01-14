@@ -47,18 +47,18 @@ public class AddHabitFragment extends Fragment implements AddHabitContract.View 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.add_habit_frag, container, false);
-        mTitle = root.findViewById(R.id.add_habit_title_et);
+        View root = inflater.inflate(R.layout.fragment_add_habit, container, false);
+        mTitle = root.findViewById(R.id.add_habit_name_et);
         mDescription = root.findViewById(R.id.add_habit_desc_et);
 
         /** Setup adapter for spinner to populate with items */
-        mFrequency = root.findViewById(R.id.add_habit_freq_spinner);
+        mFrequency = root.findViewById(R.id.add_habit_frequency_spn);
         ArrayAdapter adapter = ArrayAdapter.createFromResource(getActivity(), R.array.freq_spinner_values,
                 android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mFrequency.setAdapter(adapter);
 
-        FloatingActionButton confirmInputAction = root.findViewById(R.id.confirm_input_action);
+        FloatingActionButton confirmInputAction = root.findViewById(R.id.add_habit_confirm_fab);
         confirmInputAction.setOnClickListener(new View.OnClickListener() {
 
             @Override

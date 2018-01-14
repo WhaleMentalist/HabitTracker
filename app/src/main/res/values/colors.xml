@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
-    <color name="white">#bfffffff</color>
-    <color name="light_gray">#4b7b7b7b</color>
+    <!-- App theme -->
+    <color name="violet">#3F51B5</color>
+    <color name="dark_blue">#303F9F</color>
+    <color name="magenta">#FF4081</color>
+
+    <!-- Useful palettes -->
+    <color name="white">#BFFFFFFF</color>
+    <color name="light_gray">#4B7B7B7B</color>
 </resources>

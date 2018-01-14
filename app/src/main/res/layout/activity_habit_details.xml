@@ -12,14 +12,14 @@
         android:padding="20dp" >
 
         <TextView
-            android:id="@+id/month_tv"
+            android:id="@+id/month_txt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/placeholder"
+            android:text="@string/global_placeholder"
             android:layout_gravity="center" />
 
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/habit_calendar_view"
+            android:id="@+id/habit_calendar_rv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:clipChildren="false"

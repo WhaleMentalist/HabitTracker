@@ -105,13 +105,32 @@ public class TimeStamp {
     }
 
     public static List<TimeStamp> generateDateTimes(DateTime start, DateTime end) {
-        List<TimeStamp> dates = new ArrayList<>();
         DateTime currDate = start;
+        List<TimeStamp> dates = new ArrayList<>();
 
         while(!currDate.isAfter(end)) {
             dates.add(new TimeStamp(currDate));
             currDate = currDate.plusDays(1);
+
         }
         return dates;
+    }
+
+    public static List<Month> generateMonths(DateTime start, DateTime end) {
+        DateTime currDate = start;
+        int currMonth = currDate.getMonthOfYear();
+        int prevMonth = currMonth;
+        List<TimeStamp> days = new ArrayList<>();
+        List<Month> months = new ArrayList<>();
+
+        while(!currDate.isAfter(end)) {
+            if(currMonth != prevMonth) {
+
+            }
+            days.add(new TimeStamp(currDate));
+            currDate = currDate.plusDays(1);
+            prevMonth = currDate.getMonthOfYear();
+        }
+        return null;
     }
 }

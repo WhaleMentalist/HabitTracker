@@ -162,13 +162,13 @@ public class HabitsScreenTest {
         onView(withId(R.id.action_add)).perform(click()); /** Gestures to add */
 
         /** Keyboard input gesture */
-        onView(withId(R.id.add_habit_title_et)).perform(typeText(title),
+        onView(withId(R.id.add_habit_name_et)).perform(typeText(title),
                 closeSoftKeyboard());
         onView(withId(R.id.add_habit_desc_et)).perform(typeText(desc),
                 closeSoftKeyboard());
 
         /** Confirm and add habit gesture */
-        onView(withId(R.id.confirm_input_action)).perform(click());
+        onView(withId(R.id.add_habit_confirm_fab)).perform(click());
     }
 
 }

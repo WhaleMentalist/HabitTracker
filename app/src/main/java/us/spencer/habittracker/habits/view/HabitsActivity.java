@@ -20,7 +20,7 @@ public class HabitsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.habits_act);
+        setContentView(R.layout.activity_habits_list);
 
         HabitsFragment habitsFragment = (HabitsFragment) getFragmentManager()
                 .findFragmentById(R.id.habits_frag);
