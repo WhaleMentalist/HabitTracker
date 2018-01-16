@@ -8,4 +8,6 @@
     <!-- Useful palettes -->
     <color name="white">#BFFFFFFF</color>
     <color name="light_gray">#4B7B7B7B</color>
+    <color name="dark_gray">#4B484848</color>
+
 </resources>

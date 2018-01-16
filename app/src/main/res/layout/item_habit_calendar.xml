@@ -1,17 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
-
-    <TextView
-        android:id="@+id/calendar_day_tv"
-        android:layout_width="20dp"
-        android:layout_height="wrap_content"
-        android:text="@string/day_placeholder"
-        android:background="@color/light_gray"
-        android:textColor="@color/white"
-        android:textAlignment="center"
-        android:layout_margin="1dp" />
-
-</LinearLayout>
+<us.spencer.habittracker.BoxedNumber xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/day_of_month_tv"
+    android:layout_width="22dp"
+    android:layout_height="22dp" />

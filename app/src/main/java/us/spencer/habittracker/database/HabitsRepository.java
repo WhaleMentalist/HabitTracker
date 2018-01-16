@@ -4,8 +4,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.VisibleForTesting;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
@@ -47,7 +47,7 @@ public class HabitsRepository implements HabitsDataSource {
      */
     private HabitsRepository(@NonNull HabitsDataSource habitsLocalDataSource) {
         mHabitsLocalDataSource = habitsLocalDataSource;
-        mCachedHabits = new HashMap<>();
+        mCachedHabits = new LinkedHashMap<>();
     }
 
     /**

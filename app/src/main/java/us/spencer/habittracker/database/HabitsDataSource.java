@@ -41,7 +41,7 @@ public interface HabitsDataSource {
 
     long insertHabit(@NonNull final Habit habit,
                      @NonNull final SaveHabitCallback saveHabitCallback)
-            throws InterruptedException, ExecutionException;;
+            throws InterruptedException, ExecutionException;
 
     void queryAllHabits(@NonNull final LoadHabitsCallback loadHabitsCallback);
 

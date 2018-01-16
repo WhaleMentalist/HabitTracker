@@ -103,39 +103,6 @@ public class HabitsScreenTest {
     }
 
     /**
-     * Method will ensure that when a duplicate habit is added by user that
-     * it is updated and displayed in {@link RecyclerView} with correct data.
-     *
-     * @throws Exception
-     */
-    @Test
-    public void addDuplicateHabitToHabitsList() throws Exception {
-        createHabit(HABIT_NAME_ONE, HABIT_DESC_ONE);
-        createHabit(HABIT_NAME_ONE, HABIT_DESC_TWO);
-        onView(withText(R.string.duplicate_title)).check(matches(isDisplayed())); /** Way to check if dialog window opened*/
-        onView(withText(R.string.duplicate_dialog_positive_btn)).perform(click()); /** Since dialog is not saved in a layout file, when need to use android default to get dialog button */
-        onView(withTitleText(HABIT_NAME_ONE)).check(matches(isDisplayed())); /** Check if name is the same */
-        onView(withTitleText(HABIT_DESC_TWO)).check(matches(isDisplayed())); /** Check if description changed */
-    }
-
-    /**
-     * Method will ensure that when a duplicate habit addition is canceled by user
-     * in dialog that the {@link RecyclerView} displays the previous habit information.
-     *
-     * @throws Exception
-     */
-    @Test
-    public void cancelAddDuplicateHabitToHabitsList() throws Exception {
-        createHabit(HABIT_NAME_ONE, HABIT_DESC_ONE);
-        createHabit(HABIT_NAME_ONE, HABIT_DESC_TWO);
-        onView(withText(R.string.duplicate_title)).check(matches(isDisplayed())); /** Way to check if dialog window opened*/
-        onView(withText(R.string.duplicate_dialog_negative_btn)).perform(click()); /** Since dialog is not saved in a layout file, when need to use android default to get dialog button */
-        Espresso.pressBack(); /** Navigate back to list */
-        onView(withTitleText(HABIT_NAME_ONE)).check(matches(isDisplayed())); /** Check if name is the same */
-        onView(withTitleText(HABIT_DESC_ONE)).check(matches(isDisplayed())); /** Check if description is same */
-    }
-
-    /**
      * Method will ensure that when two unique habits are added that they
      * are both displayed with correct information.
      *
@@ -159,15 +126,13 @@ public class HabitsScreenTest {
      * @param desc  the description of habit
      */
     private void createHabit(final String title, final String desc) {
-        onView(withId(R.id.action_add)).perform(click()); /** Gestures to add */
+        onView(withId(R.id.action_add)).perform(click());
 
-        /** Keyboard input gesture */
         onView(withId(R.id.add_habit_name_et)).perform(typeText(title),
                 closeSoftKeyboard());
         onView(withId(R.id.add_habit_desc_et)).perform(typeText(desc),
                 closeSoftKeyboard());
 
-        /** Confirm and add habit gesture */
         onView(withId(R.id.add_habit_confirm_fab)).perform(click());
     }
 

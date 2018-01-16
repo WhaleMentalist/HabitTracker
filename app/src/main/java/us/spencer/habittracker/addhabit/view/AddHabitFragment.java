@@ -51,7 +51,6 @@ public class AddHabitFragment extends Fragment implements AddHabitContract.View 
         mTitle = root.findViewById(R.id.add_habit_name_et);
         mDescription = root.findViewById(R.id.add_habit_desc_et);
 
-        /** Setup adapter for spinner to populate with items */
         mFrequency = root.findViewById(R.id.add_habit_frequency_spn);
         ArrayAdapter adapter = ArrayAdapter.createFromResource(getActivity(), R.array.freq_spinner_values,
                 android.R.layout.simple_spinner_item);

@@ -29,13 +29,13 @@ public class Habit {
     private String mDescription;
 
     @Ignore
-    public Habit(long id, String name, String description) {
+    public Habit(long id, @NonNull String name, @NonNull String description) {
         mId = id;
         mName = name;
         mDescription = description;
     }
 
-    public Habit(String name, String description) {
+    public Habit(@NonNull String name, @NonNull String description) {
         mName = name;
         mDescription = description;
     }

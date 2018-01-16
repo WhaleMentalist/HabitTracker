@@ -26,7 +26,7 @@ public class DiskIOThreadExecutor implements ExecutorService {
     }
 
     @Override
-    public void execute(Runnable runnable) {
+    public void execute(@NonNull Runnable runnable) {
         mDiskIO.execute(runnable);
     }
 
@@ -42,6 +42,7 @@ public class DiskIOThreadExecutor implements ExecutorService {
         return mDiskIO.submit(runnable);
     }
 
+    @NonNull
     @Override
     public <T> Future<T> submit(@NonNull Runnable runnable, T type) {
         return mDiskIO.submit(runnable, type);
@@ -54,9 +55,10 @@ public class DiskIOThreadExecutor implements ExecutorService {
         return mDiskIO.invokeAll(tasks);
     }
 
+    @NonNull
     @Override
     public <T> List<Future<T>> invokeAll(@NonNull Collection<? extends Callable<T>> tasks,
-                                         long timeout, TimeUnit unit) throws InterruptedException {
+                                         long timeout, @NonNull TimeUnit unit) throws InterruptedException {
         return mDiskIO.invokeAll(tasks, timeout, unit);
     }
 
@@ -70,7 +72,7 @@ public class DiskIOThreadExecutor implements ExecutorService {
     @NonNull
     @Override
     public <T> T invokeAny(@NonNull Collection<? extends Callable<T>> tasks,
-                                         long timeout, TimeUnit unit) throws InterruptedException,
+                           long timeout, @NonNull TimeUnit unit) throws InterruptedException,
                                                                                 ExecutionException,
                                                                                 TimeoutException {
         return mDiskIO.invokeAny(tasks, timeout, unit);

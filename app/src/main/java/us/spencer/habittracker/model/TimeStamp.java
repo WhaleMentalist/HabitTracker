@@ -8,8 +8,8 @@ import org.joda.time.Instant;
 import org.joda.time.LocalDateTime;
 import org.joda.time.chrono.ISOChronology;
 
-import java.sql.Time;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -23,9 +23,6 @@ public class TimeStamp {
 
     private static final Chronology ISO_CHRONOLOGY = ISOChronology.getInstance();
 
-    /**
-     * Represents 3 in the afternoon
-     */
     private static final int FIXED_HOUR = 15;
 
     private static final int FIXED_MINUTES = 0;
@@ -104,6 +101,15 @@ public class TimeStamp {
         return Long.valueOf(mDateTime.getMillis()).hashCode();
     }
 
+    /**
+     * Method helps to produce list of time stamps that represents days on calendar.
+     * TODO: Try to find more effective approach. Maybe precomputed statically?
+     *
+     * @param start the start date
+     * @param end   the end date
+     * @return  a list of dates that starts from given start time and ends on the given
+     *              end time.
+     */
     public static List<TimeStamp> generateDateTimes(DateTime start, DateTime end) {
         DateTime currDate = start;
         List<TimeStamp> dates = new ArrayList<>();
@@ -111,26 +117,7 @@ public class TimeStamp {
         while(!currDate.isAfter(end)) {
             dates.add(new TimeStamp(currDate));
             currDate = currDate.plusDays(1);
-
         }
         return dates;
-    }
-
-    public static List<Month> generateMonths(DateTime start, DateTime end) {
-        DateTime currDate = start;
-        int currMonth = currDate.getMonthOfYear();
-        int prevMonth = currMonth;
-        List<TimeStamp> days = new ArrayList<>();
-        List<Month> months = new ArrayList<>();
-
-        while(!currDate.isAfter(end)) {
-            if(currMonth != prevMonth) {
-
-            }
-            days.add(new TimeStamp(currDate));
-            currDate = currDate.plusDays(1);
-            prevMonth = currDate.getMonthOfYear();
-        }
-        return null;
     }
 }
