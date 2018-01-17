@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <us.spencer.habittracker.BoxedNumber xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/day_of_month_tv"
-    android:layout_width="22dp"
-    android:layout_height="22dp" />
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content" />
