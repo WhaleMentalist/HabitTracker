@@ -70,7 +70,4 @@ dependencies {
 
     /* Really library that allows for cleaner code */
     implementation 'com.google.guava:guava:23.6-android'
-
-    /* Adapter library for more effective recyclerviews*/
-    implementation 'com.mikepenz:fastadapter:3.1.2@aar'
 }

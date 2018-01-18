@@ -1,9 +1,8 @@
-package us.spencer.habittracker;
+package us.spencer.habittracker.custom;
 
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
@@ -12,8 +11,9 @@ import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
 
+import us.spencer.habittracker.R;
 
-public class BoxedNumber extends View {
+public class CalendarDayView extends View {
 
     private static final String DAY_OF_MONTH_REGEX = "DD";
 
@@ -21,7 +21,11 @@ public class BoxedNumber extends View {
 
     private static final boolean DEFAULT_BOLD_VALUE = false;
 
-    private static final int DEFAULT_MARGIN_VALUE = 5;
+    private static final int DEFAULT_MARGIN_VALUE = 2;
+
+    private static final int DEFAULT_BOX_COLOR_VALUE = R.color.light_gray;
+
+    private static final int DEFAULT_TEXT_COLOR_VALUE = R.color.white;
 
     private String mText;
 
@@ -31,6 +35,10 @@ public class BoxedNumber extends View {
 
     private int mMargin;
 
+    private int mTextColor;
+
+    private int mBoxColor;
+
     private Paint mBoxPaint = new Paint();
 
     private Paint mNumberPaint = new Paint();
@@ -39,18 +47,18 @@ public class BoxedNumber extends View {
 
     private Rect r  = new Rect();
 
-    public BoxedNumber(Context context) {
+    public CalendarDayView(Context context) {
         super(context);
         init();
     }
 
-    public BoxedNumber(Context context, @Nullable AttributeSet attrs) {
+    public CalendarDayView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         setupAttributes(attrs);
         init();
     }
 
-    public BoxedNumber(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public CalendarDayView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         setupAttributes(attrs);
         init();
@@ -58,13 +66,17 @@ public class BoxedNumber extends View {
 
     private void setupAttributes(AttributeSet attrs) {
         TypedArray attr = getContext().getTheme().obtainStyledAttributes(attrs,
-                R.styleable.BoxedNumber, 0, 0);
+                R.styleable.CalendarDayView, 0, 0);
 
         try {
-            mText = attr.getString(R.styleable.BoxedNumber_bn_text);
-            mTextSize = attr.getFloat(R.styleable.BoxedNumber_bn_text_size, DEFAULT_TEXT_SIZE);
-            mIsBold = attr.getBoolean(R.styleable.BoxedNumber_bn_text_bold, DEFAULT_BOLD_VALUE);
-            mMargin = attr.getInteger(R.styleable.BoxedNumber_bn_margin, DEFAULT_MARGIN_VALUE);
+            mText = attr.getString(R.styleable.CalendarDayView_bn_text);
+            mTextSize = attr.getFloat(R.styleable.CalendarDayView_bn_text_size, DEFAULT_TEXT_SIZE);
+            mIsBold = attr.getBoolean(R.styleable.CalendarDayView_bn_text_bold, DEFAULT_BOLD_VALUE);
+            mTextColor = attr.getColor(R.styleable.CalendarDayView_bn_text_color,
+                    getResources().getColor(DEFAULT_TEXT_COLOR_VALUE));
+            mBoxColor = attr.getColor(R.styleable.CalendarDayView_bn_box_color,
+                    getResources().getColor(DEFAULT_BOX_COLOR_VALUE));
+            mMargin = attr.getInteger(R.styleable.CalendarDayView_bn_margin, DEFAULT_MARGIN_VALUE);
         }
         finally {
             attr.recycle();
@@ -72,9 +84,11 @@ public class BoxedNumber extends View {
     }
 
     private void init() {
-        mBoxPaint.setColor(Color.parseColor("#4B7B7B7B"));
-
-        mNumberPaint.setColor(Color.WHITE);
+        if(mText == null) {
+            mText = DAY_OF_MONTH_REGEX;
+        }
+        mBoxPaint.setColor(mBoxColor);
+        mNumberPaint.setColor(mTextColor);
         mNumberPaint.setAntiAlias(true);
         if(mIsBold) {
             mNumberPaint.setTypeface(Typeface.DEFAULT_BOLD);
@@ -90,11 +104,11 @@ public class BoxedNumber extends View {
         mNumberPaint.getTextBounds(DAY_OF_MONTH_REGEX, 0,
                 DAY_OF_MONTH_REGEX.length(), r); /* Displays only days of month */
 
-        int contentWidth = (r.width() + mMargin) * 2;
+        int contentWidth = (int) ((r.width() + mMargin) * 1.2);
         int w = resolveSize(contentWidth + getPaddingLeft() + getPaddingRight(),
                 widthMeasureSpec);
 
-        int contentHeight = (r.height() + mMargin) * 2;
+        int contentHeight = (int) ((r.height() + mMargin) + 1.2);
         int h = resolveSize(contentHeight + getPaddingTop() + getPaddingBottom(),
                 heightMeasureSpec);
 

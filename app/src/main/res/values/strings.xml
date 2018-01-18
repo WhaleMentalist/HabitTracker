@@ -22,9 +22,12 @@
         <item>Seven times per week</item>
     </string-array>
 
-        <!-- For error message dialog -->
+    <!-- For error message dialog -->
     <string name="empty_field_error_mess">Habit entered is missing a value</string>
     <string name="empty_field_error_title">Invalid Habit</string>
     <string name="empty_error_dialog_positive_btn">OK</string>
+
+    <!-- Habit details -->
+    <string name="history_text">History</string>
 
 </resources>
