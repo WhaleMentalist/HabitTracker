@@ -14,7 +14,6 @@ import us.spencer.habittracker.utility.Injection;
  */
 public class HabitsActivity extends AppCompatActivity {
 
-    @NonNull
     private HabitsPresenter mPresenter;
 
     @Override

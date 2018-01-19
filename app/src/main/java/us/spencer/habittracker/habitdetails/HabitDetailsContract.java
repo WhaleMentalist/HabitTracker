@@ -2,6 +2,7 @@ package us.spencer.habittracker.habitdetails;
 
 import us.spencer.habittracker.BasePresenter;
 import us.spencer.habittracker.BaseView;
+import us.spencer.habittracker.model.HabitRepetitions;
 
 /**
  * Specify a contract (i.e interface) between the
@@ -9,13 +10,11 @@ import us.spencer.habittracker.BaseView;
  */
 public interface HabitDetailsContract {
 
-    interface View extends BaseView<Presenter> {
+    interface CalendarFragmentView extends BaseView<Presenter> {
 
-        void showHabitsList();
+        void showHistory(HabitRepetitions habit);
 
         boolean isActive();
-
-
     }
 
     interface Presenter extends BasePresenter {

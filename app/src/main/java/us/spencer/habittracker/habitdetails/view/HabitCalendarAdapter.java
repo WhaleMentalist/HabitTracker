@@ -7,12 +7,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import us.spencer.habittracker.custom.CalendarDayView;
+import us.spencer.habittracker.custom.BoxedText;
 import us.spencer.habittracker.R;
 import us.spencer.habittracker.model.HabitCalendar;
 import us.spencer.habittracker.model.HabitRepetitions;
 import us.spencer.habittracker.model.TimeStamp;
 import us.spencer.habittracker.utility.DateUtils;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 public class HabitCalendarAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -24,20 +26,14 @@ public class HabitCalendarAdapter extends RecyclerView.Adapter<RecyclerView.View
 
     private static final int ITEM_VALUE = 1;
 
-    private static final int NUMBER_ITEMS_PER_COLUMN = 8;
-
     private HabitCalendar mHabitCalendar;
 
     /**
-     * TODO: Setup with a {@link android.os.AsyncTask} for better UI performance
-     *
-     * @param habitRepetitions  {@link HabitRepetitions} that will be used to construct
-     *                          the {@link HabitCalendar} to more easily map the data
-     *                          on the grid
-     *
+     * Initialize adapter with blank slate. Basically, a {@link HabitRepetitions} with no completed
+     * days and no attachment to a real {@link us.spencer.habittracker.model.Habit}
      */
-    public HabitCalendarAdapter(@NonNull HabitRepetitions habitRepetitions) {
-        mHabitCalendar = new HabitCalendar(habitRepetitions);
+    public HabitCalendarAdapter() {
+        mHabitCalendar = new HabitCalendar();
     }
 
     @Override
@@ -93,18 +89,41 @@ public class HabitCalendarAdapter extends RecyclerView.Adapter<RecyclerView.View
     @Override
     public int getItemViewType(int position) {
         int result;
-        if(position % NUMBER_ITEMS_PER_COLUMN == 0) { /* At row zero */
+        if(position % HabitCalendar.NUMBER_ITEMS_PER_COLUMN == 0) { /* At row zero */
             result = HEADER_VALUE;
         }
         else {
-            result = ITEM_VALUE;
+            result = ITEM_VALUE; /* At a calendar item */
         }
         return result;
     }
 
+    /**
+     * Method will set new data to the calendar object that
+     * the adapter will contain
+     *
+     * @param habit the {@link HabitRepetitions} that will be
+     *                  represented and used by adapter for
+     *              recycler view.
+     */
+    public void replaceData(HabitRepetitions habit) {
+        setData(habit);
+        notifyDataSetChanged();
+    }
+
+    /**
+     * Assigns new calendar to show on view
+     *
+     * @param habit the data from {@link HabitRepetitions} to
+     *                  show on the calendar view
+     */
+    private void setData(HabitRepetitions habit) {
+        mHabitCalendar = new HabitCalendar(checkNotNull(habit));
+    }
+
     protected static class DayOfMonthViewHolder extends RecyclerView.ViewHolder {
 
-        private CalendarDayView mCalendarDayTextView;
+        private BoxedText mCalendarDayTextView;
 
         private DayOfMonthViewHolder(View itemView) {
             super(itemView);
@@ -114,7 +133,7 @@ public class HabitCalendarAdapter extends RecyclerView.Adapter<RecyclerView.View
 
     protected static class MonthViewHolder extends RecyclerView.ViewHolder {
 
-        private CalendarDayView mCalendarMonthTextView;
+        private BoxedText mCalendarMonthTextView;
 
         private MonthViewHolder(View itemView) {
             super(itemView);

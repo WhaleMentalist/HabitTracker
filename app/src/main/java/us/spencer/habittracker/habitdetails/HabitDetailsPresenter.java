@@ -14,19 +14,31 @@ public class HabitDetailsPresenter implements HabitDetailsContract.Presenter {
     private HabitsDataSource mHabitsRepository;
 
     @NonNull
-    private HabitDetailsContract.View mHabitDetailsView;
+    private HabitDetailsContract.CalendarFragmentView mHabitDetailsCalendarView;
+
+    private long mHabitId;
 
     public HabitDetailsPresenter(@NonNull HabitsRepository habitsRepository,
-                                 @NonNull HabitDetailsContract.View habitDetailsFragment) {
+                                 @NonNull HabitDetailsContract.CalendarFragmentView habitDetailsFragment,
+                                 long habitId) {
         mHabitsRepository = checkNotNull(habitsRepository);
-        mHabitDetailsView = checkNotNull(habitDetailsFragment);
+        mHabitDetailsCalendarView = checkNotNull(habitDetailsFragment);
+        mHabitId = habitId;
+        mHabitDetailsCalendarView.setPresenter(this);
     }
 
+    /**
+     * Method will get the habit by specified id and pass information
+     * to the calendar view to present
+     *
+     * @param habitId   the id that will be searched for in the database
+     */
     public void loadHabit(final long habitId) {
-
+        HabitRepetitions habit = mHabitsRepository.getHabitById(habitId);
+        mHabitDetailsCalendarView.showHistory(habit);
     }
 
     public void start() {
-
+        loadHabit(mHabitId);
     }
 }

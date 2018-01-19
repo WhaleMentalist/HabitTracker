@@ -13,7 +13,7 @@ import android.view.View;
 
 import us.spencer.habittracker.R;
 
-public class CalendarDayView extends View {
+public class BoxedText extends View {
 
     private static final String DAY_OF_MONTH_REGEX = "DD";
 
@@ -47,18 +47,18 @@ public class CalendarDayView extends View {
 
     private Rect r  = new Rect();
 
-    public CalendarDayView(Context context) {
+    public BoxedText(Context context) {
         super(context);
         init();
     }
 
-    public CalendarDayView(Context context, @Nullable AttributeSet attrs) {
+    public BoxedText(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         setupAttributes(attrs);
         init();
     }
 
-    public CalendarDayView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public BoxedText(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         setupAttributes(attrs);
         init();
@@ -66,17 +66,17 @@ public class CalendarDayView extends View {
 
     private void setupAttributes(AttributeSet attrs) {
         TypedArray attr = getContext().getTheme().obtainStyledAttributes(attrs,
-                R.styleable.CalendarDayView, 0, 0);
+                R.styleable.BoxedText, 0, 0);
 
         try {
-            mText = attr.getString(R.styleable.CalendarDayView_bn_text);
-            mTextSize = attr.getFloat(R.styleable.CalendarDayView_bn_text_size, DEFAULT_TEXT_SIZE);
-            mIsBold = attr.getBoolean(R.styleable.CalendarDayView_bn_text_bold, DEFAULT_BOLD_VALUE);
-            mTextColor = attr.getColor(R.styleable.CalendarDayView_bn_text_color,
+            mText = attr.getString(R.styleable.BoxedText_bn_text);
+            mTextSize = attr.getFloat(R.styleable.BoxedText_bn_text_size, DEFAULT_TEXT_SIZE);
+            mIsBold = attr.getBoolean(R.styleable.BoxedText_bn_text_bold, DEFAULT_BOLD_VALUE);
+            mTextColor = attr.getColor(R.styleable.BoxedText_bn_text_color,
                     getResources().getColor(DEFAULT_TEXT_COLOR_VALUE));
-            mBoxColor = attr.getColor(R.styleable.CalendarDayView_bn_box_color,
+            mBoxColor = attr.getColor(R.styleable.BoxedText_bn_box_color,
                     getResources().getColor(DEFAULT_BOX_COLOR_VALUE));
-            mMargin = attr.getInteger(R.styleable.CalendarDayView_bn_margin, DEFAULT_MARGIN_VALUE);
+            mMargin = attr.getInteger(R.styleable.BoxedText_bn_margin, DEFAULT_MARGIN_VALUE);
         }
         finally {
             attr.recycle();

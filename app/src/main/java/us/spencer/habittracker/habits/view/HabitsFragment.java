@@ -38,6 +38,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * Displays the list of habits user is tracking.
  *
+ * TODO - NEW FEATURE: Allow user to delete habit from the list
+ *
  * Very useful article explaining 'RecyclerView':
  * https://code.tutsplus.com/tutorials/getting-started-with-recyclerview-and-cardview-on-android--cms-23465
  */
@@ -111,7 +113,6 @@ public class HabitsFragment extends Fragment implements HabitsContract.View {
 
     @Override
     public void showHabitDetails(final long habitId) {
-        /* TODO: Implement view to show habit details */
         Intent intent = new Intent(getActivity(), HabitDetailsActivity.class);
         intent.putExtra("HABIT_ID", habitId);
         startActivity(intent);
@@ -150,7 +151,7 @@ public class HabitsFragment extends Fragment implements HabitsContract.View {
          *
          * @param habits    the new list to assign
          */
-        private void replaceData(List<HabitRepetitions> habits) {
+        public void replaceData(List<HabitRepetitions> habits) {
             setList(habits);
             notifyDataSetChanged();
         }

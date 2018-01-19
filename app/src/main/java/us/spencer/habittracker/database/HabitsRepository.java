@@ -198,6 +198,12 @@ public class HabitsRepository implements HabitsDataSource {
         }
     }
 
+    /**
+     * TODO: Fully implement database access, as well, for when the cache is bad
+     *
+     * @param habitID
+     * @return
+     */
     @Override
     public HabitRepetitions getHabitById(long habitID) {
         return mCachedHabits.get(habitID);

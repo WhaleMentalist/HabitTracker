@@ -10,6 +10,11 @@ import java.util.Set;
 
 import us.spencer.habittracker.utility.DateUtils;
 
+/**
+ * Model that helps to construct and access repetitions and
+ * map them to a gridded calendar implementation in the
+ * view.
+ */
 public class HabitCalendar {
 
     /**
@@ -20,18 +25,20 @@ public class HabitCalendar {
 
     /**
      * Delimits the number of data in a column besides
-     * the header
+     * the header. Useful for getting number of headers.
      */
     private static final int DAYS_IN_WEEK = 7;
 
     /**
      * Number of items per column in the grid
      */
-    private static final int NUMBER_ITEMS_PER_COLUMN = 8;
+    public static final int NUMBER_ITEMS_PER_COLUMN = 8;
 
     /**
      * Holds the calendar days data for the 'RecyclerView'...
      * This will be statically defined and built.
+     * For now, the user will only be allowed to see up to a
+     * year back, however, older data is stored and counted.
      */
     private static final List<TimeStamp> mCalendar = TimeStamp.generateDateTimes(DateTime.now()
             .minusYears(DEFAULT_YEARS_BACK), DateTime.now());
@@ -54,6 +61,16 @@ public class HabitCalendar {
      */
     private SparseArray<String> mHeaders;
 
+    /**
+     * Initialize {@link HabitCalendar} with no associated
+     * to any habit (hence the null assignment) and initializes
+     * data
+     */
+    public HabitCalendar() {
+        mHabit = null;
+        mIsComplete = new SparseBooleanArray();
+        mHeaders = new SparseArray<>();
+    }
 
     /**
      * Constructor will initialize and populate the necessary data
@@ -99,6 +116,7 @@ public class HabitCalendar {
      *
      * @param position  the position in accordance with header items
      *                  accounted
+     *
      * @return  the {@link TimeStamp} at the specified position
      */
     public TimeStamp getCalendarItemAt(int position) {
@@ -127,7 +145,8 @@ public class HabitCalendar {
 
     /**
      * Retrieves whether given day that is specified at position
-     * is a completed day for the habit
+     * is a completed day for the habit. The method will account
+     * for the headers in the model.
      *
      * @param position  the position not accounting for the headers
      * @return  the result of whether the day was complete
