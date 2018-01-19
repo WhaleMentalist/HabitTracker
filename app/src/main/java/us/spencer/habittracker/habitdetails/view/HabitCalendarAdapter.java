@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 
 import us.spencer.habittracker.custom.CalendarDayView;
 import us.spencer.habittracker.R;
-import us.spencer.habittracker.model.HabitCalendarModel;
+import us.spencer.habittracker.model.HabitCalendar;
 import us.spencer.habittracker.model.HabitRepetitions;
 import us.spencer.habittracker.model.TimeStamp;
 import us.spencer.habittracker.utility.DateUtils;
@@ -26,18 +26,18 @@ public class HabitCalendarAdapter extends RecyclerView.Adapter<RecyclerView.View
 
     private static final int NUMBER_ITEMS_PER_COLUMN = 8;
 
-    private HabitCalendarModel mHabitCalendarModel;
+    private HabitCalendar mHabitCalendar;
 
     /**
      * TODO: Setup with a {@link android.os.AsyncTask} for better UI performance
      *
      * @param habitRepetitions  {@link HabitRepetitions} that will be used to construct
-     *                          the {@link HabitCalendarModel} to more easily map the data
+     *                          the {@link HabitCalendar} to more easily map the data
      *                          on the grid
      *
      */
     public HabitCalendarAdapter(@NonNull HabitRepetitions habitRepetitions) {
-        mHabitCalendarModel = new HabitCalendarModel(habitRepetitions);
+        mHabitCalendar = new HabitCalendar(habitRepetitions);
     }
 
     @Override
@@ -60,9 +60,9 @@ public class HabitCalendarAdapter extends RecyclerView.Adapter<RecyclerView.View
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int i) {
         if(viewHolder instanceof DayOfMonthViewHolder) {
-            TimeStamp timeStamp = mHabitCalendarModel.getCalendarItemAt(i);
+            TimeStamp timeStamp = mHabitCalendar.getCalendarItemAt(i);
             DayOfMonthViewHolder dayOfMonthViewHolder = (DayOfMonthViewHolder) viewHolder;
-            boolean isComplete = mHabitCalendarModel.isCompleteAt(i);
+            boolean isComplete = mHabitCalendar.isCompleteAt(i);
 
             dayOfMonthViewHolder.mCalendarDayTextView.setText(DateUtils
                     .getDayOfMonthAsString(timeStamp.getDateTime().getDayOfMonth()));
@@ -76,7 +76,7 @@ public class HabitCalendarAdapter extends RecyclerView.Adapter<RecyclerView.View
         }
         else {
             MonthViewHolder monthViewHolder = (MonthViewHolder) viewHolder;
-            monthViewHolder.mCalendarMonthTextView.setText(mHabitCalendarModel.getHeaderAt(i));
+            monthViewHolder.mCalendarMonthTextView.setText(mHabitCalendar.getHeaderAt(i));
         }
     }
 
@@ -87,7 +87,7 @@ public class HabitCalendarAdapter extends RecyclerView.Adapter<RecyclerView.View
 
     @Override
     public int getItemCount() {
-        return mHabitCalendarModel.getSize();
+        return mHabitCalendar.getSize();
     }
 
     @Override

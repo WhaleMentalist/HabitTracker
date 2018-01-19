@@ -10,7 +10,7 @@ import java.util.Set;
 
 import us.spencer.habittracker.utility.DateUtils;
 
-public class HabitCalendarModel {
+public class HabitCalendar {
 
     /**
      * For now, app will only display data from up to one
@@ -63,7 +63,7 @@ public class HabitCalendarModel {
      *              data necessary to construct mappings to the calendar
      *             that mark the day the repetitions occurred
      */
-    public HabitCalendarModel(HabitRepetitions habitRepetitions) {
+    public HabitCalendar(HabitRepetitions habitRepetitions) {
         long habitId;
         int currentMonth, index = 0;
         int previousMonth = 0;
@@ -138,9 +138,10 @@ public class HabitCalendarModel {
     }
 
     /**
+     * Method will retrieve the header value at the specified position
      *
-     * @param position
-     * @return
+     * @param position  the position to retrieve header value
+     * @return  the value of header as String
      */
     public String getHeaderAt(int position) {
         return mHeaders.get(position, "");
