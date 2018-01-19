@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="BoxedText">
+        <attr name="bn_text_size" format="float" />
+        <attr name="bn_text_bold" format="boolean" />
+        <attr name="bn_text_color" format="color" />
+        <attr name="bn_text" format="string" />
+        <attr name="bn_margin" format="integer" />
+        <attr name="bn_box_color" format="color" />
+    </declare-styleable>
+</resources>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<us.spencer.habittracker.custom.BoxedText
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/month_of_year_bn"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    app:bn_text_size="15.0"
+    app:bn_text_bold="true"
+    app:bn_text_color="@color/dark_gray"
+    app:bn_box_color="@color/white" />

@@ -29,13 +29,13 @@ public class Habit {
     private String mDescription;
 
     @Ignore
-    public Habit(long id, String name, String description) {
+    public Habit(long id, @NonNull String name, @NonNull String description) {
         mId = id;
         mName = name;
         mDescription = description;
     }
 
-    public Habit(String name, String description) {
+    public Habit(@NonNull String name, @NonNull String description) {
         mName = name;
         mDescription = description;
     }
@@ -62,7 +62,7 @@ public class Habit {
         mName = name;
     }
 
-    public void setDescription(@Nullable String description) {
+    public void setDescription(@NonNull String description) {
         mDescription = description;
     }
 
@@ -86,7 +86,9 @@ public class Habit {
         }
 
         Habit habit = (Habit) o;
-        if(mName.equals(habit.mName) && mDescription.equals(habit.mDescription)) {
+        if(mId == habit.mId &&
+                mName.equals(habit.mName) &&
+                mDescription.equals(habit.mDescription)) {
             result = true;
         }
         return result;

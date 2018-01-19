@@ -20,7 +20,7 @@
             android:layout_marginLeft="16dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
-            android:text="@string/placeholder"
+            android:text="@string/global_placeholder"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -32,7 +32,7 @@
             android:layout_marginLeft="24dp"
             android:layout_marginStart="24dp"
             android:layout_marginTop="8dp"
-            android:text="@string/placeholder"
+            android:text="@string/global_placeholder"
             android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -47,7 +47,6 @@
             android:layout_marginEnd="8dp"
             android:layout_marginTop="8dp"
             android:checked="false"
-            android:splitTrack="false"
             android:text="Complete?"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

@@ -1,9 +1,10 @@
 package us.spencer.habittracker.database.local;
 
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 
 import us.spencer.habittracker.database.dao.HabitRepetitionsDAO;
 import us.spencer.habittracker.database.dao.HabitsDAO;
@@ -20,7 +21,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * Concrete implementation of data source as a database.
  * This will be a singleton design pattern.
  */
-public class HabitsLocalDataSource implements HabitsDataSource.Database {
+public class HabitsLocalDataSource implements HabitsDataSource {
 
     private static volatile HabitsLocalDataSource INSTANCE;
 
@@ -78,35 +79,34 @@ public class HabitsLocalDataSource implements HabitsDataSource.Database {
 
     /**
      * Method will save desired habit into database. It will
-     * not replace duplicate habits. A duplicate is dictated
-     * by the name of the habit.
+     * replace a duplicate habit.
      *
      * @param habit the habit to add
      * @param saveHabitCallback  the callback that will be notified of result
      */
     @Override
-    public void insertHabit(@NonNull final Habit habit,
-                            @NonNull final HabitsDataSource.SaveHabitCallback saveHabitCallback,
-                            @Nullable final HabitsDataSource.SyncCacheCallback syncCacheCallback) {
+    public long insertHabit(@NonNull final Habit habit,
+                            @NonNull final HabitsDataSource.SaveHabitCallback saveHabitCallback)
+                                                                        throws InterruptedException,
+                                                                                ExecutionException {
         checkNotNull(habit);
         checkNotNull(saveHabitCallback);
-        Runnable insertHabit = new Runnable() {
+
+        Callable<Long> insertHabit = new Callable<Long>() {
 
             @Override
-            public void run() {
+            public Long call() throws Exception {
                 long generatedId = mHabitsDAO.insertHabit(habit);
-                syncCacheCallback.onHabitIdGenerated(generatedId, habit);
-
                 mAppExecutors.mainThread().execute(new Runnable() {
 
                     @Override
                     public void run() {
                         saveHabitCallback.onHabitSaved();}
-                    });
-
+                });
+                return generatedId;
             }
         };
-        mAppExecutors.diskIO().execute(insertHabit);
+        return mAppExecutors.diskIO().submit(insertHabit).get();
     }
 
     @Override
@@ -171,5 +171,10 @@ public class HabitsLocalDataSource implements HabitsDataSource.Database {
             }
         };
         mAppExecutors.diskIO().execute(deleteRepetition);
+    }
+
+    @Override
+    public HabitRepetitions getHabitById(long habitID) {
+        return null;
     }
 }

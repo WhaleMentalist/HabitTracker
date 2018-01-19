@@ -4,6 +4,8 @@ import com.google.common.collect.Lists;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
@@ -12,61 +14,94 @@ import org.mockito.MockitoAnnotations;
 import java.util.List;
 
 import us.spencer.habittracker.database.HabitsDataSource;
+import us.spencer.habittracker.database.HabitsRepository;
 import us.spencer.habittracker.model.Habit;
+import us.spencer.habittracker.model.HabitRepetitions;
+import us.spencer.habittracker.model.Repetition;
+import us.spencer.habittracker.model.TimeStamp;
 
-import static junit.framework.Assert.assertTrue;
-
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+@RunWith(JUnit4.class)
 public class HabitsPresenterTest {
 
-    private static List<Habit> HABITS;
+    private static final long HABIT_ID = 1;
+
+    private static final TimeStamp TIME_STAMP = new TimeStamp(Long.valueOf(1000L));
+
+    private static final List<HabitRepetitions> MOCK_HABITS_LIST = Lists.newArrayList(
+            new HabitRepetitions(new Habit("NAME_ONE", "DESC_ONE")),
+            new HabitRepetitions(new Habit("NAME_TWO", "DESC_TWO"))
+    );
+
+    private static final HabitRepetitions HABIT_REPETITIONS = new HabitRepetitions(
+            new Habit(HABIT_ID, "NAME_ONE", "DESC_ONE"));
 
     @Mock
-    private HabitsDataSource mHabitsRepository;
+    private HabitsRepository mHabitsRepository;
 
     @Mock
     private HabitsContract.View mHabitsView;
 
-    private HabitsPresenter mPresenter;
-
     @Captor
     private ArgumentCaptor<HabitsDataSource.LoadHabitsCallback> mLoadHabitsCallbackCaptor;
 
+    private HabitsPresenter mHabitsPresenter;
+
     @Before
     public void setup() {
-        MockitoAnnotations.initMocks(this); /** Initialize mocks */
-        when(mHabitsView.isActive()).thenReturn(true); /** Wait for active view */
-
-        HABITS = Lists.newArrayList(new Habit("name1", "desc1"),
-                new Habit("name2", "desc2"),
-                new Habit("name3", "desc3"));
+        MockitoAnnotations.initMocks(this);
+        when(mHabitsView.isActive()).thenReturn(true);
     }
 
     @Test
-    public void createPresenter_setPresenterToView() {
-        mPresenter = new HabitsPresenter(mHabitsRepository, mHabitsView);
-        verify(mHabitsView).setPresenter(mPresenter);
+    public void onLoadHabits_callShowHabitsList() {
+        mHabitsPresenter = new HabitsPresenter(mHabitsRepository, mHabitsView);
+        mHabitsPresenter.loadHabits();
+        verify(mHabitsRepository).queryAllHabits(mLoadHabitsCallbackCaptor.capture());
+        mLoadHabitsCallbackCaptor.getValue().onHabitsLoaded(MOCK_HABITS_LIST);
+        verify(mHabitsView).showHabits(MOCK_HABITS_LIST);
     }
 
     @Test
-    public void loadHabits_showAllHabitsInView() {
-        mPresenter = new HabitsPresenter(mHabitsRepository, mHabitsView);
-        mPresenter.loadHabits();
-
-        // verify(mHabitsRepository).retrieveAllHabits(mLoadHabitsCallbackCaptor.capture()); /** Capture callback */
-        // mLoadHabitsCallbackCaptor.getValue().onHabitsLoaded(HABITS);
-
-        ArgumentCaptor<List> showHabitsArgumentCaptor = ArgumentCaptor.forClass(List.class);
-        verify(mHabitsView).showHabits(showHabitsArgumentCaptor.capture());
-        assertTrue(showHabitsArgumentCaptor.getValue().size() == 3);
+    public void onDataNotAvailable_callShowEmptyHabits() {
+        mHabitsPresenter = new HabitsPresenter(mHabitsRepository, mHabitsView);
+        mHabitsPresenter.loadHabits();
+        verify(mHabitsRepository).queryAllHabits(mLoadHabitsCallbackCaptor.capture());
+        mLoadHabitsCallbackCaptor.getValue().onDataNotAvailable();
+        verify(mHabitsView).showEmptyHabits();
     }
 
     @Test
-    public void addHabit_callShowAddHabitView() {
-        mPresenter = new HabitsPresenter(mHabitsRepository, mHabitsView);
-        mPresenter.addHabit();
+    public void addHabit_callShowAddHabit() {
+        mHabitsPresenter = new HabitsPresenter(mHabitsRepository, mHabitsView);
+        mHabitsPresenter.addHabit();
         verify(mHabitsView).showAddHabit();
     }
+
+    @Test
+    public void addRepetition_callsInsertRepetition() {
+        mHabitsPresenter = new HabitsPresenter(mHabitsRepository, mHabitsView);
+        mHabitsPresenter.addRepetition(HABIT_ID, TIME_STAMP);
+        Repetition repetition = new Repetition(TIME_STAMP, HABIT_ID);
+        verify(mHabitsRepository).insertRepetition(eq(HABIT_ID), eq(repetition));
+    }
+
+    @Test
+    public void deleteRepetition_callsDeleteRepetition() {
+        mHabitsPresenter = new HabitsPresenter(mHabitsRepository, mHabitsView);
+        mHabitsPresenter.deleteRepetition(HABIT_ID, TIME_STAMP);
+        Repetition repetition = new Repetition(TIME_STAMP, HABIT_ID);
+        verify(mHabitsRepository).deleteRepetition(eq(HABIT_ID), eq(repetition));
+    }
+
+    @Test
+    public void loadHabit_callsShowHabitDetails() {
+        mHabitsPresenter = new HabitsPresenter(mHabitsRepository, mHabitsView);
+        mHabitsPresenter.loadHabitDetails(HABIT_ID);
+        verify(mHabitsView).showHabitDetails(HABIT_ID);
+    }
+
 }

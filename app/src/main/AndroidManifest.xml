@@ -5,14 +5,14 @@
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
+        android:label="@string/global_app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
         <activity
-            android:name=".habits.HabitsActivity"
-            android:label="@string/app_name"
+            android:name=".habits.view.HabitsActivity"
+            android:label="@string/global_app_name"
             android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -20,11 +20,18 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".addhabit.AddHabitActivity"
-            android:parentActivityName=".habits.HabitsActivity" >
+        <activity android:name=".addhabit.view.AddHabitActivity"
+            android:parentActivityName=".habits.view.HabitsActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".addhabit.AddHabitActivity" />
+                android:value=".addhabit.view.AddHabitActivity" />
+        </activity>
+
+        <activity android:name=".habitdetails.view.HabitDetailsActivity"
+            android:parentActivityName=".habits.view.HabitsActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".habitdetails.view.HabitDetailsActivity" />
         </activity>
 
     </application>

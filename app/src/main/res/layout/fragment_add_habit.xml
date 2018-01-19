@@ -11,21 +11,21 @@
         android:orientation="vertical" >
 
         <TextView
-            android:id="@+id/add_habit_title_tv"
+            android:id="@+id/add_habit_name_txt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
-            android:text="@string/add_habit_title_text" />
+            android:text="@string/add_habit_name_text" />
 
         <EditText
-            android:id="@+id/add_habit_title_et"
+            android:id="@+id/add_habit_name_et"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
-            android:hint="@string/add_habit_title_hint" />
+            android:hint="@string/add_habit_name_hint" />
 
         <TextView
-            android:id="@+id/add_habit_desc_tv"
+            android:id="@+id/add_habit_desc_txt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
@@ -43,7 +43,7 @@
             android:layout_height="wrap_content">
 
             <TextView
-                android:id="@+id/add_habit_freq_tv"
+                android:id="@+id/add_habit_freq_txt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp"
@@ -56,17 +56,17 @@
 
             <!-- Support older versions, we need to add margin left -->
             <Spinner
-                android:id="@+id/add_habit_freq_spinner"
+                android:id="@+id/add_habit_frequency_spn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
-                app:layout_constraintStart_toEndOf="@+id/add_habit_freq_tv"
+                app:layout_constraintStart_toEndOf="@+id/add_habit_freq_txt"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <android.support.design.widget.FloatingActionButton
-                android:id="@+id/confirm_input_action"
+                android:id="@+id/add_habit_confirm_fab"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
@@ -78,7 +78,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/add_habit_freq_spinner"
+                app:layout_constraintTop_toBottomOf="@+id/add_habit_frequency_spn"
                 app:srcCompat="@drawable/ic_check_circle" />
 
         </android.support.constraint.ConstraintLayout>

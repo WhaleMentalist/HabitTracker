@@ -3,6 +3,7 @@ package us.spencer.habittracker.database;
 import android.support.annotation.NonNull;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import us.spencer.habittracker.model.Habit;
 import us.spencer.habittracker.model.HabitRepetitions;
@@ -32,42 +33,15 @@ public interface HabitsDataSource {
         void onDataNotAvailable();
     }
 
-    interface SyncCacheCallback {
-
-        void onHabitIdGenerated(final long id, @NonNull final Habit habit);
-    }
-
     /**
      * =======================================================================
-     * DATABASE
+     * REPOSITORY / DATABASE (i.e the general interface for getting data)
      * =======================================================================
      */
 
-    interface Database {
-
-        void insertHabit(@NonNull final Habit habit,
-                         @NonNull final SaveHabitCallback saveHabitCallback,
-                         @NonNull final SyncCacheCallback syncCacheCallback);
-
-        void queryAllHabits(@NonNull final LoadHabitsCallback callback);
-
-        void deleteAllHabits();
-
-        void insertRepetition(final long habitId,
-                              @NonNull final Repetition repetition);
-
-        void deleteRepetition(final long habitId,
-                              @NonNull final Repetition repetition);
-    }
-
-    /**
-     * =======================================================================
-     * REPOSITORY (i.e the general interface for getting data)
-     * =======================================================================
-     */
-
-    void insertHabit(@NonNull final Habit habit,
-                     @NonNull final SaveHabitCallback saveHabitCallback);
+    long insertHabit(@NonNull final Habit habit,
+                     @NonNull final SaveHabitCallback saveHabitCallback)
+            throws InterruptedException, ExecutionException;
 
     void queryAllHabits(@NonNull final LoadHabitsCallback loadHabitsCallback);
 
@@ -78,4 +52,6 @@ public interface HabitsDataSource {
 
     void deleteRepetition(final long habitId,
                           @NonNull final Repetition repetition);
+
+    HabitRepetitions getHabitById(final long habitID);
 }

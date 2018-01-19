@@ -15,6 +15,8 @@ public interface AddHabitContract {
 
         void showEmptyHabitError();
 
+        void showAddHabitError();
+
         boolean isActive();
     }
 

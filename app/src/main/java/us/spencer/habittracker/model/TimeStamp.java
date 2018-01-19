@@ -8,6 +8,10 @@ import org.joda.time.Instant;
 import org.joda.time.LocalDateTime;
 import org.joda.time.chrono.ISOChronology;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
 /**
  * Class represents an instant in time in which a
  * particular event occurred. It is focused on the
@@ -19,9 +23,6 @@ public class TimeStamp {
 
     private static final Chronology ISO_CHRONOLOGY = ISOChronology.getInstance();
 
-    /**
-     * Represents 3 in the afternoon
-     */
     private static final int FIXED_HOUR = 15;
 
     private static final int FIXED_MINUTES = 0;
@@ -61,6 +62,18 @@ public class TimeStamp {
                         .withTime(FIXED_HOUR, FIXED_MINUTES, FIXED_SECONDS, FIXED_MILLI);
     }
 
+    /**
+     * Constructs {@link TimeStamp} with a {@link DateTime}.
+     * It will make sure that given {@link DateTime} is adjusted
+     * to the fixed time frame for easier comparisons.
+     *
+     * @param dateTime  a {@link DateTime} that will be assigned
+     */
+    public TimeStamp(@NonNull DateTime dateTime) {
+        mDateTime = new DateTime(dateTime, ISO_CHRONOLOGY)
+                .withTime(FIXED_HOUR, FIXED_MINUTES, FIXED_SECONDS, FIXED_MILLI);
+    }
+
     public DateTime getDateTime() {
         return mDateTime;
     }
@@ -86,5 +99,25 @@ public class TimeStamp {
     @Override
     public int hashCode() {
         return Long.valueOf(mDateTime.getMillis()).hashCode();
+    }
+
+    /**
+     * Method helps to produce list of time stamps that represents days on calendar.
+     * TODO: Try to find more effective approach. Maybe precomputed statically?
+     *
+     * @param start the start date
+     * @param end   the end date
+     * @return  a list of dates that starts from given start time and ends on the given
+     *              end time.
+     */
+    public static List<TimeStamp> generateDateTimes(DateTime start, DateTime end) {
+        DateTime currDate = start;
+        List<TimeStamp> dates = new ArrayList<>();
+
+        while(!currDate.isAfter(end)) {
+            dates.add(new TimeStamp(currDate));
+            currDate = currDate.plusDays(1);
+        }
+        return dates;
     }
 }
