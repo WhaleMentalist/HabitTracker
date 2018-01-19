@@ -12,7 +12,6 @@ import android.widget.GridLayout;
 
 import us.spencer.habittracker.R;
 import us.spencer.habittracker.habitdetails.HabitDetailsContract;
-import us.spencer.habittracker.model.HabitCalendar;
 import us.spencer.habittracker.model.HabitRepetitions;
 
 public class HabitCalendarFragment extends Fragment implements HabitDetailsContract.CalendarFragmentView {

@@ -112,9 +112,10 @@ public class HabitsFragment extends Fragment implements HabitsContract.View {
     }
 
     @Override
-    public void showHabitDetails(final long habitId) {
+    public void showHabitDetails(final Habit habit) {
         Intent intent = new Intent(getActivity(), HabitDetailsActivity.class);
-        intent.putExtra("HABIT_ID", habitId);
+        intent.putExtra("HABIT_ID", habit.getId());
+        intent.putExtra("HABIT_NAME", habit.getName());
         startActivity(intent);
     }
 
@@ -232,9 +233,7 @@ public class HabitsFragment extends Fragment implements HabitsContract.View {
 
                     @Override
                     public void onClick(View view) {
-                        mPresenter
-                                .loadHabitDetails(mHabits.get(getAdapterPosition())
-                                        .getHabit().getId());
+                        mPresenter.loadHabitDetails(mHabits.get(getAdapterPosition()).getHabit());
                     }
                 });
             }

@@ -1,4 +1,4 @@
-package us.spencer.habittracker.model;
+package us.spencer.habittracker.habitdetails.view;
 
 import android.util.SparseArray;
 import android.util.SparseBooleanArray;
@@ -8,6 +8,10 @@ import org.joda.time.DateTime;
 import java.util.List;
 import java.util.Set;
 
+import us.spencer.habittracker.model.Habit;
+import us.spencer.habittracker.model.HabitRepetitions;
+import us.spencer.habittracker.model.Repetition;
+import us.spencer.habittracker.model.TimeStamp;
 import us.spencer.habittracker.utility.DateUtils;
 
 /**

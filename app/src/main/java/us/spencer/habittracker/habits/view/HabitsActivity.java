@@ -20,10 +20,8 @@ public class HabitsActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_habits_list);
-
         HabitsFragment habitsFragment = (HabitsFragment) getFragmentManager()
                 .findFragmentById(R.id.habits_frag);
-
         mPresenter = new HabitsPresenter(Injection.provideHabitsRepository(this),
                                             habitsFragment);
     }

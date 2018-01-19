@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import java.util.List;
 
 import us.spencer.habittracker.database.HabitsDataSource;
+import us.spencer.habittracker.model.Habit;
 import us.spencer.habittracker.model.HabitRepetitions;
 import us.spencer.habittracker.model.Repetition;
 import us.spencer.habittracker.model.TimeStamp;
@@ -40,7 +41,7 @@ public class HabitsPresenter implements HabitsContract.Presenter {
     }
 
     @Override
-    public void loadHabitDetails(final long habit) {
+    public void loadHabitDetails(final Habit habit) {
         mHabitsView.showHabitDetails(habit);
     }
 
