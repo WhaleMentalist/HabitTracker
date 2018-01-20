@@ -38,16 +38,17 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/habit_item_name_tv" />
 
-        <Switch
-            android:id="@+id/habit_status_switch"
+        <CheckedTextView
+            android:id="@+id/habit_item_status_ctv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginEnd="8dp"
+            android:layout_marginEnd="40dp"
+            android:layout_marginRight="40dp"
             android:layout_marginTop="8dp"
+            android:checkMark="@drawable/ic_check_incomplete"
             android:checked="false"
-            android:text="Complete?"
+            android:focusable="false"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

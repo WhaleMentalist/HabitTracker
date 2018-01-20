@@ -9,7 +9,6 @@ import org.joda.time.LocalDateTime;
 import org.joda.time.chrono.ISOChronology;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -17,7 +16,9 @@ import java.util.List;
  * particular event occurred. It is focused on the
  * date of the event for now. It will fix the time
  * to a specified amount. In this case three in the
- * afternoon.
+ * afternoon. It also ensures it uses the same
+ * {@link Chronology} across all creations of
+ * {@link TimeStamp}
  */
 public class TimeStamp {
 
@@ -103,7 +104,6 @@ public class TimeStamp {
 
     /**
      * Method helps to produce list of time stamps that represents days on calendar.
-     * TODO: Try to find more effective approach. Maybe precomputed statically?
      *
      * @param start the start date
      * @param end   the end date

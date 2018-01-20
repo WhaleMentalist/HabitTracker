@@ -1,8 +1,11 @@
 package us.spencer.habittracker.habits.view;
 
+
 import android.app.Fragment;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -12,10 +15,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CompoundButton;
-import android.widget.Switch;
+import android.widget.CheckedTextView;
+
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.joda.time.Instant;
 
@@ -97,8 +99,6 @@ public class HabitsFragment extends Fragment implements HabitsContract.View {
 
     /**
      * Launches activity that pertains to adding a new habit
-     *
-     * TODO: Add intent argument to signify type of action
      */
     @Override
     public void showAddHabit() {
@@ -180,8 +180,17 @@ public class HabitsFragment extends Fragment implements HabitsContract.View {
             final HabitRepetitions habit = mHabits.get(i);
             viewHolder.mHabitName.setText(habit.getHabit().getName());
             viewHolder.mHabitDesc.setText(habit.getHabit().getDescription());
-            viewHolder.mHabitStatus.setChecked(habit.getRepetitions()
-                    .contains(new Repetition(TimeStamp.getToday(), habit.getHabit().getId())));
+            boolean isComplete = habit.getRepetitions()
+                    .contains(new Repetition(TimeStamp.getToday(), habit.getHabit().getId()));
+
+            if(isComplete) {
+                viewHolder.mHabitStatus.setChecked(true);
+                viewHolder.mHabitStatus.setCheckMarkDrawable(R.drawable.ic_check_complete);
+            }
+            else {
+                viewHolder.mHabitStatus.setChecked(false);
+                viewHolder.mHabitStatus.setCheckMarkDrawable(R.drawable.ic_check_incomplete);
+            }
         }
 
         @Override
@@ -205,26 +214,35 @@ public class HabitsFragment extends Fragment implements HabitsContract.View {
 
             private TextView mHabitDesc;
 
-            private Switch mHabitStatus;
+            private CheckedTextView mHabitStatus;
 
             private HabitViewHolder(View itemView) {
                 super(itemView);
                 mHabitName = itemView.findViewById(R.id.habit_item_name_tv);
                 mHabitDesc = itemView.findViewById(R.id.habit_item_desc_tv);
-                mHabitStatus = itemView.findViewById(R.id.habit_status_switch);
-
-                mHabitStatus.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-
+                mHabitStatus = itemView.findViewById(R.id.habit_item_status_ctv);
+                mHabitStatus.setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public void onCheckedChanged(CompoundButton compoundButton, boolean value) {
+                    public void onClick(View view) {
+                        Vibrator vibrator = (Vibrator)
+                                getActivity().getSystemService(Context.VIBRATOR_SERVICE);
+
                         final Habit habit = mHabits.get(getAdapterPosition()).getHabit();
-                        if(value) {
-                            mPresenter.addRepetition(habit.getId(),
-                                    new TimeStamp(Instant.now()));
-                        }
-                        else {
+                        CheckedTextView checkedTextView = ((CheckedTextView) view);
+
+                        if(checkedTextView.isSelected()) {
+                            checkedTextView.setSelected(false);
+                            checkedTextView.setCheckMarkDrawable(R.drawable.ic_check_incomplete);
                             mPresenter.deleteRepetition(habit.getId(),
                                     new TimeStamp(Instant.now()));
+                            vibrator.vibrate(100);
+                        }
+                        else {
+                            checkedTextView.setSelected(true);
+                            checkedTextView.setCheckMarkDrawable(R.drawable.ic_check_complete);
+                            mPresenter.addRepetition(habit.getId(),
+                                    new TimeStamp(Instant.now()));
+                            vibrator.vibrate(100);
                         }
                     }
                 });
