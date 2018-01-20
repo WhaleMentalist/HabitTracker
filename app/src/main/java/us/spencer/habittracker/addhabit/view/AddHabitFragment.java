@@ -1,11 +1,12 @@
 package us.spencer.habittracker.addhabit.view;
 
-import android.app.AlertDialog;
-import android.app.Fragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
+import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -65,7 +66,6 @@ public class AddHabitFragment extends Fragment implements AddHabitContract.View 
                 mPresenter.addHabit(mTitle.getText().toString(), mDescription.getText().toString());
             }
         });
-
         return root;
     }
 
@@ -82,8 +82,8 @@ public class AddHabitFragment extends Fragment implements AddHabitContract.View 
     @Override
     public void showEmptyHabitError() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setMessage(R.string.empty_field_error_mess)
-                .setTitle(R.string.empty_field_error_title)
+        builder.setTitle(R.string.empty_field_error_title)
+                .setMessage(R.string.empty_field_error_mess)
                 .setCancelable(false)
                 .setPositiveButton(R.string.empty_error_dialog_positive_btn,
                         new DialogInterface.OnClickListener() {

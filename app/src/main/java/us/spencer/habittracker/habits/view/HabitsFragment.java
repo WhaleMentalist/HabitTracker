@@ -1,6 +1,5 @@
 package us.spencer.habittracker.habits.view;
 
-
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
@@ -230,15 +229,15 @@ public class HabitsFragment extends Fragment implements HabitsContract.View {
                         final Habit habit = mHabits.get(getAdapterPosition()).getHabit();
                         CheckedTextView checkedTextView = ((CheckedTextView) view);
 
-                        if(checkedTextView.isSelected()) {
-                            checkedTextView.setSelected(false);
+                        if(checkedTextView.isChecked()) {
+                            checkedTextView.setChecked(false);
                             checkedTextView.setCheckMarkDrawable(R.drawable.ic_check_incomplete);
                             mPresenter.deleteRepetition(habit.getId(),
                                     new TimeStamp(Instant.now()));
                             vibrator.vibrate(100);
                         }
                         else {
-                            checkedTextView.setSelected(true);
+                            checkedTextView.setChecked(true);
                             checkedTextView.setCheckMarkDrawable(R.drawable.ic_check_complete);
                             mPresenter.addRepetition(habit.getId(),
                                     new TimeStamp(Instant.now()));

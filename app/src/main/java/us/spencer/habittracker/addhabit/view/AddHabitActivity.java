@@ -19,7 +19,7 @@ public class AddHabitActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_habit);
-        AddHabitFragment addHabitFragment =  (AddHabitFragment) getFragmentManager()
+        AddHabitFragment addHabitFragment =  (AddHabitFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.add_habit_frag);
         setTitle(R.string.add_habit_title_act);
         mAddHabitPresenter = new AddHabitPresenter(Injection.provideHabitsRepository(this),
