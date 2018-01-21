@@ -27,7 +27,7 @@ public class AddHabitPresenter implements AddHabitContract.Presenter,
 
     @Override
     public void start() {
-        /* Does nothing as of now */
+        /* Does nothing as of now - 1/20/2018 */
     }
 
     @Override

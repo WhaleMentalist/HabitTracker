@@ -33,6 +33,13 @@ public interface HabitsDataSource {
         void onDataNotAvailable();
     }
 
+    interface LoadHabitCallback {
+
+        void onHabitLoaded(HabitRepetitions habit);
+
+        void onDataNotAvailable();
+    }
+
     /**
      * =======================================================================
      * REPOSITORY / DATABASE (i.e the general interface for getting data)
@@ -53,5 +60,6 @@ public interface HabitsDataSource {
     void deleteRepetition(final long habitId,
                           @NonNull final Repetition repetition);
 
-    HabitRepetitions getHabitById(final long habitID);
+    void getHabitById(final long habitId,
+                      @NonNull LoadHabitCallback callback);
 }

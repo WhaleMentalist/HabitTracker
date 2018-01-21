@@ -24,15 +24,6 @@ public interface HabitsDAO {
     List<Habit> getHabits();
 
     /**
-     * Select habit by id.
-     *
-     * @param id    the habit id
-     * @return  the {@link Habit} with id
-     */
-    @Query("SELECT * FROM habits WHERE id = :id")
-    Habit getHabitById(final long id);
-
-    /**
      * Insert a {@link Habit} in the database. If it exists, replace it.
      *
      * @param habit the {@link Habit} to be inserted

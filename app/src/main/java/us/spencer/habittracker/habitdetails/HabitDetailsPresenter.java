@@ -2,13 +2,15 @@ package us.spencer.habittracker.habitdetails;
 
 import android.support.annotation.NonNull;
 
+import javax.sql.DataSource;
+
 import us.spencer.habittracker.database.HabitsDataSource;
 import us.spencer.habittracker.database.HabitsRepository;
 import us.spencer.habittracker.model.HabitRepetitions;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-public class HabitDetailsPresenter implements HabitDetailsContract.Presenter {
+public class HabitDetailsPresenter implements HabitDetailsContract.Presenter, HabitsDataSource.LoadHabitCallback {
 
     @NonNull
     private HabitsDataSource mHabitsRepository;
@@ -31,14 +33,23 @@ public class HabitDetailsPresenter implements HabitDetailsContract.Presenter {
      * Method will get the habit by specified id and pass information
      * to the calendar view to present
      *
-     * @param habitId   the id that will be searched for in the database
+     * @param habit the loaded {@link HabitRepetitions} from data source
      */
-    public void loadHabit(final long habitId) {
-        HabitRepetitions habit = mHabitsRepository.getHabitById(habitId);
+    public void loadHabit(HabitRepetitions habit) {
         mHabitDetailsCalendarView.showHistory(habit);
     }
 
+    @Override
+    public void onHabitLoaded(HabitRepetitions habit) {
+        loadHabit(habit);
+    }
+
+    @Override
+    public void onDataNotAvailable() {
+
+    }
+
     public void start() {
-        loadHabit(mHabitId);
+        mHabitsRepository.getHabitById(mHabitId, this);
     }
 }

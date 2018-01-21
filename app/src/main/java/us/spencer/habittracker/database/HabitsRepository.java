@@ -199,13 +199,39 @@ public class HabitsRepository implements HabitsDataSource {
     }
 
     /**
-     * TODO: Fully implement database access, as well, for when the cache is bad
+     * Method retrieves {@link HabitRepetitions} from either cache or database.
+     * It will use cache if it is in sync due to speed, otherwise it will access
+     * database and run callback when finished.
      *
-     * @param habitID
-     * @return
+     * @param habitId   the id of habit to search
+     * @param callback  the callback to notify interested code
      */
     @Override
-    public HabitRepetitions getHabitById(long habitID) {
-        return mCachedHabits.get(habitID);
+    public void getHabitById(final long habitId, @NonNull final LoadHabitCallback callback) {
+        checkNotNull(callback);
+        HabitRepetitions habit;
+
+        if(isCacheSync) {
+            LOGGER.log(Level.FINE, "Getting habit from cache");
+            habit = mCachedHabits.get(habitId);
+            callback.onHabitLoaded(habit);
+        }
+        else {
+            mHabitsLocalDataSource.getHabitById(habitId, new LoadHabitCallback() {
+
+                @Override
+                public void onHabitLoaded(HabitRepetitions habit) {
+                    LOGGER.log(Level.FINE, "Got habit from local database");
+                    mCachedHabits.put(habit.getHabit().getId(), habit); /* Sync cache */
+                    callback.onHabitLoaded(habit);
+                }
+
+                @Override
+                public void onDataNotAvailable() {
+                    LOGGER.log(Level.FINE, "Habit not found in local database");
+                    callback.onDataNotAvailable();
+                }
+            });
+        }
     }
 }

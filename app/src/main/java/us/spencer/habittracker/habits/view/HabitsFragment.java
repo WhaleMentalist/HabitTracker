@@ -8,12 +8,14 @@ import android.os.Vibrator;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.CheckedTextView;
 
 import android.widget.TextView;
@@ -70,13 +72,13 @@ public class HabitsFragment extends Fragment implements HabitsContract.View {
         View root = inflater.inflate(R.layout.fragment_habits_list, container, false);
         setHasOptionsMenu(true);
 
-        RecyclerView rv = root.findViewById(R.id.habits_recycler_view);
+        RecyclerView rv = root.findViewById(R.id.habits_rv);
         rv.setLayoutManager(new LinearLayoutManager(getActivity()));
         rv.setHasFixedSize(true);
 
         mAdapter = new HabitsAdapter(new ArrayList<HabitRepetitions>());
         rv.setAdapter(mAdapter);
-
+        registerForContextMenu(rv); /* Allow use of context menu on recycler view items */
         return root;
     }
 
@@ -207,7 +209,7 @@ public class HabitsFragment extends Fragment implements HabitsContract.View {
          * increase allowable scroll speed. Allows application to 'hold' view
          * item in memory instead of creating a new view, which is costly.
          */
-        protected class HabitViewHolder extends RecyclerView.ViewHolder {
+        protected class HabitViewHolder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener {
 
             private TextView mHabitName;
 
@@ -217,6 +219,7 @@ public class HabitsFragment extends Fragment implements HabitsContract.View {
 
             private HabitViewHolder(View itemView) {
                 super(itemView);
+                registerForContextMenu(itemView);
                 mHabitName = itemView.findViewById(R.id.habit_item_name_tv);
                 mHabitDesc = itemView.findViewById(R.id.habit_item_desc_tv);
                 mHabitStatus = itemView.findViewById(R.id.habit_item_status_ctv);
@@ -234,18 +237,24 @@ public class HabitsFragment extends Fragment implements HabitsContract.View {
                             checkedTextView.setCheckMarkDrawable(R.drawable.ic_check_incomplete);
                             mPresenter.deleteRepetition(habit.getId(),
                                     new TimeStamp(Instant.now()));
-                            vibrator.vibrate(100);
+                            vibrator.vibrate(50);
                         }
                         else {
                             checkedTextView.setChecked(true);
                             checkedTextView.setCheckMarkDrawable(R.drawable.ic_check_complete);
                             mPresenter.addRepetition(habit.getId(),
                                     new TimeStamp(Instant.now()));
-                            vibrator.vibrate(100);
+                            vibrator.vibrate(50);
                         }
                     }
                 });
-
+                itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View view) {
+                        view.showContextMenu();
+                        return true;
+                    }
+                });
                 itemView.setOnClickListener(new View.OnClickListener() {
 
                     @Override
@@ -253,6 +262,15 @@ public class HabitsFragment extends Fragment implements HabitsContract.View {
                         mPresenter.loadHabitDetails(mHabits.get(getAdapterPosition()).getHabit());
                     }
                 });
+                itemView.setOnCreateContextMenuListener(this);
+            }
+
+            @Override
+            public void onCreateContextMenu(ContextMenu menu, View view, ContextMenu.ContextMenuInfo menuInfo) {
+                int pos = getAdapterPosition();
+                HabitRepetitions habit = mHabits.get(pos);
+                menu.setHeaderTitle(habit.getHabit().getId() + " " + mHabitName.getText());
+                menu.add("Delete");
             }
         }
     }

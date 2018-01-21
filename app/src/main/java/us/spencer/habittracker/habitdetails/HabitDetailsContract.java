@@ -19,6 +19,6 @@ public interface HabitDetailsContract {
 
     interface Presenter extends BasePresenter {
 
-        void loadHabit(final long habitId);
+        void loadHabit(HabitRepetitions habit);
     }
 }
