@@ -34,6 +34,8 @@ public interface HabitsContract {
 
         void addHabit();
 
+        void deleteHabitById(final long habitId);
+
         void addRepetition(final long habitId, @NonNull final TimeStamp timeStamp);
 
         void deleteRepetition(final long habitId, @NonNull final TimeStamp timeStamp);

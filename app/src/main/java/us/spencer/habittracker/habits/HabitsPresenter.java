@@ -64,6 +64,10 @@ public class HabitsPresenter implements HabitsContract.Presenter {
         });
     }
 
+    public void deleteHabitById(final long habitId) {
+        mHabitsRepository.deleteHabitById(habitId);
+    }
+
     @Override
     public void deleteRepetition(final long habitId, @NonNull final TimeStamp timeStamp) {
         final Repetition repetition = new Repetition(timeStamp, habitId);

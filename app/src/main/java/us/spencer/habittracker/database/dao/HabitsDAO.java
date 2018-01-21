@@ -36,4 +36,16 @@ public interface HabitsDAO {
      */
     @Query("DELETE FROM habits")
     void deleteHabits();
+
+    /**
+     * Deletes a habit from database with corresponding id.
+     * It will also delete {@link us.spencer.habittracker.model.Repetition}
+     * objects that have foreign key to {@link Habit}
+     *
+     * @param habitId   the id of the {@link Habit} to delete
+     * @return  the number of rows deleted from teh database.
+     *          It helps delimit successful deletion.
+     */
+    @Query("DELETE FROM habits WHERE id = :habitId")
+    int deleteHabitById(final long habitId);
 }

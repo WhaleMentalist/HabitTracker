@@ -150,6 +150,17 @@ public class HabitsLocalDataSource implements HabitsDataSource {
     }
 
     @Override
+    public void deleteHabitById(final long habitId) {
+        Runnable deleteHabitById = new Runnable() {
+            @Override
+            public void run() {
+                mHabitsDAO.deleteHabitById(habitId);
+            }
+        };
+        mAppExecutors.diskIO().execute(deleteHabitById);
+    }
+
+    @Override
     public void insertRepetition(final long habitId, @NonNull final Repetition repetition) {
         checkNotNull(repetition);
         Runnable insertRepetition = new Runnable() {

@@ -8,6 +8,11 @@ import java.util.List;
 
 import us.spencer.habittracker.model.HabitRepetitions;
 
+/**
+ * Data access object helps to combine {@link us.spencer.habittracker.model.Habit}
+ * objects to their respective {@link us.spencer.habittracker.model.Repetition}
+ * by using foreign key relations.
+ */
 @Dao
 public interface HabitRepetitionsDAO {
 

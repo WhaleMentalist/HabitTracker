@@ -14,11 +14,11 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnCreateContextMenuListener;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.CheckedTextView;
-
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.joda.time.Instant;
 
@@ -47,6 +47,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * https://code.tutsplus.com/tutorials/getting-started-with-recyclerview-and-cardview-on-android--cms-23465
  */
 public class HabitsFragment extends Fragment implements HabitsContract.View {
+
+    private static final int DELETE_ID = 1;
 
     @NonNull
     private HabitsContract.Presenter mPresenter;
@@ -209,7 +211,7 @@ public class HabitsFragment extends Fragment implements HabitsContract.View {
          * increase allowable scroll speed. Allows application to 'hold' view
          * item in memory instead of creating a new view, which is costly.
          */
-        protected class HabitViewHolder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener {
+        protected class HabitViewHolder extends RecyclerView.ViewHolder implements OnCreateContextMenuListener {
 
             private TextView mHabitName;
 
@@ -237,14 +239,14 @@ public class HabitsFragment extends Fragment implements HabitsContract.View {
                             checkedTextView.setCheckMarkDrawable(R.drawable.ic_check_incomplete);
                             mPresenter.deleteRepetition(habit.getId(),
                                     new TimeStamp(Instant.now()));
-                            vibrator.vibrate(50);
+                            vibrator.vibrate(30);
                         }
                         else {
                             checkedTextView.setChecked(true);
                             checkedTextView.setCheckMarkDrawable(R.drawable.ic_check_complete);
                             mPresenter.addRepetition(habit.getId(),
                                     new TimeStamp(Instant.now()));
-                            vibrator.vibrate(50);
+                            vibrator.vibrate(30);
                         }
                     }
                 });
@@ -263,14 +265,25 @@ public class HabitsFragment extends Fragment implements HabitsContract.View {
                     }
                 });
                 itemView.setOnCreateContextMenuListener(this);
+
             }
 
             @Override
             public void onCreateContextMenu(ContextMenu menu, View view, ContextMenu.ContextMenuInfo menuInfo) {
-                int pos = getAdapterPosition();
-                HabitRepetitions habit = mHabits.get(pos);
-                menu.setHeaderTitle(habit.getHabit().getId() + " " + mHabitName.getText());
-                menu.add("Delete");
+                menu.setHeaderTitle(mHabitName.getText());
+                MenuItem deleteItem = menu.add(Menu.NONE, DELETE_ID, Menu.NONE,
+                        "Delete");
+                deleteItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem menuItem) {
+                        int pos = getAdapterPosition();
+                        long habitId = mHabits.get(pos).getHabit().getId();
+                        mPresenter.deleteHabitById(habitId);
+                        mHabits.remove(pos);
+                        notifyItemChanged(pos);
+                        return true;
+                    }
+                });
             }
         }
     }

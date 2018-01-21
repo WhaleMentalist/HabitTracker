@@ -54,6 +54,8 @@ public interface HabitsDataSource {
 
     void deleteAllHabits();
 
+    void deleteHabitById(final long habitId);
+
     void insertRepetition(final long habitId,
                           @NonNull final Repetition repetition);
 

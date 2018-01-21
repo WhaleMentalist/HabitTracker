@@ -165,6 +165,12 @@ public class HabitsRepository implements HabitsDataSource {
         mCachedHabits.clear();
     }
 
+    @Override
+    public void deleteHabitById(final long habitId) {
+        mHabitsLocalDataSource.deleteHabitById(habitId);
+        mCachedHabits.remove(habitId);
+    }
+
     /**
      * Method inserts a repetition into database. The repetition
      * has a key to the habit that was completed.
