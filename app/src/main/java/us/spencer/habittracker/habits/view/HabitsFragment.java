@@ -3,16 +3,19 @@ package us.spencer.habittracker.habits.view;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.TouchDelegate;
 import android.view.View;
 import android.view.View.OnCreateContextMenuListener;
 import android.view.ViewGroup;
@@ -41,7 +44,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * Displays the list of habits user is tracking.
  *
- * TODO - NEW FEATURE: Allow user to delete habit from the list
+ * TODO: Edit feature needed!
  *
  * Very useful article explaining 'RecyclerView':
  * https://code.tutsplus.com/tutorials/getting-started-with-recyclerview-and-cardview-on-android--cms-23465
@@ -175,6 +178,7 @@ public class HabitsFragment extends Fragment implements HabitsContract.View {
         public HabitViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
             View itemView = LayoutInflater.from(viewGroup.getContext())
                     .inflate(R.layout.item_habit, viewGroup, false);
+
             return new HabitViewHolder(itemView);
         }
 
@@ -194,6 +198,34 @@ public class HabitsFragment extends Fragment implements HabitsContract.View {
                 viewHolder.mHabitStatus.setChecked(false);
                 viewHolder.mHabitStatus.setCheckMarkDrawable(R.drawable.ic_check_incomplete);
             }
+
+            viewHolder.mPopupMenu.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    PopupMenu popup = new PopupMenu(view.getContext(), viewHolder.mPopupMenu);
+
+                    /* Inflate the menu form resource file*/
+                    popup.inflate(R.menu.habits_list_context_menu);
+                    popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+
+                        @Override
+                        public boolean onMenuItemClick(MenuItem item) {
+                            switch(item.getItemId()) {
+                                case R.id.delete_item:
+                                    int pos = viewHolder.getAdapterPosition();
+                                    long habitId = mHabits.get(pos).getHabit().getId();
+                                    mPresenter.deleteHabitById(habitId);
+                                    mHabits.remove(pos);
+                                    notifyItemRemoved(pos);
+                                    notifyItemRangeChanged(pos, mHabits.size());
+                                    break;
+                            }
+                            return false;
+                        }
+                    });
+                    popup.show();
+                }
+            });
         }
 
         @Override
@@ -211,11 +243,13 @@ public class HabitsFragment extends Fragment implements HabitsContract.View {
          * increase allowable scroll speed. Allows application to 'hold' view
          * item in memory instead of creating a new view, which is costly.
          */
-        protected class HabitViewHolder extends RecyclerView.ViewHolder implements OnCreateContextMenuListener {
+        protected class HabitViewHolder extends RecyclerView.ViewHolder {
 
             private TextView mHabitName;
 
             private TextView mHabitDesc;
+
+            private TextView mPopupMenu;
 
             private CheckedTextView mHabitStatus;
 
@@ -224,6 +258,8 @@ public class HabitsFragment extends Fragment implements HabitsContract.View {
                 registerForContextMenu(itemView);
                 mHabitName = itemView.findViewById(R.id.habit_item_name_tv);
                 mHabitDesc = itemView.findViewById(R.id.habit_item_desc_tv);
+                mPopupMenu = itemView.findViewById(R.id.popup_menu_tv);
+
                 mHabitStatus = itemView.findViewById(R.id.habit_item_status_ctv);
                 mHabitStatus.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -250,38 +286,11 @@ public class HabitsFragment extends Fragment implements HabitsContract.View {
                         }
                     }
                 });
-                itemView.setOnLongClickListener(new View.OnLongClickListener() {
-                    @Override
-                    public boolean onLongClick(View view) {
-                        view.showContextMenu();
-                        return true;
-                    }
-                });
                 itemView.setOnClickListener(new View.OnClickListener() {
 
                     @Override
                     public void onClick(View view) {
                         mPresenter.loadHabitDetails(mHabits.get(getAdapterPosition()).getHabit());
-                    }
-                });
-                itemView.setOnCreateContextMenuListener(this);
-
-            }
-
-            @Override
-            public void onCreateContextMenu(ContextMenu menu, View view, ContextMenu.ContextMenuInfo menuInfo) {
-                menu.setHeaderTitle(mHabitName.getText());
-                MenuItem deleteItem = menu.add(Menu.NONE, DELETE_ID, Menu.NONE,
-                        "Delete");
-                deleteItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem menuItem) {
-                        int pos = getAdapterPosition();
-                        long habitId = mHabits.get(pos).getHabit().getId();
-                        mPresenter.deleteHabitById(habitId);
-                        mHabits.remove(pos);
-                        notifyItemChanged(pos);
-                        return true;
                     }
                 });
             }

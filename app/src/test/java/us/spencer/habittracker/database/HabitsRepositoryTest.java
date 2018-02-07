@@ -2,7 +2,6 @@ package us.spencer.habittracker.database;
 
 import com.google.common.collect.Lists;
 
-import org.joda.time.chrono.JulianChronology;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -19,6 +18,8 @@ import java.util.concurrent.ExecutionException;
 
 import us.spencer.habittracker.model.Habit;
 import us.spencer.habittracker.model.HabitRepetitions;
+import us.spencer.habittracker.model.Repetition;
+import us.spencer.habittracker.model.TimeStamp;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -37,6 +38,10 @@ public class HabitsRepositoryTest {
     private static final Habit HABIT_ONE = new Habit(HABIT_ONE_ID, "NAME_ONE", "DESC_ONE");
 
     private static final Habit HABIT_TWO = new Habit(HABIT_TWO_ID, "NAME_TWO", "DESC_TWO");
+
+    private static final Repetition REPETITION_ONE = new Repetition(new TimeStamp(0L), HABIT_ONE_ID);
+
+    private static final Repetition REPETITION_TWO = new Repetition(new TimeStamp(0L), HABIT_TWO_ID);
 
     private static final List<HabitRepetitions> MOCK_DATA = Lists.newArrayList(
             new HabitRepetitions(HABIT_ONE),
@@ -60,11 +65,17 @@ public class HabitsRepositoryTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
+
+        /* Need better fix. THe DAO seems to be overriding test key due to 'autogenerate' */
+        HABIT_ONE.setId(HABIT_ONE_ID);
+        HABIT_TWO.setId(HABIT_TWO_ID);
+
         mHabitsRepository = HabitsRepository.getInstance(mLocalDataSource);
     }
 
     @After
     public void teardown() {
+        clearRepetitions();
         HabitsRepository.destroyInstance(); /* Way to 'wipe' data for each test */
     }
 
@@ -154,6 +165,49 @@ public class HabitsRepositoryTest {
         assertThat(mHabitsRepository.mCachedHabits.size(), is(0));
     }
 
+    @Test
+    public void deleteHabitById_deleteFromCacheCorrectly() {
+        fillCache();
+        mHabitsRepository.deleteHabitById(HABIT_ONE_ID);
+        assertThat(mHabitsRepository.mCachedHabits.size(), is(MOCK_DATA.size() - 1));
+        assertThat(mHabitsRepository.mCachedHabits.containsKey(HABIT_ONE_ID), is(false));
+        assertThat(mHabitsRepository.mCachedHabits.containsKey(HABIT_TWO_ID), is(true));
+    }
+
+    @Test
+    public void deleteHabitById_callsDeleteHabitByIdDatabase() {
+        fillCache();
+        mHabitsRepository.deleteHabitById(HABIT_ONE_ID);
+        verify(mLocalDataSource).deleteHabitById(HABIT_ONE_ID);
+    }
+
+    @Test
+    public void insertRepetition_insertsToCorrectHabit_v1() {
+        fillCache();
+        mHabitsRepository.insertRepetition(HABIT_ONE_ID, REPETITION_ONE);
+        assertThat(mHabitsRepository.mCachedHabits.get(HABIT_ONE_ID).getRepetitions().size(), is(1));
+        assertThat(mHabitsRepository.mCachedHabits.get(HABIT_TWO_ID).getRepetitions().size(), is(0));
+    }
+
+    @Test
+    public void insertRepetition_insertsToCorrectHabit_v2() {
+        fillCache();
+        mHabitsRepository.insertRepetition(HABIT_TWO_ID, REPETITION_TWO);
+        assertThat(mHabitsRepository.mCachedHabits.get(HABIT_ONE_ID).getRepetitions().size(), is(0));
+        assertThat(mHabitsRepository.mCachedHabits.get(HABIT_TWO_ID).getRepetitions().size(), is(1));
+    }
+
+    @Test
+    public void insertRepetition_callsInsertRepetitionDatabase_v1() {
+        mHabitsRepository.insertRepetition(HABIT_ONE_ID, REPETITION_ONE);
+        verify(mLocalDataSource).insertRepetition(HABIT_ONE_ID, REPETITION_ONE);
+    }
+
+    @Test
+    public void insertRepetition_callsInsertRepetitionDatabase_v2() {
+        mHabitsRepository.insertRepetition(HABIT_TWO_ID, REPETITION_TWO);
+        verify(mLocalDataSource).insertRepetition(HABIT_TWO_ID, REPETITION_TWO);
+    }
 
     @Ignore
     private void fillCache() {
@@ -161,6 +215,13 @@ public class HabitsRepositoryTest {
         for(HabitRepetitions habitRepetitions : MOCK_DATA) {
             mHabitsRepository.mCachedHabits
                     .put(habitRepetitions.getHabit().getId(), habitRepetitions);
+        }
+    }
+
+    @Ignore
+    private void clearRepetitions() {
+        for(HabitRepetitions habitRepetitions : MOCK_DATA) {
+            habitRepetitions.getRepetitions().clear();
         }
     }
 }

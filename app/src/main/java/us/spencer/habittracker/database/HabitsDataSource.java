@@ -40,6 +40,18 @@ public interface HabitsDataSource {
         void onDataNotAvailable();
     }
 
+    interface DeleteHabitCallback {
+
+        void onHabitDeleted();
+
+        void onHabitNotFound();
+    }
+
+    interface SaveRepetitionCallback {
+
+        void onRepetitionSaved();
+    }
+
     /**
      * =======================================================================
      * REPOSITORY / DATABASE (i.e the general interface for getting data)

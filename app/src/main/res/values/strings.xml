@@ -7,6 +7,10 @@
     <string name="day_placeholder">DD</string>
     <string name="global_action_add">Add</string>
 
+    <!-- Habit List Context Menu -->
+    <string name="action_popup_btn">&#8942;</string>
+    <string name="action_delete">Delete</string>
+
     <!-- Add habit values -->
     <string name="add_habit_name_hint">Enter name of habit.</string>
     <string name="add_habit_desc_hint">Enter a description of habit.</string>

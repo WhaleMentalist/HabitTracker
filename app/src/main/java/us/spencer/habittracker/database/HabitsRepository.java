@@ -86,6 +86,7 @@ public class HabitsRepository implements HabitsDataSource {
      * Used to force {@link #getInstance(HabitsDataSource)} to create a new instance
      * when called again. NOTE: Useful for testing.
      */
+    @VisibleForTesting
     public static void destroyInstance() {
         INSTANCE = null;
     }
@@ -218,7 +219,6 @@ public class HabitsRepository implements HabitsDataSource {
         HabitRepetitions habit;
 
         if(isCacheSync) {
-            LOGGER.log(Level.FINE, "Getting habit from cache");
             habit = mCachedHabits.get(habitId);
             callback.onHabitLoaded(habit);
         }
