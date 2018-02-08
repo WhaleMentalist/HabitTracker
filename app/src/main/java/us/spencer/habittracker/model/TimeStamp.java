@@ -87,6 +87,10 @@ public class TimeStamp {
             flag = true;
         }
 
+        if(!(o instanceof TimeStamp)) {
+            return flag;
+        }
+
         TimeStamp timeStamp = (TimeStamp) o;
         if(mDateTime.getMillis() == timeStamp.mDateTime.getMillis()) {
             flag = true;

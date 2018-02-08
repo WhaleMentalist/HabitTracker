@@ -28,7 +28,7 @@ public class HabitsRepository implements HabitsDataSource {
 
     private static final Logger LOGGER = Logger.getLogger(HabitsRepository.class.getName());
 
-    public static final long SQL_INSERTION_FAIL = -1;
+    private static final long SQL_INSERTION_FAIL = -1;
 
     private static HabitsRepository INSTANCE  = null;
 

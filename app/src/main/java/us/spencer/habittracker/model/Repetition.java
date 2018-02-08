@@ -17,11 +17,9 @@ import static android.arch.persistence.room.ForeignKey.CASCADE;
 public class Repetition {
 
     @ColumnInfo(name = "time_stamp")
-    @NonNull
     private TimeStamp mTimeStamp;
 
     @ColumnInfo(name = "habit_id")
-    @NonNull
     private long mHabitId;
 
     @Ignore
@@ -33,7 +31,7 @@ public class Repetition {
      * @param timeStamp the time stamp of completion
      * @param habitId the habit that was completed
      */
-    public Repetition(@NonNull TimeStamp timeStamp, @NonNull long habitId) {
+    public Repetition(@NonNull TimeStamp timeStamp, long habitId) {
         mTimeStamp = timeStamp;
         mHabitId = habitId;
     }
@@ -43,7 +41,6 @@ public class Repetition {
         return mTimeStamp;
     }
 
-    @NonNull
     public long getHabitId() {
         return mHabitId;
     }
@@ -61,6 +58,10 @@ public class Repetition {
         boolean result = false;
         if(this == o) {
             result = true;
+        }
+
+        if(!(o instanceof Repetition)) {
+            return result;
         }
 
         Repetition repetition = (Repetition) o;

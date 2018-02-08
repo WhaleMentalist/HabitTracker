@@ -3,27 +3,20 @@ package us.spencer.habittracker.habits.view;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Vibrator;
-import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
-import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.TouchDelegate;
 import android.view.View;
-import android.view.View.OnCreateContextMenuListener;
 import android.view.ViewGroup;
 import android.widget.CheckedTextView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.joda.time.Instant;
 
@@ -53,12 +46,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public class HabitsFragment extends Fragment implements HabitsContract.View {
 
-    private static final int DELETE_ID = 1;
-
-    @NonNull
     private HabitsContract.Presenter mPresenter;
 
-    @NonNull
     private HabitsAdapter mAdapter;
 
     public HabitsFragment() {}
@@ -160,7 +149,7 @@ public class HabitsFragment extends Fragment implements HabitsContract.View {
          *
          * @param habits    the new list to assign
          */
-        public void replaceData(List<HabitRepetitions> habits) {
+        void replaceData(List<HabitRepetitions> habits) {
             setList(habits);
             notifyDataSetChanged();
         }
@@ -214,6 +203,7 @@ public class HabitsFragment extends Fragment implements HabitsContract.View {
                         public boolean onMenuItemClick(MenuItem item) {
                             switch(item.getItemId()) {
                                 case R.id.delete_item:
+                                    /* Get item position in adapter to save copy of pending deletion item */
                                     final int pos = viewHolder.getAdapterPosition();
                                     final long habitId = mHabits.get(pos).getHabit().getId();
                                     final HabitRepetitions copy = mHabits.remove(pos);
@@ -222,22 +212,24 @@ public class HabitsFragment extends Fragment implements HabitsContract.View {
 
                                     /* Show snackbar that allows user to undo deletion before actual database deletion occurs */
                                     Snackbar snackbar = Snackbar.make(view, copy.getHabit().getName() + " removed", Snackbar.LENGTH_LONG);
+                                    snackbar.setActionTextColor(getResources().getColor(R.color.magenta));
                                     snackbar.addCallback(new Snackbar.Callback() { /* Allows detection of dismissal*/
                                         @Override
                                         public void onDismissed(Snackbar snackbar, int event) {
-                                            if (event == Snackbar.Callback.DISMISS_EVENT_TIMEOUT) { /* Want timeout dismissal, not user dismissal */
+                                            /* Want timeout dismissal or consecutive event , not user dismissal */
+                                            if (event == Snackbar.Callback.DISMISS_EVENT_TIMEOUT ||
+                                                    event == Snackbar.Callback.DISMISS_EVENT_CONSECUTIVE) {
                                                 mPresenter.deleteHabitById(habitId); /* Purge from local storage */
                                             }
                                         }
                                     });
-
+                                    /* Undo action for deletion */
                                     snackbar.setAction("UNDO", new View.OnClickListener() {
                                         @Override
                                         public void onClick(View view) {
                                             mAdapter.restoreHabit(copy, pos);
                                         }
                                     });
-                                    snackbar.setActionTextColor(getResources().getColor(R.color.magenta));
                                     snackbar.show();
 
                                     break;
@@ -260,7 +252,13 @@ public class HabitsFragment extends Fragment implements HabitsContract.View {
             return mHabits.size();
         }
 
-        public void restoreHabit(HabitRepetitions habit, int pos) {
+        /**
+         * Restores item that is up for pending deletion.
+         *
+         * @param habit the {@link HabitRepetitions} that is pending for deletion
+         * @param pos   the previous position of the item before deletion occurred
+         */
+        private void restoreHabit(HabitRepetitions habit, int pos) {
             mHabits.add(pos, habit);
             notifyItemInserted(pos);
         }
@@ -270,7 +268,7 @@ public class HabitsFragment extends Fragment implements HabitsContract.View {
          * increase allowable scroll speed. Allows application to 'hold' view
          * item in memory instead of creating a new view, which is costly.
          */
-        protected class HabitViewHolder extends RecyclerView.ViewHolder {
+        class HabitViewHolder extends RecyclerView.ViewHolder {
 
             private TextView mHabitName;
 
@@ -302,14 +300,20 @@ public class HabitsFragment extends Fragment implements HabitsContract.View {
                             checkedTextView.setCheckMarkDrawable(R.drawable.ic_check_incomplete);
                             mPresenter.deleteRepetition(habit.getId(),
                                     new TimeStamp(Instant.now()));
-                            vibrator.vibrate(30);
+                            /* May not be a vibrator on phone*/
+                            if (vibrator != null) {
+                                vibrator.vibrate(30);
+                            }
                         }
                         else {
                             checkedTextView.setChecked(true);
                             checkedTextView.setCheckMarkDrawable(R.drawable.ic_check_complete);
                             mPresenter.addRepetition(habit.getId(),
                                     new TimeStamp(Instant.now()));
-                            vibrator.vibrate(30);
+                            /* May not be a vibrator on phone*/
+                            if (vibrator != null) {
+                                vibrator.vibrate(30);
+                            }
                         }
                     }
                 });

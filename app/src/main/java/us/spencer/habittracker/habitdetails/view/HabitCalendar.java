@@ -19,7 +19,7 @@ import us.spencer.habittracker.utility.DateUtils;
  * map them to a gridded calendar implementation in the
  * view.
  */
-public class HabitCalendar {
+class HabitCalendar {
 
     /**
      * For now, app will only display data from up to one
@@ -28,7 +28,7 @@ public class HabitCalendar {
     private static final int DEFAULT_YEARS_BACK = 1;
 
     /**
-     * Delimits the number of data in a column besides
+     * Delimits the number of days in a column besides
      * the header. Useful for getting number of headers.
      */
     private static final int DAYS_IN_WEEK = 7;
@@ -36,7 +36,7 @@ public class HabitCalendar {
     /**
      * Number of items per column in the grid
      */
-    public static final int NUMBER_ITEMS_PER_COLUMN = 8;
+    static final int NUMBER_ITEMS_PER_COLUMN = 8;
 
     /**
      * Holds the calendar days data for the 'RecyclerView'...
@@ -66,11 +66,11 @@ public class HabitCalendar {
     private SparseArray<String> mHeaders;
 
     /**
-     * Initialize {@link HabitCalendar} with no associated
+     * Initialize {@link HabitCalendar} with no associated {@link Habit}
      * to any habit (hence the null assignment) and initializes
      * data
      */
-    public HabitCalendar() {
+    HabitCalendar() {
         mHabit = null;
         mIsComplete = new SparseBooleanArray();
         mHeaders = new SparseArray<>();
@@ -84,7 +84,7 @@ public class HabitCalendar {
      *              data necessary to construct mappings to the calendar
      *             that mark the day the repetitions occurred
      */
-    public HabitCalendar(HabitRepetitions habitRepetitions) {
+    HabitCalendar(HabitRepetitions habitRepetitions) {
         long habitId;
         int currentMonth, index = 0;
         int previousMonth = 0;
@@ -116,14 +116,14 @@ public class HabitCalendar {
 
     /**
      * Method will retrieve item at specified position and account
-     * for the extra header items in the columns using modulus
+     * for the extra header items in the columns using modulus operator
      *
      * @param position  the position in accordance with header items
      *                  accounted
      *
      * @return  the {@link TimeStamp} at the specified position
      */
-    public TimeStamp getCalendarItemAt(int position) {
+    TimeStamp getCalendarItemAt(int position) {
         return mCalendar.get(position - (position / NUMBER_ITEMS_PER_COLUMN) - 1);
     }
 
@@ -133,7 +133,7 @@ public class HabitCalendar {
      *
      * @return  the number of headers in the model
      */
-    public int getNumberHeaders() {
+    private int getNumberHeaders() {
         return (mCalendar.size() / DAYS_IN_WEEK) + 1;
     }
 
@@ -143,7 +143,7 @@ public class HabitCalendar {
      *
      * @return  total number of items in model
      */
-    public int getSize() {
+    int getSize() {
         return mCalendar.size() + getNumberHeaders();
     }
 
@@ -155,7 +155,7 @@ public class HabitCalendar {
      * @param position  the position not accounting for the headers
      * @return  the result of whether the day was complete
      */
-    public boolean isCompleteAt(int position) {
+    boolean isCompleteAt(int position) {
         return mIsComplete.get(position - (position / NUMBER_ITEMS_PER_COLUMN) - 1,
                 false);
     }
@@ -166,7 +166,7 @@ public class HabitCalendar {
      * @param position  the position to retrieve header value
      * @return  the value of header as String
      */
-    public String getHeaderAt(int position) {
+    String getHeaderAt(int position) {
         return mHeaders.get(position, "");
     }
 }

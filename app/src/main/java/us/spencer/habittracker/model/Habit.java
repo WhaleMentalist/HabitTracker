@@ -79,8 +79,13 @@ public class Habit {
     @Ignore
     public boolean equals(Object o) {
         boolean result = false;
+
         if(this == o) {
             result = true;
+        }
+
+        if(!(o instanceof Habit)) {
+            return result;
         }
 
         Habit habit = (Habit) o;

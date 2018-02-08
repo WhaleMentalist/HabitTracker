@@ -30,14 +30,14 @@ public class HabitCalendarAdapter extends RecyclerView.Adapter<RecyclerView.View
      * Initialize adapter with blank slate. Basically, a {@link HabitRepetitions} with no completed
      * days and no attachment to a real {@link us.spencer.habittracker.model.Habit}
      */
-    public HabitCalendarAdapter() {
+    HabitCalendarAdapter() {
         mHabitCalendar = new HabitCalendar();
     }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         RecyclerView.ViewHolder viewHolder;
-        if(viewType == HEADER_VALUE) {
+        if(viewType == HEADER_VALUE) { /* Header type */
             View itemView = LayoutInflater.from(viewGroup.getContext())
                     .inflate(R.layout.header_habit_calendar, viewGroup, false);
             viewHolder =  new MonthViewHolder(itemView);
@@ -104,7 +104,7 @@ public class HabitCalendarAdapter extends RecyclerView.Adapter<RecyclerView.View
      *                  represented and used by adapter for
      *              recycler view.
      */
-    public void replaceData(HabitRepetitions habit) {
+    void replaceData(HabitRepetitions habit) {
         setData(habit);
         notifyDataSetChanged();
     }
@@ -119,7 +119,7 @@ public class HabitCalendarAdapter extends RecyclerView.Adapter<RecyclerView.View
         mHabitCalendar = new HabitCalendar(checkNotNull(habit));
     }
 
-    protected static class DayOfMonthViewHolder extends RecyclerView.ViewHolder {
+    private static class DayOfMonthViewHolder extends RecyclerView.ViewHolder {
 
         private BoxedText mCalendarDayTextView;
 
@@ -129,7 +129,7 @@ public class HabitCalendarAdapter extends RecyclerView.Adapter<RecyclerView.View
         }
     }
 
-    protected static class MonthViewHolder extends RecyclerView.ViewHolder {
+    private static class MonthViewHolder extends RecyclerView.ViewHolder {
 
         private BoxedText mCalendarMonthTextView;
 

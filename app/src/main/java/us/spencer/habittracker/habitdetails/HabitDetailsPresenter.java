@@ -10,6 +10,9 @@ import us.spencer.habittracker.model.HabitRepetitions;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+/**
+ * Handles logic between model and view using callbacks to notify load completion.
+ */
 public class HabitDetailsPresenter implements HabitDetailsContract.Presenter, HabitsDataSource.LoadHabitCallback {
 
     @NonNull

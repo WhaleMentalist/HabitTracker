@@ -14,6 +14,9 @@ import us.spencer.habittracker.R;
 import us.spencer.habittracker.habitdetails.HabitDetailsContract;
 import us.spencer.habittracker.model.HabitRepetitions;
 
+/**
+ * Contains the calendar view showing the history of habit completions
+ */
 public class HabitCalendarFragment extends Fragment implements HabitDetailsContract.CalendarFragmentView {
 
     private HabitDetailsContract.Presenter mPresenter;

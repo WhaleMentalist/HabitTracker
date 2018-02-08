@@ -6,7 +6,6 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
-import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,8 +29,6 @@ public class AddHabitFragment extends Fragment implements AddHabitContract.View 
 
     private TextView mDescription;
 
-    private Spinner mFrequency;
-
     public AddHabitFragment() {}
 
     @Override
@@ -52,11 +49,11 @@ public class AddHabitFragment extends Fragment implements AddHabitContract.View 
         mTitle = root.findViewById(R.id.add_habit_name_et);
         mDescription = root.findViewById(R.id.add_habit_desc_et);
 
-        mFrequency = root.findViewById(R.id.add_habit_frequency_spn);
+        Spinner frequency = root.findViewById(R.id.add_habit_frequency_spn);
         ArrayAdapter adapter = ArrayAdapter.createFromResource(getActivity(), R.array.freq_spinner_values,
                 android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        mFrequency.setAdapter(adapter);
+        frequency.setAdapter(adapter);
 
         FloatingActionButton confirmInputAction = root.findViewById(R.id.add_habit_confirm_fab);
         confirmInputAction.setOnClickListener(new View.OnClickListener() {

@@ -13,8 +13,6 @@ import us.spencer.habittracker.utility.Injection;
  */
 public class AddHabitActivity extends AppCompatActivity {
 
-    private AddHabitPresenter mAddHabitPresenter;
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -22,8 +20,7 @@ public class AddHabitActivity extends AppCompatActivity {
         AddHabitFragment addHabitFragment =  (AddHabitFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.add_habit_frag);
         setTitle(R.string.add_habit_title_act);
-        mAddHabitPresenter = new AddHabitPresenter(Injection.provideHabitsRepository(this),
-                                                        addHabitFragment);
+        new AddHabitPresenter(Injection.provideHabitsRepository(this), addHabitFragment);
     }
 
     @Override

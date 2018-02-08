@@ -11,6 +11,8 @@ import us.spencer.habittracker.model.Repetition;
 
 /**
  * Entry point for accessing habit data.
+ *
+ * TODO: Integrate callback into 'delete' and 'add' repetition
  */
 public interface HabitsDataSource {
 
