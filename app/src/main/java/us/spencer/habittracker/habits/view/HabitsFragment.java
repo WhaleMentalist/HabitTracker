@@ -3,10 +3,12 @@ package us.spencer.habittracker.habits.view;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
@@ -201,7 +203,7 @@ public class HabitsFragment extends Fragment implements HabitsContract.View {
 
             viewHolder.mPopupMenu.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(View view) {
+                public void onClick(final View view) {
                     PopupMenu popup = new PopupMenu(view.getContext(), viewHolder.mPopupMenu);
 
                     /* Inflate the menu form resource file*/
@@ -212,12 +214,32 @@ public class HabitsFragment extends Fragment implements HabitsContract.View {
                         public boolean onMenuItemClick(MenuItem item) {
                             switch(item.getItemId()) {
                                 case R.id.delete_item:
-                                    int pos = viewHolder.getAdapterPosition();
-                                    long habitId = mHabits.get(pos).getHabit().getId();
-                                    mPresenter.deleteHabitById(habitId);
-                                    mHabits.remove(pos);
+                                    final int pos = viewHolder.getAdapterPosition();
+                                    final long habitId = mHabits.get(pos).getHabit().getId();
+                                    final HabitRepetitions copy = mHabits.remove(pos);
                                     notifyItemRemoved(pos);
                                     notifyItemRangeChanged(pos, mHabits.size());
+
+                                    /* Show snackbar that allows user to undo deletion before actual database deletion occurs */
+                                    Snackbar snackbar = Snackbar.make(view, copy.getHabit().getName() + " removed", Snackbar.LENGTH_LONG);
+                                    snackbar.addCallback(new Snackbar.Callback() { /* Allows detection of dismissal*/
+                                        @Override
+                                        public void onDismissed(Snackbar snackbar, int event) {
+                                            if (event == Snackbar.Callback.DISMISS_EVENT_TIMEOUT) { /* Want timeout dismissal, not user dismissal */
+                                                mPresenter.deleteHabitById(habitId); /* Purge from local storage */
+                                            }
+                                        }
+                                    });
+
+                                    snackbar.setAction("UNDO", new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+                                            mAdapter.restoreHabit(copy, pos);
+                                        }
+                                    });
+                                    snackbar.setActionTextColor(getResources().getColor(R.color.magenta));
+                                    snackbar.show();
+
                                     break;
                             }
                             return false;
@@ -236,6 +258,11 @@ public class HabitsFragment extends Fragment implements HabitsContract.View {
         @Override
         public int getItemCount() {
             return mHabits.size();
+        }
+
+        public void restoreHabit(HabitRepetitions habit, int pos) {
+            mHabits.add(pos, habit);
+            notifyItemInserted(pos);
         }
 
         /**
