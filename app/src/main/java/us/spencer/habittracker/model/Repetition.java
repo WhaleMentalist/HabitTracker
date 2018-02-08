@@ -17,9 +17,11 @@ import static android.arch.persistence.room.ForeignKey.CASCADE;
 public class Repetition {
 
     @ColumnInfo(name = "time_stamp")
+    @NonNull
     private TimeStamp mTimeStamp;
 
     @ColumnInfo(name = "habit_id")
+    @NonNull
     private long mHabitId;
 
     @Ignore

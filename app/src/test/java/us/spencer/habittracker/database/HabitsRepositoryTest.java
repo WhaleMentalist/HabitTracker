@@ -31,21 +31,29 @@ import static org.mockito.Mockito.when;
 @RunWith(JUnit4.class)
 public class HabitsRepositoryTest {
 
+    /* Repetitions unique only between days */
+    private static long MILLI_IN_DAY = 1000 * 60 * 60 * 24;
+
+    private static final int NUMBER_REPETITIONS = 3;
+
     private static final long HABIT_ONE_ID = 1;
 
     private static final long HABIT_TWO_ID = 2;
+
+    private static final long NONEXISTENT_HABIT_ID = 3;
 
     private static final Habit HABIT_ONE = new Habit(HABIT_ONE_ID, "NAME_ONE", "DESC_ONE");
 
     private static final Habit HABIT_TWO = new Habit(HABIT_TWO_ID, "NAME_TWO", "DESC_TWO");
 
-    private static final Repetition REPETITION_ONE = new Repetition(new TimeStamp(0L), HABIT_ONE_ID);
-
-    private static final Repetition REPETITION_TWO = new Repetition(new TimeStamp(0L), HABIT_TWO_ID);
-
-    private static final List<HabitRepetitions> MOCK_DATA = Lists.newArrayList(
+    private static final List<HabitRepetitions> MOCK_HABIT_REPETITIONS = Lists.newArrayList(
             new HabitRepetitions(HABIT_ONE),
             new HabitRepetitions(HABIT_TWO)
+    );
+
+    private static final List<Repetition> MOCK_REPETITIONS = Lists.newArrayList(
+            new Repetition(new TimeStamp(0L), HABIT_ONE_ID),
+            new Repetition(new TimeStamp(0L), HABIT_TWO_ID)
     );
 
     @Mock
@@ -66,7 +74,8 @@ public class HabitsRepositoryTest {
     public void setup() {
         MockitoAnnotations.initMocks(this);
 
-        /* Need better fix. THe DAO seems to be overriding test key due to 'autogenerate' */
+        /* Need better fix. The DAO seems to be overriding test key due to 'autogenerate'
+        * Since we are mocking the database we will simply override it for now. */
         HABIT_ONE.setId(HABIT_ONE_ID);
         HABIT_TWO.setId(HABIT_TWO_ID);
 
@@ -119,7 +128,7 @@ public class HabitsRepositoryTest {
         mHabitsRepository.queryAllHabits(mLoadHabitsCallback);
         verify(mLocalDataSource, never()).queryAllHabits
                 (any(HabitsDataSource.LoadHabitsCallback.class));
-        verify(mLoadHabitsCallback).onHabitsLoaded(MOCK_DATA);
+        verify(mLoadHabitsCallback).onHabitsLoaded(MOCK_HABIT_REPETITIONS);
     }
 
     @Test
@@ -128,9 +137,9 @@ public class HabitsRepositoryTest {
         assertThat(mHabitsRepository.mCachedHabits.size(), is(0));
         mHabitsRepository.queryAllHabits(mLoadHabitsCallback);
         verify(mLocalDataSource).queryAllHabits(mLoadHabitsCallbackCaptor.capture());
-        mLoadHabitsCallbackCaptor.getValue().onHabitsLoaded(MOCK_DATA);
+        mLoadHabitsCallbackCaptor.getValue().onHabitsLoaded(MOCK_HABIT_REPETITIONS);
         assertThat(mHabitsRepository.isCacheSync, is(true));
-        assertThat(mHabitsRepository.mCachedHabits.size(), is(MOCK_DATA.size()));
+        assertThat(mHabitsRepository.mCachedHabits.size(), is(MOCK_HABIT_REPETITIONS.size()));
     }
 
     @Test
@@ -159,7 +168,7 @@ public class HabitsRepositoryTest {
     public void deleteAllHabits_callsClearsCache() {
         fillCache();
         assertThat(mHabitsRepository.isCacheSync, is(true));
-        assertThat(mHabitsRepository.mCachedHabits.size(), is(MOCK_DATA.size()));
+        assertThat(mHabitsRepository.mCachedHabits.size(), is(MOCK_HABIT_REPETITIONS.size()));
         mHabitsRepository.deleteAllHabits();
         assertThat(mHabitsRepository.isCacheSync, is(true));
         assertThat(mHabitsRepository.mCachedHabits.size(), is(0));
@@ -169,7 +178,7 @@ public class HabitsRepositoryTest {
     public void deleteHabitById_deleteFromCacheCorrectly() {
         fillCache();
         mHabitsRepository.deleteHabitById(HABIT_ONE_ID);
-        assertThat(mHabitsRepository.mCachedHabits.size(), is(MOCK_DATA.size() - 1));
+        assertThat(mHabitsRepository.mCachedHabits.size(), is(MOCK_HABIT_REPETITIONS.size() - 1));
         assertThat(mHabitsRepository.mCachedHabits.containsKey(HABIT_ONE_ID), is(false));
         assertThat(mHabitsRepository.mCachedHabits.containsKey(HABIT_TWO_ID), is(true));
     }
@@ -184,7 +193,7 @@ public class HabitsRepositoryTest {
     @Test
     public void insertRepetition_insertsToCorrectHabit_v1() {
         fillCache();
-        mHabitsRepository.insertRepetition(HABIT_ONE_ID, REPETITION_ONE);
+        mHabitsRepository.insertRepetition(HABIT_ONE_ID, MOCK_REPETITIONS.get(0));
         assertThat(mHabitsRepository.mCachedHabits.get(HABIT_ONE_ID).getRepetitions().size(), is(1));
         assertThat(mHabitsRepository.mCachedHabits.get(HABIT_TWO_ID).getRepetitions().size(), is(0));
     }
@@ -192,35 +201,66 @@ public class HabitsRepositoryTest {
     @Test
     public void insertRepetition_insertsToCorrectHabit_v2() {
         fillCache();
-        mHabitsRepository.insertRepetition(HABIT_TWO_ID, REPETITION_TWO);
+        mHabitsRepository.insertRepetition(HABIT_TWO_ID, MOCK_REPETITIONS.get(1));
         assertThat(mHabitsRepository.mCachedHabits.get(HABIT_ONE_ID).getRepetitions().size(), is(0));
         assertThat(mHabitsRepository.mCachedHabits.get(HABIT_TWO_ID).getRepetitions().size(), is(1));
     }
 
     @Test
     public void insertRepetition_callsInsertRepetitionDatabase_v1() {
-        mHabitsRepository.insertRepetition(HABIT_ONE_ID, REPETITION_ONE);
-        verify(mLocalDataSource).insertRepetition(HABIT_ONE_ID, REPETITION_ONE);
+        mHabitsRepository.insertRepetition(HABIT_ONE_ID, MOCK_REPETITIONS.get(0));
+        verify(mLocalDataSource).insertRepetition(HABIT_ONE_ID, MOCK_REPETITIONS.get(0));
     }
 
     @Test
     public void insertRepetition_callsInsertRepetitionDatabase_v2() {
-        mHabitsRepository.insertRepetition(HABIT_TWO_ID, REPETITION_TWO);
-        verify(mLocalDataSource).insertRepetition(HABIT_TWO_ID, REPETITION_TWO);
+        mHabitsRepository.insertRepetition(HABIT_TWO_ID, MOCK_REPETITIONS.get(1));
+        verify(mLocalDataSource).insertRepetition(HABIT_TWO_ID, MOCK_REPETITIONS.get(1));
+    }
+
+    @Test
+    public void deleteRepetition_deletesFromCorrectHabit() {
+        fillHabitRepetitions();
+        mHabitsRepository.deleteRepetition(MOCK_REPETITIONS.get(0).getHabitId(), MOCK_REPETITIONS.get(0));
+        assertThat(mHabitsRepository.mCachedHabits.get(MOCK_REPETITIONS.get(0).getHabitId()).getRepetitions().size(), is(NUMBER_REPETITIONS - 1));
+        assertThat(mHabitsRepository.mCachedHabits.get(MOCK_REPETITIONS.get(1).getHabitId()).getRepetitions().size(), is(NUMBER_REPETITIONS));
+    }
+
+    @Test
+    public void deleteRepetition_callsDeleteRepetitionDatabase() {
+        mHabitsRepository.deleteRepetition(MOCK_REPETITIONS.get(0).getHabitId(), MOCK_REPETITIONS.get(0));
+        verify(mLocalDataSource).deleteRepetition(MOCK_REPETITIONS.get(0).getHabitId(), MOCK_REPETITIONS.get(0));
+    }
+
+    @Test
+    public void deleteNonexistentRepetition_noSizeChange() {
+        fillHabitRepetitions();
+        mHabitsRepository.deleteRepetition(NONEXISTENT_HABIT_ID, MOCK_REPETITIONS.get(0));
+        assertThat(mHabitsRepository.mCachedHabits.get(MOCK_REPETITIONS.get(0).getHabitId()).getRepetitions().size(), is(NUMBER_REPETITIONS));
+        assertThat(mHabitsRepository.mCachedHabits.get(MOCK_REPETITIONS.get(1).getHabitId()).getRepetitions().size(), is(NUMBER_REPETITIONS));
     }
 
     @Ignore
     private void fillCache() {
         mHabitsRepository.isCacheSync = true;
-        for(HabitRepetitions habitRepetitions : MOCK_DATA) {
+        for(HabitRepetitions habitRepetitions : MOCK_HABIT_REPETITIONS) {
             mHabitsRepository.mCachedHabits
                     .put(habitRepetitions.getHabit().getId(), habitRepetitions);
         }
     }
 
     @Ignore
+    private void fillHabitRepetitions() {
+        fillCache();
+        for(int i = 0; i < NUMBER_REPETITIONS; i++) {
+            mHabitsRepository.mCachedHabits.get(HABIT_ONE_ID).getRepetitions().add(new Repetition(new TimeStamp((long)  i * MILLI_IN_DAY), HABIT_ONE_ID));
+            mHabitsRepository.mCachedHabits.get(HABIT_TWO_ID).getRepetitions().add(new Repetition(new TimeStamp((long) i * MILLI_IN_DAY), HABIT_TWO_ID));
+        }
+    }
+
+    @Ignore
     private void clearRepetitions() {
-        for(HabitRepetitions habitRepetitions : MOCK_DATA) {
+        for(HabitRepetitions habitRepetitions : MOCK_HABIT_REPETITIONS) {
             habitRepetitions.getRepetitions().clear();
         }
     }
