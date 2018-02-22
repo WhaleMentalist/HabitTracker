@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridLayout;
+import android.widget.TextView;
 
 import us.spencer.habittracker.R;
 import us.spencer.habittracker.habitdetails.HabitDetailsContract;
@@ -17,13 +18,15 @@ import us.spencer.habittracker.model.HabitRepetitions;
 /**
  * Contains the calendar view showing the history of habit completions
  */
-public class HabitCalendarFragment extends Fragment implements HabitDetailsContract.CalendarFragmentView {
+public class HabitDetailsFragment extends Fragment implements HabitDetailsContract.DetailsFragmentView {
+
+    private TextView mHabitDesc;
 
     private HabitDetailsContract.Presenter mPresenter;
 
     private HabitCalendarAdapter mAdapter;
 
-    public HabitCalendarFragment() {}
+    public HabitDetailsFragment() {}
 
     @Override
     public void onResume() {
@@ -49,6 +52,7 @@ public class HabitCalendarFragment extends Fragment implements HabitDetailsContr
         rv.setHasFixedSize(true);
         mAdapter = new HabitCalendarAdapter();
         rv.setAdapter(mAdapter);
+        mHabitDesc = root.findViewById(R.id.habit_desc_tv);
         return root;
     }
 
@@ -64,6 +68,7 @@ public class HabitCalendarFragment extends Fragment implements HabitDetailsContr
 
     public void showHistory(HabitRepetitions habitRepetitions) {
         if(isActive()) {
+            mHabitDesc.setText(habitRepetitions.getHabit().getDescription());
             mAdapter.replaceData(habitRepetitions);
         }
     }

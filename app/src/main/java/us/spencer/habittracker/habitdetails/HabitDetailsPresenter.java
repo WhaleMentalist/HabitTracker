@@ -2,8 +2,6 @@ package us.spencer.habittracker.habitdetails;
 
 import android.support.annotation.NonNull;
 
-import javax.sql.DataSource;
-
 import us.spencer.habittracker.database.HabitsDataSource;
 import us.spencer.habittracker.database.HabitsRepository;
 import us.spencer.habittracker.model.HabitRepetitions;
@@ -19,17 +17,17 @@ public class HabitDetailsPresenter implements HabitDetailsContract.Presenter, Ha
     private HabitsDataSource mHabitsRepository;
 
     @NonNull
-    private HabitDetailsContract.CalendarFragmentView mHabitDetailsCalendarView;
+    private HabitDetailsContract.DetailsFragmentView mHabitDetailsView;
 
     private long mHabitId;
 
     public HabitDetailsPresenter(@NonNull HabitsRepository habitsRepository,
-                                 @NonNull HabitDetailsContract.CalendarFragmentView habitDetailsFragment,
+                                 @NonNull HabitDetailsContract.DetailsFragmentView habitDetailsFragment,
                                  long habitId) {
         mHabitsRepository = checkNotNull(habitsRepository);
-        mHabitDetailsCalendarView = checkNotNull(habitDetailsFragment);
+        mHabitDetailsView = checkNotNull(habitDetailsFragment);
         mHabitId = habitId;
-        mHabitDetailsCalendarView.setPresenter(this);
+        mHabitDetailsView.setPresenter(this);
     }
 
     /**
@@ -39,7 +37,7 @@ public class HabitDetailsPresenter implements HabitDetailsContract.Presenter, Ha
      * @param habit the loaded {@link HabitRepetitions} from data source
      */
     public void loadHabit(HabitRepetitions habit) {
-        mHabitDetailsCalendarView.showHistory(habit);
+        mHabitDetailsView.showHistory(habit);
     }
 
     @Override
