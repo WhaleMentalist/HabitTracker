@@ -5,7 +5,6 @@
     android:id="@+id/day_of_month_bn"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    app:bn_text_size="25.0"
     app:bn_text_bold="true"
     app:bn_text_color="@color/white"
     app:bn_box_color="@color/light_gray" />

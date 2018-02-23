@@ -4,16 +4,18 @@ import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.GridLayout;
 import android.widget.TextView;
 
 import us.spencer.habittracker.R;
 import us.spencer.habittracker.custom.CustomRecyclerView;
+import us.spencer.habittracker.habitdetails.HabitCalendarAdapter;
 import us.spencer.habittracker.habitdetails.HabitDetailsContract;
+import us.spencer.habittracker.model.HabitCalendar;
 import us.spencer.habittracker.model.HabitRepetitions;
 
 /**
@@ -51,9 +53,17 @@ public class HabitDetailsFragment extends Fragment implements HabitDetailsContra
                 HabitCalendar.NUMBER_ITEMS_PER_COLUMN,
                 GridLayout.HORIZONTAL, false));
         rv.setHasFixedSize(true);
-        mAdapter = new HabitCalendarAdapter();
+        mAdapter = new HabitCalendarAdapter(20.0f);
         rv.setAdapter(mAdapter);
         mHabitDesc = root.findViewById(R.id.habit_desc_tv);
+        Button mAddDays = root.findViewById(R.id.add_days_btn);
+        mAddDays.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                showAddDaysDialog();
+            }
+        });
         return root;
     }
 
@@ -63,14 +73,22 @@ public class HabitDetailsFragment extends Fragment implements HabitDetailsContra
     }
 
     @Override
+    public void showHabitDetails(HabitRepetitions habitRepetitions) {
+        if(isActive()) {
+            mHabitDesc.setText(habitRepetitions.getHabit().getDescription()); /* Additional information to display */
+            mAdapter.replaceData(habitRepetitions); /* Add repetition data to adapter for rendering */
+        }
+    }
+
+    @Override
+    public void showAddDaysDialog() {
+
+    }
+
+    @Override
     public boolean isActive() {
         return isAdded();
     }
 
-    public void showHistory(HabitRepetitions habitRepetitions) {
-        if(isActive()) {
-            mHabitDesc.setText(habitRepetitions.getHabit().getDescription());
-            mAdapter.replaceData(habitRepetitions);
-        }
-    }
+
 }

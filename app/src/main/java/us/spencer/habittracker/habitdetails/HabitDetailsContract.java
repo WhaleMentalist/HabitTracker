@@ -12,7 +12,9 @@ public interface HabitDetailsContract {
 
     interface DetailsFragmentView extends BaseView<Presenter> {
 
-        void showHistory(HabitRepetitions habit);
+        void showHabitDetails(HabitRepetitions habit);
+
+        void showAddDaysDialog();
 
         boolean isActive();
     }

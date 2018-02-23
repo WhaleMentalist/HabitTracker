@@ -37,7 +37,7 @@ public class HabitDetailsPresenter implements HabitDetailsContract.Presenter, Ha
      * @param habit the loaded {@link HabitRepetitions} from data source
      */
     public void loadHabit(HabitRepetitions habit) {
-        mHabitDetailsView.showHistory(habit);
+        mHabitDetailsView.showHabitDetails(habit);
     }
 
     @Override

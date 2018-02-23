@@ -15,7 +15,7 @@ import us.spencer.habittracker.R;
 
 public class BoxedText extends View {
 
-    private static final String DAY_OF_MONTH_REGEX = "DD";
+    private static final String DAY_OF_MONTH_REGEX = "DDD";
 
     private static final float DEFAULT_TEXT_SIZE = 15.0f;
 
@@ -102,7 +102,7 @@ public class BoxedText extends View {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         mNumberPaint.getTextBounds(DAY_OF_MONTH_REGEX, 0,
-                DAY_OF_MONTH_REGEX.length(), r); /* Displays only days of month */
+                DAY_OF_MONTH_REGEX.length(), r); /* Displays only days of month, which is 2 characters long at most */
 
         int contentWidth = (int) ((r.width() + mMargin) * 1.2);
         int w = resolveSize(contentWidth + getPaddingLeft() + getPaddingRight(),
@@ -143,5 +143,10 @@ public class BoxedText extends View {
 
     public void setBoxColor(int color) {
         mBoxPaint.setColor(color);
+    }
+
+    public void setTextSize(float textSize) {
+        mTextSize = textSize;
+        mNumberPaint.setTextSize(mTextSize);
     }
 }
