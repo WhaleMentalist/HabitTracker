@@ -55,6 +55,7 @@ public class HabitDetailsFragment extends Fragment implements HabitDetailsContra
         rv.setHasFixedSize(true);
         mAdapter = new HabitCalendarAdapter(20.0f);
         rv.setAdapter(mAdapter);
+        rv.getLayoutManager().scrollToPosition(mAdapter.getItemCount() - 1);
         mHabitDesc = root.findViewById(R.id.habit_desc_tv);
         Button mAddDays = root.findViewById(R.id.add_days_btn);
         mAddDays.setOnClickListener(new View.OnClickListener() {
