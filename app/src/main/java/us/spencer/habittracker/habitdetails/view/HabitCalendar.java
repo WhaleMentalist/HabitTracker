@@ -25,7 +25,7 @@ class HabitCalendar {
      * For now, app will only display data from up to one
      * year ago.
      */
-    private static final int DEFAULT_YEARS_BACK = 1;
+    private static final int DEFAULT_YEARS_BACK = 3;
 
     /**
      * Delimits the number of days in a column besides

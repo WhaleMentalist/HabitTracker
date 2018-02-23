@@ -12,6 +12,7 @@ import android.widget.GridLayout;
 import android.widget.TextView;
 
 import us.spencer.habittracker.R;
+import us.spencer.habittracker.custom.CustomRecyclerView;
 import us.spencer.habittracker.habitdetails.HabitDetailsContract;
 import us.spencer.habittracker.model.HabitRepetitions;
 
@@ -42,10 +43,10 @@ public class HabitDetailsFragment extends Fragment implements HabitDetailsContra
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.fragment_habit_details_calendar,
+        View root = inflater.inflate(R.layout.fragment_habit_details,
                 container,
                 false);
-        RecyclerView rv = root.findViewById(R.id.habit_calendar_rv);
+        final CustomRecyclerView rv = root.findViewById(R.id.habit_calendar_rv);
         rv.setLayoutManager(new GridLayoutManager(getActivity(),
                 HabitCalendar.NUMBER_ITEMS_PER_COLUMN,
                 GridLayout.HORIZONTAL, false));

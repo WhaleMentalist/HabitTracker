@@ -35,5 +35,6 @@
     <!-- Habit details -->
     <string name="history_text">History</string>
     <string name="details_text">Details</string>
+    <string name="add_days_text">Add Days</string>
 
 </resources>
