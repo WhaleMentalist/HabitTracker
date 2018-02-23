@@ -1,4 +1,4 @@
-package us.spencer.habittracker.habitdetails.view;
+package us.spencer.habittracker.model;
 
 import android.util.SparseArray;
 import android.util.SparseBooleanArray;
@@ -8,10 +8,6 @@ import org.joda.time.DateTime;
 import java.util.List;
 import java.util.Set;
 
-import us.spencer.habittracker.model.Habit;
-import us.spencer.habittracker.model.HabitRepetitions;
-import us.spencer.habittracker.model.Repetition;
-import us.spencer.habittracker.model.TimeStamp;
 import us.spencer.habittracker.utility.DateUtils;
 
 /**
@@ -25,10 +21,10 @@ public class HabitCalendar {
      * For now, app will only display data from up to one
      * year ago.
      */
-    private static final int DEFAULT_YEARS_BACK = 1;
+    private static final int DEFAULT_YEARS_BACK = 3;
 
     /**
-     * Delimits the number of data in a column besides
+     * Delimits the number of days in a column besides
      * the header. Useful for getting number of headers.
      */
     private static final int DAYS_IN_WEEK = 7;
@@ -66,7 +62,7 @@ public class HabitCalendar {
     private SparseArray<String> mHeaders;
 
     /**
-     * Initialize {@link HabitCalendar} with no associated
+     * Initialize {@link HabitCalendar} with no associated {@link Habit}
      * to any habit (hence the null assignment) and initializes
      * data
      */
@@ -116,7 +112,7 @@ public class HabitCalendar {
 
     /**
      * Method will retrieve item at specified position and account
-     * for the extra header items in the columns using modulus
+     * for the extra header items in the columns using modulus operator
      *
      * @param position  the position in accordance with header items
      *                  accounted
@@ -133,7 +129,7 @@ public class HabitCalendar {
      *
      * @return  the number of headers in the model
      */
-    public int getNumberHeaders() {
+    private int getNumberHeaders() {
         return (mCalendar.size() / DAYS_IN_WEEK) + 1;
     }
 

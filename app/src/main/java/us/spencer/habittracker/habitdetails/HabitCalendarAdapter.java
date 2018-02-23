@@ -1,4 +1,4 @@
-package us.spencer.habittracker.habitdetails.view;
+package us.spencer.habittracker.habitdetails;
 
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 
 import us.spencer.habittracker.custom.BoxedText;
 import us.spencer.habittracker.R;
+import us.spencer.habittracker.model.HabitCalendar;
 import us.spencer.habittracker.model.HabitRepetitions;
 import us.spencer.habittracker.model.TimeStamp;
 import us.spencer.habittracker.utility.DateUtils;
@@ -24,28 +25,33 @@ public class HabitCalendarAdapter extends RecyclerView.Adapter<RecyclerView.View
 
     private static final int ITEM_VALUE = 1;
 
+    private float mTextSize;
+
     private HabitCalendar mHabitCalendar;
 
     /**
      * Initialize adapter with blank slate. Basically, a {@link HabitRepetitions} with no completed
      * days and no attachment to a real {@link us.spencer.habittracker.model.Habit}
+     *
+     * @param textSize  the size of the text in the calendar view
      */
-    public HabitCalendarAdapter() {
+    public HabitCalendarAdapter(float textSize) {
+        mTextSize = textSize;
         mHabitCalendar = new HabitCalendar();
     }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         RecyclerView.ViewHolder viewHolder;
-        if(viewType == HEADER_VALUE) {
+        if(viewType == HEADER_VALUE) { /* Header type */
             View itemView = LayoutInflater.from(viewGroup.getContext())
                     .inflate(R.layout.header_habit_calendar, viewGroup, false);
-            viewHolder =  new MonthViewHolder(itemView);
+            viewHolder =  new MonthViewHolder(itemView, mTextSize);
         }
         else {
             View itemView = LayoutInflater.from(viewGroup.getContext())
                     .inflate(R.layout.item_habit_calendar, viewGroup, false);
-            viewHolder =  new DayOfMonthViewHolder(itemView);
+            viewHolder =  new DayOfMonthViewHolder(itemView, mTextSize);
         }
 
         return viewHolder;
@@ -58,19 +64,19 @@ public class HabitCalendarAdapter extends RecyclerView.Adapter<RecyclerView.View
             DayOfMonthViewHolder dayOfMonthViewHolder = (DayOfMonthViewHolder) viewHolder;
             boolean isComplete = mHabitCalendar.isCompleteAt(i);
 
-            dayOfMonthViewHolder.mCalendarDayTextView.setText(DateUtils
+            dayOfMonthViewHolder.mCalendarDay.setText(DateUtils
                     .getDayOfMonthAsString(timeStamp.getDateTime().getDayOfMonth()));
 
             if(isComplete) {
-                dayOfMonthViewHolder.mCalendarDayTextView.setBoxColor(COMPLETE_DAY_COLOR);
+                dayOfMonthViewHolder.mCalendarDay.setBoxColor(COMPLETE_DAY_COLOR);
             }
             else {
-                dayOfMonthViewHolder.mCalendarDayTextView.setBoxColor(INCOMPLETE_DAY_COLOR);
+                dayOfMonthViewHolder.mCalendarDay.setBoxColor(INCOMPLETE_DAY_COLOR);
             }
         }
         else {
             MonthViewHolder monthViewHolder = (MonthViewHolder) viewHolder;
-            monthViewHolder.mCalendarMonthTextView.setText(mHabitCalendar.getHeaderAt(i));
+            monthViewHolder.mCalendarMonth.setText(mHabitCalendar.getHeaderAt(i));
         }
     }
 
@@ -119,23 +125,25 @@ public class HabitCalendarAdapter extends RecyclerView.Adapter<RecyclerView.View
         mHabitCalendar = new HabitCalendar(checkNotNull(habit));
     }
 
-    protected static class DayOfMonthViewHolder extends RecyclerView.ViewHolder {
+    private static class DayOfMonthViewHolder extends RecyclerView.ViewHolder {
 
-        private BoxedText mCalendarDayTextView;
+        private BoxedText mCalendarDay;
 
-        private DayOfMonthViewHolder(View itemView) {
+        private DayOfMonthViewHolder(View itemView, float textSize) {
             super(itemView);
-            mCalendarDayTextView = itemView.findViewById(R.id.day_of_month_bn);
+            mCalendarDay = itemView.findViewById(R.id.day_of_month_bn);
+            mCalendarDay.setTextSize(textSize);
         }
     }
 
-    protected static class MonthViewHolder extends RecyclerView.ViewHolder {
+    private static class MonthViewHolder extends RecyclerView.ViewHolder {
 
-        private BoxedText mCalendarMonthTextView;
+        private BoxedText mCalendarMonth;
 
-        private MonthViewHolder(View itemView) {
+        private MonthViewHolder(View itemView, float textSize) {
             super(itemView);
-            mCalendarMonthTextView = itemView.findViewById(R.id.month_of_year_bn);
+            mCalendarMonth = itemView.findViewById(R.id.month_of_year_bn);
+            mCalendarMonth.setTextSize(textSize * 0.75f);
         }
     }
 }

@@ -68,11 +68,11 @@ public class HabitsScreenTest {
      * Custom {@link Matcher} which matches an item in a {@link RecyclerView}
      * by its text value
      *
-     * @param titleText the title text to match
+     * @param text the title text to match
      * @return  {@link Matcher} that matches the text with the view item
      */
-    private Matcher<View> withTitleText(final String titleText) {
-        checkArgument(!TextUtils.isEmpty(titleText),
+    private Matcher<View> withTitleText(final String text) {
+        checkArgument(!TextUtils.isEmpty(text),
                 "titleText cannot be 'null' or empty");
 
         return new TypeSafeMatcher<View>() {
@@ -80,12 +80,12 @@ public class HabitsScreenTest {
             @Override
             protected boolean matchesSafely(View item) {
                 return allOf(isDescendantOfA(isAssignableFrom(RecyclerView.class)),
-                        withText(titleText)).matches(item);
+                        withText(text)).matches(item);
             }
 
             @Override
             public void describeTo(Description description) {
-                description.appendText("is isDescendantOfA 'RecyclerView' with text " + titleText);
+                description.appendText("is isDescendantOfA 'RecyclerView' with text " + text);
             }
         };
     }

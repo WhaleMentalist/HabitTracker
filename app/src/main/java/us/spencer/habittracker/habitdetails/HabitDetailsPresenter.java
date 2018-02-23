@@ -8,37 +8,49 @@ import us.spencer.habittracker.model.HabitRepetitions;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-public class HabitDetailsPresenter implements HabitDetailsContract.Presenter {
+/**
+ * Handles logic between model and view using callbacks to notify load completion.
+ */
+public class HabitDetailsPresenter implements HabitDetailsContract.Presenter, HabitsDataSource.LoadHabitCallback {
 
     @NonNull
     private HabitsDataSource mHabitsRepository;
 
     @NonNull
-    private HabitDetailsContract.CalendarFragmentView mHabitDetailsCalendarView;
+    private HabitDetailsContract.DetailsFragmentView mHabitDetailsView;
 
     private long mHabitId;
 
     public HabitDetailsPresenter(@NonNull HabitsRepository habitsRepository,
-                                 @NonNull HabitDetailsContract.CalendarFragmentView habitDetailsFragment,
+                                 @NonNull HabitDetailsContract.DetailsFragmentView habitDetailsFragment,
                                  long habitId) {
         mHabitsRepository = checkNotNull(habitsRepository);
-        mHabitDetailsCalendarView = checkNotNull(habitDetailsFragment);
+        mHabitDetailsView = checkNotNull(habitDetailsFragment);
         mHabitId = habitId;
-        mHabitDetailsCalendarView.setPresenter(this);
+        mHabitDetailsView.setPresenter(this);
     }
 
     /**
      * Method will get the habit by specified id and pass information
      * to the calendar view to present
      *
-     * @param habitId   the id that will be searched for in the database
+     * @param habit the loaded {@link HabitRepetitions} from data source
      */
-    public void loadHabit(final long habitId) {
-        HabitRepetitions habit = mHabitsRepository.getHabitById(habitId);
-        mHabitDetailsCalendarView.showHistory(habit);
+    public void loadHabit(HabitRepetitions habit) {
+        mHabitDetailsView.showHabitDetails(habit);
+    }
+
+    @Override
+    public void onHabitLoaded(HabitRepetitions habit) {
+        loadHabit(habit);
+    }
+
+    @Override
+    public void onDataNotAvailable() {
+
     }
 
     public void start() {
-        loadHabit(mHabitId);
+        mHabitsRepository.getHabitById(mHabitId, this);
     }
 }

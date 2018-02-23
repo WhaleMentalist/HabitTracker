@@ -16,6 +16,7 @@ import us.spencer.habittracker.model.Repetition;
 
 /**
  * Singleton class that constructs instance of database.
+ * TODO: Migration support
  */
 @Database(entities = {Habit.class, Repetition.class}, version = 1, exportSchema = false)
 @TypeConverters({Converters.class})

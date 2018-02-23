@@ -150,6 +150,17 @@ public class HabitsLocalDataSource implements HabitsDataSource {
     }
 
     @Override
+    public void deleteHabitById(final long habitId) {
+        Runnable deleteHabitById = new Runnable() {
+            @Override
+            public void run() {
+                mHabitsDAO.deleteHabitById(habitId);
+            }
+        };
+        mAppExecutors.diskIO().execute(deleteHabitById);
+    }
+
+    @Override
     public void insertRepetition(final long habitId, @NonNull final Repetition repetition) {
         checkNotNull(repetition);
         Runnable insertRepetition = new Runnable() {
@@ -174,7 +185,30 @@ public class HabitsLocalDataSource implements HabitsDataSource {
     }
 
     @Override
-    public HabitRepetitions getHabitById(long habitID) {
-        return null;
+    public void getHabitById(final long habitId, @NonNull final LoadHabitCallback callback) {
+        checkNotNull(callback);
+        Runnable findHabitById = new Runnable() {
+            @Override
+            public void run() {
+                final HabitRepetitions habit = mHabitRepetitionsDAO.getHabitWithRepetitions(habitId);
+                if(habit == null) {
+                    mAppExecutors.mainThread().execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            callback.onDataNotAvailable();
+                        }
+                    });
+                }
+                else {
+                    mAppExecutors.mainThread().execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            callback.onHabitLoaded(habit);
+                        }
+                    });
+                }
+            }
+        };
+        mAppExecutors.diskIO().execute(findHabitById);
     }
 }

@@ -68,6 +68,6 @@ dependencies {
     androidTestImplementation 'com.android.support.test.espresso.idling:idling-concurrent:3.0.1'
     implementation 'com.android.support.test.espresso:espresso-idling-resource:3.0.1'
 
-    /* Really library that allows for cleaner code */
+    /* Really useful library that allows for cleaner code and error checking */
     implementation 'com.google.guava:guava:23.6-android'
 }

@@ -11,6 +11,8 @@ import us.spencer.habittracker.model.Repetition;
 
 /**
  * Entry point for accessing habit data.
+ *
+ * TODO: Integrate callback into 'delete' and 'add' repetition
  */
 public interface HabitsDataSource {
 
@@ -33,6 +35,25 @@ public interface HabitsDataSource {
         void onDataNotAvailable();
     }
 
+    interface LoadHabitCallback {
+
+        void onHabitLoaded(HabitRepetitions habit);
+
+        void onDataNotAvailable();
+    }
+
+    interface DeleteHabitCallback {
+
+        void onHabitDeleted();
+
+        void onHabitNotFound();
+    }
+
+    interface SaveRepetitionCallback {
+
+        void onRepetitionSaved();
+    }
+
     /**
      * =======================================================================
      * REPOSITORY / DATABASE (i.e the general interface for getting data)
@@ -47,11 +68,14 @@ public interface HabitsDataSource {
 
     void deleteAllHabits();
 
+    void deleteHabitById(final long habitId);
+
     void insertRepetition(final long habitId,
                           @NonNull final Repetition repetition);
 
     void deleteRepetition(final long habitId,
                           @NonNull final Repetition repetition);
 
-    HabitRepetitions getHabitById(final long habitID);
+    void getHabitById(final long habitId,
+                      @NonNull LoadHabitCallback callback);
 }

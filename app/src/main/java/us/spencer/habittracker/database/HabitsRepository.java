@@ -28,7 +28,8 @@ public class HabitsRepository implements HabitsDataSource {
 
     private static final Logger LOGGER = Logger.getLogger(HabitsRepository.class.getName());
 
-    public static final long SQL_INSERTION_FAIL = -1;
+    @VisibleForTesting
+    static final long SQL_INSERTION_FAIL = -1;
 
     private static HabitsRepository INSTANCE  = null;
 
@@ -86,7 +87,8 @@ public class HabitsRepository implements HabitsDataSource {
      * Used to force {@link #getInstance(HabitsDataSource)} to create a new instance
      * when called again. NOTE: Useful for testing.
      */
-    public static void destroyInstance() {
+    @VisibleForTesting
+    static void destroyInstance() {
         INSTANCE = null;
     }
 
@@ -165,6 +167,12 @@ public class HabitsRepository implements HabitsDataSource {
         mCachedHabits.clear();
     }
 
+    @Override
+    public void deleteHabitById(final long habitId) {
+        mHabitsLocalDataSource.deleteHabitById(habitId);
+        mCachedHabits.remove(habitId);
+    }
+
     /**
      * Method inserts a repetition into database. The repetition
      * has a key to the habit that was completed.
@@ -199,13 +207,38 @@ public class HabitsRepository implements HabitsDataSource {
     }
 
     /**
-     * TODO: Fully implement database access, as well, for when the cache is bad
+     * Method retrieves {@link HabitRepetitions} from either cache or database.
+     * It will use cache if it is in sync due to speed, otherwise it will access
+     * database and run callback when finished.
      *
-     * @param habitID
-     * @return
+     * @param habitId   the id of habit to search
+     * @param callback  the callback to notify interested code
      */
     @Override
-    public HabitRepetitions getHabitById(long habitID) {
-        return mCachedHabits.get(habitID);
+    public void getHabitById(final long habitId, @NonNull final LoadHabitCallback callback) {
+        checkNotNull(callback);
+        HabitRepetitions habit;
+
+        if(isCacheSync) {
+            habit = mCachedHabits.get(habitId);
+            callback.onHabitLoaded(habit);
+        }
+        else {
+            mHabitsLocalDataSource.getHabitById(habitId, new LoadHabitCallback() {
+
+                @Override
+                public void onHabitLoaded(HabitRepetitions habit) {
+                    LOGGER.log(Level.FINE, "Got habit from local database");
+                    mCachedHabits.put(habit.getHabit().getId(), habit); /* Sync cache */
+                    callback.onHabitLoaded(habit);
+                }
+
+                @Override
+                public void onDataNotAvailable() {
+                    LOGGER.log(Level.FINE, "Habit not found in local database");
+                    callback.onDataNotAvailable();
+                }
+            });
+        }
     }
 }

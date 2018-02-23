@@ -29,7 +29,12 @@ public class HabitsPresenterTest {
 
     private static final long HABIT_ID = 1;
 
-    private static final TimeStamp TIME_STAMP = new TimeStamp(Long.valueOf(1000L));
+    private static final TimeStamp TIME_STAMP = new TimeStamp(1000L);
+
+    private static final Habit HABIT_ONE = new Habit("NAME_ONE", "DESC_ONE");
+
+    private static final Habit HABIT_TWO = new Habit("NAME_TWO", "DESC_TWO");
+
 
     private static final List<HabitRepetitions> MOCK_HABITS_LIST = Lists.newArrayList(
             new HabitRepetitions(new Habit("NAME_ONE", "DESC_ONE")),
@@ -100,8 +105,8 @@ public class HabitsPresenterTest {
     @Test
     public void loadHabit_callsShowHabitDetails() {
         mHabitsPresenter = new HabitsPresenter(mHabitsRepository, mHabitsView);
-        mHabitsPresenter.loadHabitDetails(HABIT_ID);
-        verify(mHabitsView).showHabitDetails(HABIT_ID);
+        mHabitsPresenter.loadHabitDetails(HABIT_ONE);
+        verify(mHabitsView).showHabitDetails(HABIT_ONE);
     }
 
 }

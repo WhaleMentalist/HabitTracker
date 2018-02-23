@@ -12,13 +12,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Class represents an instant in time in which a
- * particular event occurred. It is focused on the
- * date of the event for now. It will fix the time
- * to a specified amount. In this case three in the
- * afternoon. It also ensures it uses the same
- * {@link Chronology} across all creations of
- * {@link TimeStamp}
+ * Class represents an instant in time in which a particular event occurred.
+ * It is focused on the date of the event for now. It will fix the time
+ * to a specified amount. In this case three in the afternoon. It also ensures it
+ * uses the same {@link Chronology} across all creations of {@link TimeStamp} objects.
  */
 public class TimeStamp {
 
@@ -88,6 +85,10 @@ public class TimeStamp {
         boolean flag = false;
         if(this == o) {
             flag = true;
+        }
+
+        if(!(o instanceof TimeStamp)) {
+            return flag;
         }
 
         TimeStamp timeStamp = (TimeStamp) o;

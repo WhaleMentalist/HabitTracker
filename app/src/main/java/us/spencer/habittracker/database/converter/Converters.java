@@ -7,6 +7,10 @@ import org.joda.time.chrono.ISOChronology;
 
 import us.spencer.habittracker.model.TimeStamp;
 
+/**
+ * Allows database to save a {@link TimeStamp} data by converting it into an
+ * acceptable data format
+ */
 public class Converters {
 
     @TypeConverter

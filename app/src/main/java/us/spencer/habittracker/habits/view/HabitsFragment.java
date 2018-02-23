@@ -1,13 +1,13 @@
 package us.spencer.habittracker.habits.view;
 
-
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Vibrator;
-import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -16,7 +16,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckedTextView;
-
 import android.widget.TextView;
 
 import org.joda.time.Instant;
@@ -40,17 +39,15 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * Displays the list of habits user is tracking.
  *
- * TODO - NEW FEATURE: Allow user to delete habit from the list
+ * TODO: Edit feature needed!
  *
  * Very useful article explaining 'RecyclerView':
  * https://code.tutsplus.com/tutorials/getting-started-with-recyclerview-and-cardview-on-android--cms-23465
  */
 public class HabitsFragment extends Fragment implements HabitsContract.View {
 
-    @NonNull
     private HabitsContract.Presenter mPresenter;
 
-    @NonNull
     private HabitsAdapter mAdapter;
 
     public HabitsFragment() {}
@@ -71,13 +68,13 @@ public class HabitsFragment extends Fragment implements HabitsContract.View {
         View root = inflater.inflate(R.layout.fragment_habits_list, container, false);
         setHasOptionsMenu(true);
 
-        RecyclerView rv = root.findViewById(R.id.habits_recycler_view);
+        RecyclerView rv = root.findViewById(R.id.habits_rv);
         rv.setLayoutManager(new LinearLayoutManager(getActivity()));
         rv.setHasFixedSize(true);
 
         mAdapter = new HabitsAdapter(new ArrayList<HabitRepetitions>());
         rv.setAdapter(mAdapter);
-
+        registerForContextMenu(rv); /* Allow use of context menu on recycler view items */
         return root;
     }
 
@@ -152,7 +149,7 @@ public class HabitsFragment extends Fragment implements HabitsContract.View {
          *
          * @param habits    the new list to assign
          */
-        public void replaceData(List<HabitRepetitions> habits) {
+        void replaceData(List<HabitRepetitions> habits) {
             setList(habits);
             notifyDataSetChanged();
         }
@@ -172,6 +169,7 @@ public class HabitsFragment extends Fragment implements HabitsContract.View {
         public HabitViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
             View itemView = LayoutInflater.from(viewGroup.getContext())
                     .inflate(R.layout.item_habit, viewGroup, false);
+
             return new HabitViewHolder(itemView);
         }
 
@@ -191,6 +189,57 @@ public class HabitsFragment extends Fragment implements HabitsContract.View {
                 viewHolder.mHabitStatus.setChecked(false);
                 viewHolder.mHabitStatus.setCheckMarkDrawable(R.drawable.ic_check_incomplete);
             }
+
+            viewHolder.mPopupMenu.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(final View view) {
+                    PopupMenu popup = new PopupMenu(view.getContext(), viewHolder.mPopupMenu);
+
+                    /* Inflate the menu form resource file*/
+                    popup.inflate(R.menu.habits_list_context_menu);
+                    popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+
+                        @Override
+                        public boolean onMenuItemClick(MenuItem item) {
+                            switch(item.getItemId()) {
+                                case R.id.delete_item:
+                                    /* Get item position in adapter to save copy of pending deletion item */
+                                    final int pos = viewHolder.getAdapterPosition();
+                                    final long habitId = mHabits.get(pos).getHabit().getId();
+                                    final HabitRepetitions copy = mHabits.remove(pos);
+                                    notifyItemRemoved(pos);
+                                    notifyItemRangeChanged(pos, mHabits.size());
+
+                                    /* Show snackbar that allows user to undo deletion before actual database deletion occurs */
+                                    Snackbar snackbar = Snackbar.make(view, copy.getHabit().getName() + " removed", Snackbar.LENGTH_LONG);
+                                    snackbar.setActionTextColor(getResources().getColor(R.color.magenta));
+                                    snackbar.addCallback(new Snackbar.Callback() { /* Allows detection of dismissal*/
+                                        @Override
+                                        public void onDismissed(Snackbar snackbar, int event) {
+                                            /* Want timeout dismissal or consecutive event , not user dismissal */
+                                            if (event == Snackbar.Callback.DISMISS_EVENT_TIMEOUT ||
+                                                    event == Snackbar.Callback.DISMISS_EVENT_CONSECUTIVE) {
+                                                mPresenter.deleteHabitById(habitId); /* Purge from local storage */
+                                            }
+                                        }
+                                    });
+                                    /* Undo action for deletion */
+                                    snackbar.setAction("UNDO", new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+                                            mAdapter.restoreHabit(copy, pos);
+                                        }
+                                    });
+                                    snackbar.show();
+
+                                    break;
+                            }
+                            return false;
+                        }
+                    });
+                    popup.show();
+                }
+            });
         }
 
         @Override
@@ -204,22 +253,38 @@ public class HabitsFragment extends Fragment implements HabitsContract.View {
         }
 
         /**
+         * Restores item that is up for pending deletion.
+         *
+         * @param habit the {@link HabitRepetitions} that is pending for deletion
+         * @param pos   the previous position of the item before deletion occurred
+         */
+        private void restoreHabit(HabitRepetitions habit, int pos) {
+            mHabits.add(pos, habit);
+            notifyItemInserted(pos);
+        }
+
+        /**
          * {@link HabitViewHolder} allows reduced calls to 'getView', which
          * increase allowable scroll speed. Allows application to 'hold' view
          * item in memory instead of creating a new view, which is costly.
          */
-        protected class HabitViewHolder extends RecyclerView.ViewHolder {
+        class HabitViewHolder extends RecyclerView.ViewHolder {
 
             private TextView mHabitName;
 
             private TextView mHabitDesc;
 
+            private TextView mPopupMenu;
+
             private CheckedTextView mHabitStatus;
 
             private HabitViewHolder(View itemView) {
                 super(itemView);
+                registerForContextMenu(itemView);
                 mHabitName = itemView.findViewById(R.id.habit_item_name_tv);
                 mHabitDesc = itemView.findViewById(R.id.habit_item_desc_tv);
+                mPopupMenu = itemView.findViewById(R.id.popup_menu_tv);
+
                 mHabitStatus = itemView.findViewById(R.id.habit_item_status_ctv);
                 mHabitStatus.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -230,23 +295,28 @@ public class HabitsFragment extends Fragment implements HabitsContract.View {
                         final Habit habit = mHabits.get(getAdapterPosition()).getHabit();
                         CheckedTextView checkedTextView = ((CheckedTextView) view);
 
-                        if(checkedTextView.isSelected()) {
-                            checkedTextView.setSelected(false);
+                        if(checkedTextView.isChecked()) {
+                            checkedTextView.setChecked(false);
                             checkedTextView.setCheckMarkDrawable(R.drawable.ic_check_incomplete);
                             mPresenter.deleteRepetition(habit.getId(),
                                     new TimeStamp(Instant.now()));
-                            vibrator.vibrate(100);
+                            /* May not be a vibrator on phone*/
+                            if (vibrator != null) {
+                                vibrator.vibrate(30);
+                            }
                         }
                         else {
-                            checkedTextView.setSelected(true);
+                            checkedTextView.setChecked(true);
                             checkedTextView.setCheckMarkDrawable(R.drawable.ic_check_complete);
                             mPresenter.addRepetition(habit.getId(),
                                     new TimeStamp(Instant.now()));
-                            vibrator.vibrate(100);
+                            /* May not be a vibrator on phone*/
+                            if (vibrator != null) {
+                                vibrator.vibrate(30);
+                            }
                         }
                     }
                 });
-
                 itemView.setOnClickListener(new View.OnClickListener() {
 
                     @Override

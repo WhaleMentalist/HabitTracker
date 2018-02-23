@@ -10,15 +10,17 @@ import us.spencer.habittracker.model.HabitRepetitions;
  */
 public interface HabitDetailsContract {
 
-    interface CalendarFragmentView extends BaseView<Presenter> {
+    interface DetailsFragmentView extends BaseView<Presenter> {
 
-        void showHistory(HabitRepetitions habit);
+        void showHabitDetails(HabitRepetitions habit);
+
+        void showAddDaysDialog();
 
         boolean isActive();
     }
 
     interface Presenter extends BasePresenter {
 
-        void loadHabit(final long habitId);
+        void loadHabit(HabitRepetitions habit);
     }
 }
