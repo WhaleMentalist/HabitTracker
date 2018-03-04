@@ -28,7 +28,7 @@ public class HabitDetailsFragment extends Fragment implements HabitDetailsContra
 
     private HabitDetailsContract.Presenter mPresenter;
 
-    private HabitCalendarAdapter mAdapter;
+    private HistoryScrollChart mChart;
 
     public HabitDetailsFragment() {}
 
@@ -49,7 +49,7 @@ public class HabitDetailsFragment extends Fragment implements HabitDetailsContra
         View root = inflater.inflate(R.layout.fragment_habit_details,
                 container,
                 false);
-        final HistoryScrollChart chart = root.findViewById(R.id.habit_history_chart);
+        mChart = root.findViewById(R.id.habit_history_chart);
         mHabitDesc = root.findViewById(R.id.habit_desc_tv);
         Button mAddDays = root.findViewById(R.id.add_days_btn);
         mAddDays.setOnClickListener(new View.OnClickListener() {
@@ -71,6 +71,7 @@ public class HabitDetailsFragment extends Fragment implements HabitDetailsContra
     public void showHabitDetails(HabitRepetitions habitRepetitions) {
         if(isActive()) {
             mHabitDesc.setText(habitRepetitions.getHabit().getDescription()); /* Additional information to display */
+            mChart.setHabit(habitRepetitions);
         }
     }
 

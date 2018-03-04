@@ -17,6 +17,9 @@ import java.util.Random;
 import java.util.Set;
 
 import us.spencer.habittracker.R;
+import us.spencer.habittracker.model.HabitRepetitions;
+import us.spencer.habittracker.model.Repetition;
+import us.spencer.habittracker.model.TimeStamp;
 import us.spencer.habittracker.utility.DateUtils;
 import us.spencer.habittracker.utility.GraphicsUtilities;
 
@@ -25,11 +28,8 @@ public class HistoryScrollChart extends HorizontalScrollChart {
     /* Seven are dedicated to the days of the week and the last one is the header */
     private static final int ITEM_PER_COLUMN = 8;
 
-    /* TODO: Delete when finished testing */
-    private Random random = new Random();
-
     /* Represents repetition of habit on a specified date */
-    private Set<Long> repetitions = new HashSet<>();
+    private HabitRepetitions mHabit;
 
     /* Help guide drawing of painters*/
     private RectF mDrawAnchor;
@@ -104,7 +104,11 @@ public class HistoryScrollChart extends HorizontalScrollChart {
         initSquarePainters();
         initTextPainters();
         mSquareSpacing = GraphicsUtilities.dpToPixels(context, 1.0f);
-        produceRandomData(); /* TODO: Delete once the view has completed testing phase */
+    }
+
+    public void setHabit(HabitRepetitions habit) {
+        mHabit = habit;
+        postInvalidate();
     }
 
     private int getDimension(int targetSize, int spec) {
@@ -181,17 +185,6 @@ public class HistoryScrollChart extends HorizontalScrollChart {
         mDrawAnchor.offset(0.0f, -(mSquareSize + mSquareSpacing));
     }
 
-    private void produceRandomData() {
-        int year, month, day;
-
-        for(int i = 0; i < 2000; i++) {
-            year = random.nextInt(19) + 2000;
-            month = random.nextInt(12) + 1;
-            day = random.nextInt(25) + 1;
-            repetitions.add(new DateTime(year, month, day, 0, 0).getMillis());
-        }
-    }
-
     private void drawWeekdayAxis(Canvas canvas) {
         MutableDateTime today = DateUtils.getCurrentDate();
         today.addDays(-(ITEM_PER_COLUMN - 2)); /* Get first day of the week to draw */
@@ -209,7 +202,7 @@ public class HistoryScrollChart extends HorizontalScrollChart {
     }
 
     private void drawSquareColumnItem(Canvas canvas) {
-        if(repetitions.contains(mBaseDate.getMillis())) {
+        if(mHabit.getRepetitions().contains(new Repetition(new TimeStamp(mBaseDate.getMillis()), mHabit.getHabit().getId()))) {
             canvas.drawRect(mDrawAnchor, mFilledSquarePainter);
             canvas.drawText(String.valueOf(mBaseDate.getDayOfMonth()), mDrawAnchor.centerX(),
                     mDrawAnchor.centerY() - (mDayOfMonthTextPainter.ascent() + mDayOfMonthTextPainter.descent()) / 2,
