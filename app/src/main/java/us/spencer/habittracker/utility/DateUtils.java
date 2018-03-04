@@ -1,5 +1,9 @@
 package us.spencer.habittracker.utility;
 
+import org.joda.time.DateTimeZone;
+import org.joda.time.Instant;
+import org.joda.time.MutableDateTime;
+
 public class DateUtils {
 
     private static final String[] DAY_OF_MONTH = {
@@ -15,11 +19,27 @@ public class DateUtils {
             "SEP", "OCT", "NOV", "DEC"
     };
 
+    private static String[] DAY_OF_WEEK = {"MO", "TU", "WE", "TH", "FR", "SA", "SU"};
+
     public static String getDayOfMonthAsString(int dayOfMonth) {
         return DAY_OF_MONTH[dayOfMonth - 1];
     }
 
     public static String getMonthAsString(int month) {
         return  MONTH_OF_YEAR[month - 1];
+    }
+
+    public static String getDayOfWeek(int dayOfWeek) {
+        return DAY_OF_WEEK[dayOfWeek - 1];
+    }
+
+    public static MutableDateTime getCurrentDate() {
+        MutableDateTime instant = new MutableDateTime(Instant.now());
+        instant.setZone(DateTimeZone.getDefault());
+        instant.setHourOfDay(0);
+        instant.setMinuteOfDay(0);
+        instant.setSecondOfDay(0);
+        instant.setMillisOfDay(0);
+        return instant;
     }
 }

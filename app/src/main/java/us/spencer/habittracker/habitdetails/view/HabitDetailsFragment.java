@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import us.spencer.habittracker.R;
 import us.spencer.habittracker.custom.CustomRecyclerView;
+import us.spencer.habittracker.custom.HistoryScrollChart;
 import us.spencer.habittracker.habitdetails.HabitCalendarAdapter;
 import us.spencer.habittracker.habitdetails.HabitDetailsContract;
 import us.spencer.habittracker.model.HabitCalendar;
@@ -48,14 +49,7 @@ public class HabitDetailsFragment extends Fragment implements HabitDetailsContra
         View root = inflater.inflate(R.layout.fragment_habit_details,
                 container,
                 false);
-        final CustomRecyclerView rv = root.findViewById(R.id.habit_calendar_rv);
-        rv.setLayoutManager(new GridLayoutManager(getActivity(),
-                HabitCalendar.NUMBER_ITEMS_PER_COLUMN,
-                GridLayout.HORIZONTAL, false));
-        rv.setHasFixedSize(true);
-        mAdapter = new HabitCalendarAdapter(20.0f);
-        rv.setAdapter(mAdapter);
-        rv.getLayoutManager().scrollToPosition(mAdapter.getItemCount() - 1);
+        final HistoryScrollChart chart = root.findViewById(R.id.habit_history_chart);
         mHabitDesc = root.findViewById(R.id.habit_desc_tv);
         Button mAddDays = root.findViewById(R.id.add_days_btn);
         mAddDays.setOnClickListener(new View.OnClickListener() {
@@ -77,7 +71,6 @@ public class HabitDetailsFragment extends Fragment implements HabitDetailsContra
     public void showHabitDetails(HabitRepetitions habitRepetitions) {
         if(isActive()) {
             mHabitDesc.setText(habitRepetitions.getHabit().getDescription()); /* Additional information to display */
-            mAdapter.replaceData(habitRepetitions); /* Add repetition data to adapter for rendering */
         }
     }
 
