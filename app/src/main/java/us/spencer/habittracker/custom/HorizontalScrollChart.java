@@ -50,7 +50,7 @@ public abstract class HorizontalScrollChart extends View implements GestureDetec
     /*
      * Prevents chart from going beyond a specified boundary
      */
-    private int maxOffset = 10000;
+    private int mMaxOffset = 10000;
 
     public HorizontalScrollChart(Context context) {
         super(context);
@@ -94,7 +94,7 @@ public abstract class HorizontalScrollChart extends View implements GestureDetec
         }
 
         distX = -mOrientation * distX; /* Scroll based on orientation of chart */
-        distX = Math.min(distX, maxOffset - mScroller.getCurrX());
+        distX = Math.min(distX, mMaxOffset - mScroller.getCurrX());
         mScroller.startScroll(mScroller.getCurrX(), mScroller.getCurrY(), (int) distX, 0, 0);
         mScroller.computeScrollOffset();
         updateDataOffset();
@@ -107,9 +107,7 @@ public abstract class HorizontalScrollChart extends View implements GestureDetec
     }
 
     @Override
-    public void onShowPress(MotionEvent e) {
-
-    }
+    public void onShowPress(MotionEvent e) {}
 
     @Override
     public boolean onSingleTapUp(MotionEvent e) {
@@ -120,7 +118,7 @@ public abstract class HorizontalScrollChart extends View implements GestureDetec
     public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
         mScroller.fling(mScroller.getCurrX(), mScroller.getCurrY(),
                 mOrientation * ((int) velocityX) / 2, 0,
-                0, maxOffset, 0, 0);
+                0, mMaxOffset, 0, 0);
         invalidate();
         mScrollAnimator.setDuration(mScroller.getDuration());
         mScrollAnimator.start();
@@ -128,9 +126,7 @@ public abstract class HorizontalScrollChart extends View implements GestureDetec
     }
 
     @Override
-    public void onLongPress(MotionEvent e) {
-
-    }
+    public void onLongPress(MotionEvent e) {}
 
     @Override
     public void onAnimationUpdate(ValueAnimator animation) {
@@ -152,7 +148,7 @@ public abstract class HorizontalScrollChart extends View implements GestureDetec
     private void updateDataOffset() {
         int newOffset = mScroller.getCurrX() / mOffsetThreshold;
         newOffset = Math.max(0, newOffset);
-        newOffset = Math.min(newOffset, maxOffset);
+        newOffset = Math.min(newOffset, mMaxOffset);
 
         if(newOffset != mOffset) {
             mOffset = newOffset;

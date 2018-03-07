@@ -6,15 +6,13 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.graphics.Typeface;
-import android.icu.util.Measure;
 import android.util.AttributeSet;
+import android.util.Log;
+import android.view.MotionEvent;
+import android.widget.Toast;
 
 import org.joda.time.DateTime;
 import org.joda.time.MutableDateTime;
-
-import java.util.HashSet;
-import java.util.Random;
-import java.util.Set;
 
 import us.spencer.habittracker.R;
 import us.spencer.habittracker.model.HabitRepetitions;
@@ -86,14 +84,14 @@ public class HistoryScrollChart extends HorizontalScrollChart {
         mDayOfMonthTextPainter = new Paint();
         mDayOfMonthTextPainter.setAntiAlias(true);
         mDayOfMonthTextPainter.setColor(Color.WHITE);
-        mDayOfMonthTextPainter.setTextSize(mSquareSize * 0.5f);
+        mDayOfMonthTextPainter.setTextSize(mSquareSize * 0.4f);
         mDayOfMonthTextPainter.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
         mDayOfMonthTextPainter.setTextAlign(Paint.Align.CENTER);
 
         mAxisTextPainter = new Paint();
         mAxisTextPainter.setAntiAlias(true);
         mAxisTextPainter.setColor(Color.LTGRAY);
-        mAxisTextPainter.setTextSize(mSquareSize * 0.45f);
+        mAxisTextPainter.setTextSize(mSquareSize * 0.4f);
         mAxisTextPainter.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
         mAxisTextPainter.setTextAlign(Paint.Align.CENTER);
     }
@@ -125,8 +123,27 @@ public class HistoryScrollChart extends HorizontalScrollChart {
                 result = Math.min(result, specSize);
             }
         }
-
         return result;
+    }
+
+    @Override
+    public boolean onSingleTapUp(MotionEvent e) {
+        Log.v(getClass().getCanonicalName(), String.valueOf(e.getX()) + ", " + String.valueOf(e.getY()));
+
+        float x = e.getX() + mExtraPadding;
+        float y = e.getY() + mExtraPadding;
+
+        int column = (int) (x / (mOffsetThreshold + mSquareSpacing));
+        int row = (int) (y / (mOffsetThreshold + mSquareSpacing));
+
+        int days = (column * (ITEM_PER_COLUMN - 1)) + (row - ITEM_PER_COLUMN);
+        DateTime date = new DateTime(mBaseDate);
+
+        if(column < mNumberColumns && row > 0) {
+            date = date.plusDays(days);
+            Toast.makeText(getContext(), date.toString("YYYY/MM/dd"), Toast.LENGTH_LONG).show();
+        }
+        return true;
     }
 
     @Override
